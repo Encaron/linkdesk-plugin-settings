@@ -1,8 +1,8 @@
 {
-  "$schema": "../../public/schemas/plugin.schema.json",
+  "$schema": "./node_modules/@linkdesk/plugin-sdk/schemas/plugin.schema.json",
   "pluginId": "settings",
   "name": "设置",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "icon": "resources/icon-bar.svg",
   "marketIcon": "resources/icon.svg",
   "description": "软件设置——主题、语言、插件管理",
