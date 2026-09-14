@@ -1,21 +1,27 @@
 {
   "version": "1",
-  "updatedAt": "2026-09-14T02:35:15.124Z",
+  "updatedAt": "2026-09-14T04:08:04.248Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.6",
+      "version": "1.0.7",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
       "icon": "resources/icon-bar.svg",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.6/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.6/settings.linkdesk-plugin",
-      "size": 323981,
-      "publishedAt": "2026-09-14T02:35:15.124Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.7/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.7/settings.linkdesk-plugin",
+      "size": 324392,
+      "publishedAt": "2026-09-14T04:08:04.248Z",
       "versions": [
+        {
+          "version": "1.0.7",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.7/settings.linkdesk-plugin",
+          "publishedAt": "2026-09-14T04:08:04.248Z",
+          "changelog": "- **本书是验收版：源码零改动，与 v1.0.6 内容相同**——用于 E6#101「出厂种子保鲜」的端到端验收：\n  证明「插件在自己仓发版 → 出厂种子自动跟到最新版 → 新用户下载软件就拿到这一版」这条链路真的通\n  （bump → publish → `sync:bundled --latest` → 打包 → 干净 profile 装机读数 = 1.0.7）\n- 为什么要用一个真实版本号来验：种子与版本号是**箱子内容唯一可审查的答案**——版本号不动，就无从证明\n  「用户装到的是新版」。验收完如果你不想让市场多这一条，删掉本 Release 即可（种子侧一并回退）"
+        },
         {
           "version": "1.0.6",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.6/settings.linkdesk-plugin",
