@@ -261,7 +261,7 @@ function renderControl(
     }
 
     default:
-      return <span className="text-muted">{String(val)}</span>;
+      return <span className="settings-text-muted">{String(val)}</span>;
   }
 }
 

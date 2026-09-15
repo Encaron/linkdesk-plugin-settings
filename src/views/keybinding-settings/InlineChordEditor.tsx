@@ -11,10 +11,10 @@ export default function InlineChordEditor({ editor }: { editor: KeybindingEditor
   const { firstKey, secondKey, activeField, setActiveField, firstConflict, secondConflict, confirmEdit, cancelEdit } = editor;
 
   return (
-    <div className="keybindings-inline-edit">
+    <div className="settings-keybindings-inline-edit">
       {/* 第一键 */}
       <span
-        className={`keybindings-chord-field ${activeField === "first" ? "active" : ""}`}
+        className={`settings-keybindings-chord-field ${activeField === "first" ? "active" : ""}`}
         tabIndex={0}
         onFocus={() => setActiveField("first")}
       >
@@ -22,7 +22,7 @@ export default function InlineChordEditor({ editor }: { editor: KeybindingEditor
       </span>
       {/* 第二键——第一键未填时灰显 */}
       <span
-        className={`keybindings-chord-field ${activeField === "second" && firstKey ? "active" : firstKey ? "" : "dimmed"}`}
+        className={`settings-keybindings-chord-field ${activeField === "second" && firstKey ? "active" : firstKey ? "" : "dimmed"}`}
         tabIndex={firstKey ? 0 : -1}
         onFocus={() => firstKey && setActiveField("second")}
       >
@@ -30,19 +30,19 @@ export default function InlineChordEditor({ editor }: { editor: KeybindingEditor
       </span>
       {/* 冲突提示 */}
       {(secondConflict?.length ?? 0) > 0 && (
-        <span className="keybindings-inline-conflict" title={secondConflict?.map(b => b.command).join(t("、"))}>
+        <span className="settings-keybindings-inline-conflict" title={secondConflict?.map(b => b.command).join(t("、"))}>
           ⚠
         </span>
       )}
       {(!secondKey || !secondConflict) && firstConflict && firstConflict.length > 0 && (
-        <span className="keybindings-inline-conflict" title={firstConflict.map(b => b.command).join(t("、"))}>
+        <span className="settings-keybindings-inline-conflict" title={firstConflict.map(b => b.command).join(t("、"))}>
           ⚠
         </span>
       )}
-      <button className="keybindings-inline-btn confirm" onClick={confirmEdit} disabled={!firstKey} title={t("确定")}>
+      <button className="settings-keybindings-inline-btn confirm" onClick={confirmEdit} disabled={!firstKey} title={t("确定")}>
         <span className="codicon codicon-check" />
       </button>
-      <button className="keybindings-inline-btn cancel" onClick={cancelEdit} title={t("取消")}>
+      <button className="settings-keybindings-inline-btn cancel" onClick={cancelEdit} title={t("取消")}>
         <span className="codicon codicon-close" />
       </button>
     </div>

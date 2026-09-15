@@ -5,20 +5,20 @@
 
 /* ── ObjectEditor——object/array 配置项键值对编辑器 ── */
 
-.object-editor {
+.settings-object-editor {
   display: flex;
   flex-direction: column;
   gap: 4px;
   width: 100%;
 }
 
-.object-editor-row {
+.settings-object-editor-row {
   display: flex;
   align-items: center;
   gap: 4px;
 }
 
-.object-editor-key {
+.settings-object-editor-key {
   flex: 1;
   min-width: 80px;
   font-size: var(--font-size-sm); /* E5.8 Phase 12 #174：key 12→sm */
@@ -26,13 +26,13 @@
   height: calc(24px * var(--ui-scale)); /* E5.8 Phase 12 #174：输入行容器乘 scale（§三.3） */
 }
 
-.object-editor-colon {
+.settings-object-editor-colon {
   font-size: var(--font-size-sm); /* E5.8 Phase 12 #174：colon 12→sm */
   color: var(--text-muted);
   flex-shrink: 0;
 }
 
-.object-editor-toggle {
+.settings-object-editor-toggle {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -49,21 +49,21 @@
   transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
 }
 
-.object-editor-toggle:hover {
+.settings-object-editor-toggle:hover {
   background: var(--hover-overlay);
   color: var(--text-primary);
 }
 
-.object-editor-toggle--on {
+.settings-object-editor-toggle--on {
   color: var(--accent);
   border-color: var(--accent);
 }
 
-.object-editor-toggle--on:hover {
+.settings-object-editor-toggle--on:hover {
   color: var(--accent);
 }
 
-.object-editor-value {
+.settings-object-editor-value {
   flex: 1;
   min-width: 60px;
   font-size: var(--font-size-sm); /* E5.8 Phase 12 #174：value 12→sm */
@@ -71,7 +71,7 @@
   height: calc(24px * var(--ui-scale)); /* E5.8 Phase 12 #174：输入行容器乘 scale */
 }
 
-.object-editor-delete {
+.settings-object-editor-delete {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -88,12 +88,12 @@
   transition: color 150ms ease, background 150ms ease;
 }
 
-.object-editor-delete:hover {
+.settings-object-editor-delete:hover {
   color: var(--error);
   background: var(--hover-overlay);
 }
 
-.object-editor-add {
+.settings-object-editor-add {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -107,7 +107,7 @@
   transition: color 150ms ease, border-color 150ms ease;
 }
 
-.object-editor-add:hover {
+.settings-object-editor-add:hover {
   color: var(--text-primary);
   border-color: var(--accent);
 }

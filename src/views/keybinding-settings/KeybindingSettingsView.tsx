@@ -32,11 +32,11 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
   };
 
   return (
-    <div className="keybindings-view">
-      <div className="keybindings-search-bar">
-        <span className="codicon codicon-search keybindings-search-icon" />
+    <div className="settings-keybindings-view">
+      <div className="settings-keybindings-search-bar">
+        <span className="codicon codicon-search settings-keybindings-search-icon" />
         <input
-          className="keybindings-search-input"
+          className="settings-keybindings-search-input"
           type="text"
           placeholder={t("搜索快捷键")}
           value={search}
@@ -44,15 +44,15 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
         />
       </div>
 
-      <div className="keybindings-table">
-        <div className="keybindings-header">
+      <div className="settings-keybindings-table">
+        <div className="settings-keybindings-header">
           <span>{t("命令")}</span>
           <span>{t("快捷键")}</span>
           <span>{t("来源")}</span>
           <span>{t("when 条件")}</span>
         </div>
         {rows.length === 0 ? (
-          <div className="keybindings-empty">{t("无匹配快捷键")}</div>
+          <div className="settings-keybindings-empty">{t("无匹配快捷键")}</div>
         ) : (
           rows.map((row) => {
             const isEditing = editingRow?.command === row.command;
@@ -60,27 +60,27 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
               <div
                 key={row.command}
                 ref={isEditing ? editRowRef : undefined}
-                className={`keybindings-row ${row._conflict ? "conflict" : ""} ${isEditing ? "editing" : ""}`}
+                className={`settings-keybindings-row ${row._conflict ? "conflict" : ""} ${isEditing ? "editing" : ""}`}
                 onDoubleClick={isEditing ? undefined : () => { startEdit(row); splitChord(row); }}
               >
-                <div className="keybindings-col-command">
+                <div className="settings-keybindings-col-command">
                   <div>{t(row.title)}</div>
-                  <div className="keybindings-col-command-id">{row.command}</div>
+                  <div className="settings-keybindings-col-command-id">{row.command}</div>
                 </div>
-                <div className="keybindings-col-key-cell">
+                <div className="settings-keybindings-col-key-cell">
                   {isEditing ? (
                     <InlineChordEditor editor={editor} />
                   ) : row.key === "—" ? (
-                    <span className="keybindings-col-key-none">{row.key}</span>
+                    <span className="settings-keybindings-col-key-none">{row.key}</span>
                   ) : (
-                    <span className={`keybindings-col-key ${row._conflict ? "conflict-key" : ""}`}>
+                    <span className={`settings-keybindings-col-key ${row._conflict ? "conflict-key" : ""}`}>
                       {row.key}
                     </span>
                   )}
                   {/* E3f #59-G：自定义过（source=user）的行显示重置齿轮 */}
                   {!isEditing && row.source === "user" && (
                     <button
-                      className="keybindings-row-gear"
+                      className="settings-keybindings-row-gear"
                       title={t("重置为默认")}
                       onClick={(e) => { e.stopPropagation(); handleResetDefault(row); }}
                     >
@@ -88,8 +88,8 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
                     </button>
                   )}
                 </div>
-                <div className="keybindings-col-source">{sourceLabel(row.source)}</div>
-                <div className="keybindings-col-when">{row.when || "—"}</div>
+                <div className="settings-keybindings-col-source">{sourceLabel(row.source)}</div>
+                <div className="settings-keybindings-col-when">{row.when || "—"}</div>
               </div>
             );
           })

@@ -1,5 +1,14 @@
 # 更新日志
 
+## v1.0.11（2026-09-15）
+
+- **本插件 28 个自有 CSS 类名全部带上 `settings-` 前缀**（件 2「插件前缀不变量」）。起因见 v1.0.9：一个视图里同时装着宿主 CSS ＋ 共享组件 CSS ＋ 所有已加载插件的 CSS，**裸类名就是全局标识符**——一方「定义」、他方「渲染」，两条规则落到同一个元素上，不报错、只是长得不对。v1.0.9 修的是共享组件那一侧（`.badge` 撞车），这一版把插件自己这一侧清干净。
+- 改名形状是**叠加**（在原名前插入 `settings-`，不改词干）：`object-editor-row` → `settings-object-editor-row`、`keybindings-view` → `settings-keybindings-view`……**逐字节证明 = 原文件 ＋ 只插入前缀**（83 处站点 / 7 个文件，剥掉前缀后与上一版逐字节相同）⇒ 零视觉变化。
+- 另有 **2 处只存在于渲染点的类名**一并归位：`keybindings-col-key-cell` → `settings-keybindings-col-key-cell`、`text-muted` → `settings-text-muted`。**审计尺子看不见它们**（它扫的是 CSS 定义点，这两个类在全仓没有任何 CSS 规则），手扫渲染点才抖出来。
+  - ⚠️ 顺带发现：`text-muted` 是**死类**——它指望的 `.text-muted` 规则在宿主与共享组件里都不存在（宿主的 `--text-muted` 是 CSS **变量**不是类）。⇒ 配置里遇到未知类型的值（`renderControl` 的 default 分支）渲染出来是普通文字色，不是弱化色。这是**改名前就有的老账**，且修它要动视觉（硬约束 16 的设计 skill 前置），本版只把名字归位、**不改外观**。
+- 保留名照旧不碰：`className="input"` 是宿主登记表里的全局工具类，属借用不是自有名；`confirm`/`cancel` 是复合状态类（CSS 里本就是 `.settings-keybindings-inline-btn.confirm`）。
+- 无功能变化
+
 ## v1.0.10（2026-09-15）
 
 - **适配 `@linkdesk/ui` 0.2.0 的类名归一**：上一版修的 `.badge` 撞车是「**裸类名在宿主 + 共享组件 + 所有已加载插件同一张样式表里是全局标识符**」的一个特例；0.2.0 把共享组件剩下的 8 个裸类名（`badge` / `button` / `combobox` / `mdv` / `selectbox` / `sle` / `slider` / `toggle`）一次性收进 `ldk-` 命名空间，从概率上消掉这一类手滑。本插件对共享滑杆的一处 scoped 调优同步改名：`.settings-slider-control .slider` → `.settings-slider-control .ldk-slider`

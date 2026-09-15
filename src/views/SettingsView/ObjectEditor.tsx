@@ -49,20 +49,20 @@ function ObjectEditor({ value, onChange }: {
   };
 
   return (
-    <div className="object-editor">
+    <div className="settings-object-editor">
       {entries.map(([k, v]) => (
-        <div key={k} className="object-editor-row">
+        <div key={k} className="settings-object-editor-row">
           <input
-            className="input object-editor-key"
+            className="input settings-object-editor-key"
             type="text"
             defaultValue={k}
             onBlur={(e) => handleKeyChange(k, e.target.value)}
             spellCheck={false}
           />
-          <span className="object-editor-colon">:</span>
+          <span className="settings-object-editor-colon">:</span>
           {typeof v === "boolean" ? (
             <button
-              className={`object-editor-toggle ${v ? "object-editor-toggle--on" : ""}`}
+              className={`settings-object-editor-toggle ${v ? "settings-object-editor-toggle--on" : ""}`}
               onClick={() => handleToggle(k, !v)}
               title={v ? t("已启用") : t("已禁用")}
             >
@@ -70,14 +70,14 @@ function ObjectEditor({ value, onChange }: {
             </button>
           ) : typeof v === "number" ? (
             <input
-              className="input object-editor-value"
+              className="input settings-object-editor-value"
               type="number"
               defaultValue={v}
               onBlur={(e) => onChange({ ...value, [k]: Number(e.target.value) })}
             />
           ) : (
             <input
-              className="input object-editor-value"
+              className="input settings-object-editor-value"
               type="text"
               defaultValue={String(v)}
               onBlur={(e) => handleValueChange(k, e.target.value)}
@@ -85,7 +85,7 @@ function ObjectEditor({ value, onChange }: {
             />
           )}
           <button
-            className="object-editor-delete"
+            className="settings-object-editor-delete"
             onClick={() => handleDelete(k)}
             title={t("删除")}
           >
@@ -93,7 +93,7 @@ function ObjectEditor({ value, onChange }: {
           </button>
         </div>
       ))}
-      <button className="object-editor-add" onClick={handleAdd}>
+      <button className="settings-object-editor-add" onClick={handleAdd}>
         <span className="codicon codicon-add" />
         <span>{t("添加模式")}</span>
       </button>
