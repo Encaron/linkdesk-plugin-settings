@@ -65,7 +65,7 @@ function renderControl(
             onClick={onColorSwatchClick}
           />
           <input
-            className="input"
+            className="ldk-input"
             type="text"
             value={String(val)}
             onChange={(e) => onChange(e.target.value)}
@@ -211,7 +211,7 @@ function renderControl(
               onClick={onColorSwatchClick}
             />
             <input
-              className="input"
+              className="ldk-input"
               type="text"
               value={String(val)}
               onChange={(e) => onChange(e.target.value)}
@@ -221,7 +221,7 @@ function renderControl(
       }
       return (
         <input
-          className="input"
+          className="ldk-input"
           type="text"
           value={String(val)}
           onChange={(e) => onChange(e.target.value)}
@@ -261,7 +261,9 @@ function renderControl(
     }
 
     default:
-      return <span className="settings-text-muted">{String(val)}</span>;
+      // E6#109k-a①（1.18 裁决，搭 1.17 的车落地）：原 className="settings-text-muted" 已摘——
+      //   该名字全仓零 CSS 规则（宿主只有同名的 --text-muted 变量），一直是空转；摘掉后视觉零变化。
+      return <span>{String(val)}</span>;
   }
 }
 

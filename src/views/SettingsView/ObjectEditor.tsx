@@ -53,7 +53,7 @@ function ObjectEditor({ value, onChange }: {
       {entries.map(([k, v]) => (
         <div key={k} className="settings-object-editor-row">
           <input
-            className="input settings-object-editor-key"
+            className="ldk-input settings-object-editor-key"
             type="text"
             defaultValue={k}
             onBlur={(e) => handleKeyChange(k, e.target.value)}
@@ -70,14 +70,14 @@ function ObjectEditor({ value, onChange }: {
             </button>
           ) : typeof v === "number" ? (
             <input
-              className="input settings-object-editor-value"
+              className="ldk-input settings-object-editor-value"
               type="number"
               defaultValue={v}
               onBlur={(e) => onChange({ ...value, [k]: Number(e.target.value) })}
             />
           ) : (
             <input
-              className="input settings-object-editor-value"
+              className="ldk-input settings-object-editor-value"
               type="text"
               defaultValue={String(v)}
               onBlur={(e) => handleValueChange(k, e.target.value)}
