@@ -1,5 +1,13 @@
 # 更新日志
 
+## v1.0.13（2026-09-16）
+
+- **补上 v1.0.12 漏掉的一半：随包依赖也升到 `@linkdesk/ui@0.2.1`。** v1.0.12 只改了本插件自己的 6 处渲染点，但**打进包里的 `@linkdesk/ui` 还是 `0.2.0`**——那一版的 `NumberInput` / `FilePathInput` 渲染的仍是 `className="input"` / `"input number-input-field"`（解包 v1.0.12 实测：`index.bundle.js` 与 `views/SettingsView.bundle.js` **各 2 处**）。⇒ **对象编辑器的值输入框（`FilePathInput`）与 `renderControl` 的数字输入框（`NumberInput`）在新壳上仍会丢样式**——底色 / 边框 / 圆角 / 内边距全没，看着像浏览器原生输入框。**它们不在本插件源码里，所以 v1.0.12 的 grep 扫不到。**
+- **根因是依赖而不是代码**：`@linkdesk/ui` 是共享组件的 npm 分发（真源在壳仓 `src/components/shared`），`.input → .ldk-input` 那次改名**同时动的是这根轴**（`0.2.0 → 0.2.1`，两版差异经解包比对 = **只有这一个类名**：CSS 一个类令牌 ＋ JS 两处 `className`）。本仓 lock 把 `0.2.0` 钉着，`npm install` 只要满足 `^0.2.0` 区间就**不会动** ⇒ 必须显式 `npm update @linkdesk/ui`。
+- 本版 = **升依赖 ＋ 重打一次包**，插件源码零改动（除版本号与 `AGENTS.md` 的版本行）。
+- 复核判据（解包真产物，`npm run check` 看不见它）：扫全部 `className` 字面量 ⇒ **裸 `input` 零命中**；`ldk-input` 由 6 处升至 **8 处**（自有 6 ＋ `@linkdesk/ui` 的 2）；CSS 侧裸 `.input` 选择器 2 → **0**、`.ldk-input` 0 → **2**。
+- ⚠️ **教训（写给出包的人）**：宿主共享组件改名时，「插件源码 grep 归零」**不等于产物干净**——还要问一句「这个 repo 里有没有别人的 dist 被我打进去了」。
+
 ## v1.0.12（2026-09-16）
 
 - **适配宿主 v0.2.0 的输入框工具类改名**：宿主 `src/index.css` 里那个输入框工具类 `.input` 改名为 **`.ldk-input`**（它是全软件最后一个不带前缀的宿主公共名，宿主侧一次把规矩收干净：**软件提供的样式名一律以 `ldk-` 开头**）。本插件 **6 处渲染点**同步改：对象编辑器的键/值输入框 3 处 ＋ `renderControl` 的文字/数字/颜色三处。
