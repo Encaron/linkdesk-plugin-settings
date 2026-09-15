@@ -1,24 +1,30 @@
 {
   "version": "1",
-  "updatedAt": "2026-09-14T23:40:53.068Z",
+  "updatedAt": "2026-09-15T06:17:13.734Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.9",
+      "version": "1.0.10",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.9/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.10/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.9/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.10/resources/icon.svg",
       "marketIconSource": "url",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.9/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.9/settings.linkdesk-plugin",
-      "size": 325897,
-      "publishedAt": "2026-09-14T23:40:53.068Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.10/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.10/settings.linkdesk-plugin",
+      "size": 326420,
+      "publishedAt": "2026-09-15T06:17:13.734Z",
       "versions": [
+        {
+          "version": "1.0.10",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.10/settings.linkdesk-plugin",
+          "publishedAt": "2026-09-15T06:17:13.734Z",
+          "changelog": "- **适配 `@linkdesk/ui` 0.2.0 的类名归一**：上一版修的 `.badge` 撞车是「**裸类名在宿主 + 共享组件 + 所有已加载插件同一张样式表里是全局标识符**」的一个特例；0.2.0 把共享组件剩下的 8 个裸类名（`badge` / `button` / `combobox` / `mdv` / `selectbox` / `sle` / `slider` / `toggle`）一次性收进 `ldk-` 命名空间，从概率上消掉这一类手滑。本插件对共享滑杆的一处 scoped 调优同步改名：`.settings-slider-control .slider` → `.settings-slider-control .ldk-slider`\n- 这一行不改就是**静默失配**——滑杆「占满整行」的那条 flex 规则不再命中，滑杆会缩回组件自身宽度，没有报错\n- `@linkdesk/ui` 升到 `^0.2.0`（`^0.1.7` → `^0.2.0`）。**必须手动放宽区间**：0.x 的 caret 只在上界之内挑版本，`^0.1.7` 永远够不到 0.2.0\n- 无功能变化"
+        },
         {
           "version": "1.0.9",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.9/settings.linkdesk-plugin",
