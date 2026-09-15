@@ -143,7 +143,7 @@
   width: 100%;
 }
 
-.settings-slider-control .slider {
+.settings-slider-control .ldk-slider {
   flex: 1;
   min-width: 0;
 }
