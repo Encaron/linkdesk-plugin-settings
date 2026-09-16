@@ -1,5 +1,14 @@
 # 更新日志
 
+## v1.0.14（2026-09-16）
+
+- **适配宿主 E6#109l-b 的共享组件类名归一（`@linkdesk/ui` 0.3.0）**：共享组件余下的 52 个类名一律收进 `ldk-` 前缀——`colorpicker-*` / `ctx-*` / `form-row` / `inline-input*` / `number-input*` / `segmented-radio*` / `sidebar-section*` / `theme-picker*` / `theme-card` / `theme-preview` / `.tbadge` / `.tname` / `.pv-*`，外加关键帧 `selectbox-in → ldk-selectbox-in`。至此**宿主与共享组件自己定义的类名 100% 是 `ldk-` 开头**（258 ＋ 89 个独立定义，零例外），规则只剩一句、不再有任何登记表。
+- **本仓的源码改动只有 1 处（2 行）**：主题选择器那两张设置行的版式——`.settings-row:has(.theme-picker)` → **`.settings-row:has(.ldk-theme-picker)`**。不改就是**静默失配**：`.settings-row` 不再 `flex-wrap`、`.settings-row-control` 不再占满整行，主题卡片网格会被挤在半行里，**不报错**。
+- **依赖**：`@linkdesk/ui` `^0.2.0 → ^0.3.0`（**必须手动放宽区间**——0.x 的 caret 只在上界之内挑版本，`^0.2.0` 永远够不到 0.3.0）＋ 随包 `@linkdesk/plugin-sdk` `0.1.23 → 0.1.25`。此外无任何逻辑改动。
+- **解包复核（真产物——`npm run verify` 与壳仓 `npm run check` 都看不见这一层）**：解开本版的 `settings.linkdesk-plugin` ⇒ `index.bundle.css` **旧名 0 命中 / 新名 44 命中**；两个 `*.bundle.js` **旧名 0 / 新名 39**；`@keyframes ldk-selectbox-in` **定义与引用同在**（零悬空）；`:has(.theme-picker)` 残留 **false**、`:has(.ldk-theme-picker)` **true**。
+- `package.json` 的 `version` 顺带对齐到 `1.0.14`（此前停在 1.0.11、与 `plugin.json` 长期不同步——发布链路读的是 `plugin.json`，这次一并抹平）。
+- 无功能变化、无视觉变化（名字换了、规则落在同一个元素上）。
+
 ## v1.0.13（2026-09-16）
 
 - **补上 v1.0.12 漏掉的一半：随包依赖也升到 `@linkdesk/ui@0.2.1`。** v1.0.12 只改了本插件自己的 6 处渲染点，但**打进包里的 `@linkdesk/ui` 还是 `0.2.0`**——那一版的 `NumberInput` / `FilePathInput` 渲染的仍是 `className="input"` / `"input number-input-field"`（解包 v1.0.12 实测：`index.bundle.js` 与 `views/SettingsView.bundle.js` **各 2 处**）。⇒ **对象编辑器的值输入框（`FilePathInput`）与 `renderControl` 的数字输入框（`NumberInput`）在新壳上仍会丢样式**——底色 / 边框 / 圆角 / 内边距全没，看着像浏览器原生输入框。**它们不在本插件源码里，所以 v1.0.12 的 grep 扫不到。**
