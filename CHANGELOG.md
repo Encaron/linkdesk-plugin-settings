@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.0.15（2026-09-19）
+
+- **换轨到「壳池集中供给」（E6#125 · L9 第 9.4 轮）**：`@linkdesk/ui` 不再编译进本插件 bundle——构建时 external，运行时由壳池供给同一份实例。源码 `import` 一行未改，只把依赖从 `^0.3.0` 换到重锚号 `^0.2.13`（`@linkdesk/ui` 自此与壳同号锁步）＋ `@linkdesk/plugin-sdk` `^0.1.19 → ^0.1.41`，重新构建发布。
+- **读数（产物前后对照）**：包 **333,374 → 39,780 字节（−88.1%）**；根 bundle JS **607,777 → 45,114 字节**，CSS **→ 28,384 字节**。产物里组件实现痕迹（`data-overlay-wrapper` / `overlay-root` / `ldk-badge` / `ldk-button` / `ldk-form-row` / `ldk-toggle` / `ldk-colorpicker`）grep **零命中**；只剩 `from "@linkdesk/ui"` 裸 specifier 交给壳解析。
+- **本仓自己借用的宿主类名照旧生效**：`className="ldk-input"` 与 `.ldk-slider` / `.ldk-theme-picker` 选择器没动——那些类名的**定义**现在由壳池全局供给（过去靠自带一份），写法不变、结果不变。
+
 ## v1.0.14（2026-09-16）
 
 - **适配宿主 E6#109l-b 的共享组件类名归一（`@linkdesk/ui` 0.3.0）**：共享组件余下的 52 个类名一律收进 `ldk-` 前缀——`colorpicker-*` / `ctx-*` / `form-row` / `inline-input*` / `number-input*` / `segmented-radio*` / `sidebar-section*` / `theme-picker*` / `theme-card` / `theme-preview` / `.tbadge` / `.tname` / `.pv-*`，外加关键帧 `selectbox-in → ldk-selectbox-in`。至此**宿主与共享组件自己定义的类名 100% 是 `ldk-` 开头**（258 ＋ 89 个独立定义，零例外），规则只剩一句、不再有任何登记表。
