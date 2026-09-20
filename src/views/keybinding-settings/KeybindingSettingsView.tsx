@@ -67,7 +67,7 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
                   <div>{t(row.title)}</div>
                   <div className="settings-keybindings-col-command-id">{row.command}</div>
                 </div>
-                <div className="settings-keybindings-col-key-cell">
+                <div>
                   {isEditing ? (
                     <InlineChordEditor editor={editor} />
                   ) : row.key === "—" ? (

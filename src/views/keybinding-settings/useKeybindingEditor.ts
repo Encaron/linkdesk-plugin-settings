@@ -93,6 +93,7 @@ export function useKeybindingEditor(allKeybindings: KeybindingBinding[]) {
         setSecondKey(keyString);
       }
     };
+    // eslint-disable-next-line linkdesk/no-global-key-listener -- 快捷键录制器：capture=true 要在输入被吞前抓到原始键（容器 onKeyDown 收不到被吞输入），正当形态豁免（E6#137 逐处裁决）
     window.addEventListener("keydown", handler, true);
     return () => window.removeEventListener("keydown", handler, true);
   }, [editingRow, firstKey, activeField, cancelEdit, confirmEdit]);
