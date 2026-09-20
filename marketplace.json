@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-09-19T12:45:57.903Z",
+  "updatedAt": "2026-09-20T00:08:24.822Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.17",
+      "version": "1.0.18",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.17/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.18/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.17/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.18/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.13",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.17/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.17/settings.linkdesk-plugin",
-      "size": 40652,
-      "publishedAt": "2026-09-19T12:45:57.903Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.18/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.18/settings.linkdesk-plugin",
+      "size": 40934,
+      "publishedAt": "2026-09-20T00:08:24.822Z",
       "versions": [
+        {
+          "version": "1.0.18",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.18/settings.linkdesk-plugin",
+          "publishedAt": "2026-09-20T00:08:24.822Z",
+          "changelog": "- **删一处死类名引用**（E6#136 普查裁决）：`settings-keybindings-col-key-cell` 在仓内 CSS 零定义、无消费——SDK 新腿（0.1.44 自有类名引用悬空判据）指出它是死引用。删掉后渲染结果零变化。\n- **快捷键录制器 window keydown 补豁免理由注释**（E6#137 普查裁决）：录制器要 capture=true 在输入被吞前抓原始键，容器 onKeyDown 收不到被吞输入——正当形态豁免，判据本身无白名单，按腿的豁免出口加 disable 注释写明理由，行为零变化。"
+        },
         {
           "version": "1.0.17",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.17/settings.linkdesk-plugin",
