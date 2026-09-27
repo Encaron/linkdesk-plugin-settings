@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-09-27T07:10:25.265Z",
+  "updatedAt": "2026-09-27T16:41:35.469Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.19",
+      "version": "1.0.20",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.19/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.20/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.19/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.20/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.20",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.19/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.19/settings.linkdesk-plugin",
-      "size": 41620,
-      "publishedAt": "2026-09-27T07:10:25.265Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.20/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.20/settings.linkdesk-plugin",
+      "size": 42475,
+      "publishedAt": "2026-09-27T16:41:35.469Z",
       "versions": [
+        {
+          "version": "1.0.20",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.20/settings.linkdesk-plugin",
+          "publishedAt": "2026-09-27T16:41:35.469Z",
+          "changelog": "- **新增「打开方式」设置项（首开形态选择）**：`floatingPanel` 补 `formKey: \"settings.openForm\"`，连同本仓**第一个** `contributes.configuration`（类名「设置插件」＋分组「打开方式」）——**第一次**打开设置时用悬浮面板还是标签页，交给用户选（默认 `floatingPanel` = 今日行为，不动就没变化）。\n- **分工**：插件只声明「想怎么开」，**壳决定并执行**（新壳读 formKey → 开标签页或弹面板）；声明制接缝在本仓零执行代码。\n- **只管第一次打开**：打开之后的形态互转（面板右上角「在主窗口中打开」／标签页右键「在悬浮面板中打开」）走原有逻辑，本版一行没碰。\n- **`@linkdesk/plugin-sdk` ^0.1.49 → ^0.1.50**：新 schema 才认 formKey（旧 schema 的 `floatingPanel` 是 `additionalProperties: false` ⇒ 声明了会被判不合法；升级前本仓 `npm run validate` 实测报「不符合 schema 约束 additionalProperties」）。\n- **`minAppVersion` 维持 0.2.20（有意不升）**：新字段在旧壳上被忽略（形态回落为面板），**行为不变、不崩**——不像 1.0.19 的 data-hint（旧壳上「没提示」比原生 tooltip 更糟）。带本接缝的壳版本尚未发布，此刻没有可填的版本号；等壳发版确定后随批提到它。"
+        },
         {
           "version": "1.0.19",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.19/settings.linkdesk-plugin",
