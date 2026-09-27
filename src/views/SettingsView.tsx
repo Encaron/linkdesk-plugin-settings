@@ -164,7 +164,7 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
             />
             <button
               className="settings-json-btn"
-              title={t("打开设置 (JSON)")}
+              data-hint={t("打开设置 (JSON)")}
               onClick={async () => {
                 try {
                   // E5.8#41.14：getFilePath("settings") 消除——linkdesk.path 自包含解析 settings.json 真实落盘路径

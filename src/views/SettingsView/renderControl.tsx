@@ -61,7 +61,7 @@ function renderControl(
           <div
             className="settings-color-swatch"
             style={{ background: String(val) }}
-            title={String(val)}
+            data-hint={String(val)} data-hint-delay="0"
             onClick={onColorSwatchClick}
           />
           <input
@@ -207,7 +207,7 @@ function renderControl(
             <div
               className="settings-color-swatch"
               style={{ background: String(val) }}
-              title={String(val)}
+              data-hint={String(val)} data-hint-delay="0"
               onClick={onColorSwatchClick}
             />
             <input

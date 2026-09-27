@@ -68,7 +68,7 @@ function SettingRow({
           {badge === "user" || badge === "mix" ? (
             <span
               className={`settings-source-badge settings-source-badge--${badge}`}
-              title={t(SOURCE_BADGE_UI[badge].labelKey)}
+              data-hint={t(SOURCE_BADGE_UI[badge].labelKey)}
             >
               <span className={`codicon ${SOURCE_BADGE_UI[badge].glyph}`} aria-hidden="true" />
               {t(SOURCE_BADGE_UI[badge].labelKey)}
@@ -87,7 +87,7 @@ function SettingRow({
             放容器内与控件同一条垂直中心线（容器 align-items:center）——贴住控件而非浮在行中间；
             字体行「生效：‹首族名›」/ 玻璃色行「生效：‹rgba› + 色块」——播种改空后补回「实际生效成什么」可见性 */}
         {effectiveBadge && (
-          <span className="settings-effective-badge" title={t("当前跟随主题实际生效的值")}>
+          <span className="settings-effective-badge" data-hint={t("当前跟随主题实际生效的值")}>
             <span className="settings-effective-badge-label">{t("生效：")}</span>
             {effectiveBadge.color && (
               <span
@@ -104,7 +104,7 @@ function SettingRow({
       <button
         ref={gearRef}
         className="settings-row-gear"
-        title={t("更多操作")}
+        data-hint={t("更多操作")} aria-label={t("更多操作")}
         onClick={handleGearClick}
       >
         <span className="codicon codicon-gear" />

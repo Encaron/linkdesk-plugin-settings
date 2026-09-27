@@ -64,7 +64,7 @@ function ObjectEditor({ value, onChange }: {
             <button
               className={`settings-object-editor-toggle ${v ? "settings-object-editor-toggle--on" : ""}`}
               onClick={() => handleToggle(k, !v)}
-              title={v ? t("已启用") : t("已禁用")}
+              data-hint={v ? t("已启用") : t("已禁用")} aria-label={v ? t("已启用") : t("已禁用")}
             >
               <span className={`codicon ${v ? "codicon-check" : "codicon-close"}`} />
             </button>
@@ -87,7 +87,7 @@ function ObjectEditor({ value, onChange }: {
           <button
             className="settings-object-editor-delete"
             onClick={() => handleDelete(k)}
-            title={t("删除")}
+            data-hint={t("删除")} aria-label={t("删除")}
           >
             <span className="codicon codicon-trash" />
           </button>

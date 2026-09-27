@@ -57,7 +57,7 @@ export function BackgroundImagePicker({
           {t("清除图片")}
         </Button>
       )}
-      <span className="settings-image-path" title={display}>
+      <span className="settings-image-path" data-hint={display} data-hint-delay="0">
         {display}
       </span>
     </div>

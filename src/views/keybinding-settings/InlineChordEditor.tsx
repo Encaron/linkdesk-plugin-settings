@@ -30,19 +30,19 @@ export default function InlineChordEditor({ editor }: { editor: KeybindingEditor
       </span>
       {/* 冲突提示 */}
       {(secondConflict?.length ?? 0) > 0 && (
-        <span className="settings-keybindings-inline-conflict" title={secondConflict?.map(b => b.command).join(t("、"))}>
+        <span className="settings-keybindings-inline-conflict" data-hint={secondConflict?.map(b => b.command).join(t("、"))}>
           ⚠
         </span>
       )}
       {(!secondKey || !secondConflict) && firstConflict && firstConflict.length > 0 && (
-        <span className="settings-keybindings-inline-conflict" title={firstConflict.map(b => b.command).join(t("、"))}>
+        <span className="settings-keybindings-inline-conflict" data-hint={firstConflict.map(b => b.command).join(t("、"))}>
           ⚠
         </span>
       )}
-      <button className="settings-keybindings-inline-btn confirm" onClick={confirmEdit} disabled={!firstKey} title={t("确定")}>
+      <button className="settings-keybindings-inline-btn confirm" onClick={confirmEdit} disabled={!firstKey} data-hint={t("确定")} aria-label={t("确定")}>
         <span className="codicon codicon-check" />
       </button>
-      <button className="settings-keybindings-inline-btn cancel" onClick={cancelEdit} title={t("取消")}>
+      <button className="settings-keybindings-inline-btn cancel" onClick={cancelEdit} data-hint={t("取消")} aria-label={t("取消")}>
         <span className="codicon codicon-close" />
       </button>
     </div>

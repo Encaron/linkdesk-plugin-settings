@@ -81,7 +81,7 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
                   {!isEditing && row.source === "user" && (
                     <button
                       className="settings-keybindings-row-gear"
-                      title={t("重置为默认")}
+                      data-hint={t("重置为默认")} aria-label={t("重置为默认")}
                       onClick={(e) => { e.stopPropagation(); handleResetDefault(row); }}
                     >
                       <span className="codicon codicon-gear" />
