@@ -33,6 +33,18 @@
         }
       ]
     },
-    "floatingPanel": { "viewId": "settings" }
+    "floatingPanel": { "viewId": "settings", "formKey": "settings.openForm" },
+    "configuration": {
+      "title": "设置插件",
+      "properties": {
+        "settings.openForm": {
+          "type": "string",
+          "enum": ["floatingPanel", "tab"],
+          "default": "floatingPanel",
+          "group": "打开方式",
+          "description": "打开设置时的形态——floatingPanel 悬浮面板 / tab 标签页（只管第一次打开；打开之后仍可用面板右上角「在主窗口中打开」/ 标签页右键「在悬浮面板中打开」互相转换）"
+        }
+      }
+    }
   }
 }
