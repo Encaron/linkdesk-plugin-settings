@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@linkdesk/plugin-sdk/schemas/plugin.schema.json",
   "pluginId": "settings",
   "name": "设置",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "minAppVersion": "0.2.20",
   "icon": "resources/icon-bar.svg",
   "marketIcon": "resources/icon.svg",
@@ -12,7 +12,10 @@
   "core": true,
   "factoryRole": "settings",
   "entry": "src/index.tsx",
-  "appearsIn": { "iconBar": "bottom", "tabBar": true },
+  "appearsIn": {
+    "iconBar": "bottom",
+    "tabBar": true
+  },
   "tabBehavior": {
     "singleton": true
   },
@@ -33,13 +36,19 @@
         }
       ]
     },
-    "floatingPanel": { "viewId": "settings", "formKey": "settings.openForm" },
+    "floatingPanel": {
+      "viewId": "settings",
+      "formKey": "settings.openForm"
+    },
     "configuration": {
       "title": "设置插件",
       "properties": {
         "settings.openForm": {
           "type": "string",
-          "enum": ["floatingPanel", "tab"],
+          "enum": [
+            "floatingPanel",
+            "tab"
+          ],
           "default": "floatingPanel",
           "group": "打开方式",
           "description": "打开设置时的形态——floatingPanel 悬浮面板 / tab 标签页（只管第一次打开；打开之后仍可用面板右上角「在主窗口中打开」/ 标签页右键「在悬浮面板中打开」互相转换）"
