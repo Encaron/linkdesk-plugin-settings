@@ -1,5 +1,17 @@
 # 更新日志
 
+## v1.0.22（2026-09-28）
+
+- **新增命令 `settings.editKeybinding`（修改快捷键…，M2 `AI#25`）**——把「进入改键编辑态」这条**原本只有鼠标**的动作接进命令面：界面上它只能靠**双击绑定行**（`KeybindingSettingsView.tsx` 的 `onDoubleClick`）。（行内的 ✕／点外部＝取消、Enter＝落地，那几步是编辑态**内**的动作。）
+- **两种调用形**：带 `command`（命令 id）⇒ 直接对那条进编辑态（AI / CLI 一条命令直达）；不带 ⇒ 先弹命令选择器让使用者挑（命令面板给不了参数，但选择器本身**键盘可操作** ⇒ 不用鼠标也能走完全程，条目的 `detail` 顺带显示该命令当前绑定）。两条路都先用壳命令 `workbench.action.openKeybindingsSettings`（`query` = 命令 id）把设置页开出来并切到「快捷键」页、搜索框预填，再写意图。
+- **意图怎么送达视图**：编辑态住在视图里（`useKeybindingEditor` 的 `editingRow`），而命令 handler 不在 React 上下文 ⇒ 新增模块级意图槽 `keybindingEditRequest.ts`——**双通道**（照壳侧 `openKeybindingsSettings` 的 pending + Emitter 先例）：视图在场 → 订阅当场投递；视图不在场 → 存待办，视图挂载时领取（设置页正是命令自己开出来的，请求早于视图）。落进编辑态那一步等**那一行真在表里**（rows 是异步拉的、且受搜索框过滤），不在就继续等。
+- **消费即清 ＋ 时效 30 秒**：意图不是状态，读一次就没了；过期的待办作废——AI 发过请求而用户当时没开设置页，事后自己打开设置页**不该**突然有一行跳进编辑态。两处失败模式（投递丢了／过期没作废）都不报错，故单测逐条钉住。
+- 🔴 **边界：只把那一行切进编辑态**——按键录制与落地仍是人在视图里完成（按新键 → Enter 落地、Esc 取消）。⛔ 不做「AI 代按／代存」的通道：改键是用户的绑定意图（与 M2 `AI#29` 同款口径）。命令读数因此如实写「编辑态已就绪」而不是「已改完」。
+- **注册点在入口顶层**（`src/index.tsx`）而非视图 `useEffect`——无视图时 AI 经 `exec` 打进来靠池的 on-command 激活 `import()` 入口，顶层的副作用才是唯一注册时机；「设置页还没开就让 AI 进改键编辑态」恰恰是本命令要治的场景。
+- **审计读数**：`npm run audit:plugin-commands` 里本仓由「**有视图零命令**」转为 ✅（声明面 1 命令 / 1 视图）——该名单现只剩 marketplace（另一格）。
+- **测试**：新增 `keybindingEditRequest.test.ts`（11 例：待办领取／消费即清／TTL 边界含「刚好等于 TTL」与「过期同样清掉」／后写顶先写／订阅当场投递且不留待办／退订只解自己）＋ `keybindingEditCommand.test.ts`（7 例：注册与 id／`commands` 面缺失返回 0／点名直达并断言壳命令的 `{ query }` 字面量／**三条负控**——命令 id 不存在时「不抛之外什么都没做」即不开页面不写意图、空白 command 视同没给、选择器取消时不写意图不开页面）。
+- **读数**：`vitest run` 12 文件 87 例全绿；`npm run verify` 六段全过（命令归属 声明面 1 / 运行时 0 零偏离；声明自洽含 floatingPanel 三向；纯逻辑单元 9 个全部有测试）；`npx tsc --noEmit` 零错误。无既有行为变化。
+
 ## v1.0.21（2026-09-28）
 
 - **新增两种通用渲染能力（M4 `AI#38.12`，P-2/P-3 拍板 A）**：`renderHint: "readonly"` 只读状态行（值来自 `statusCommand` 指向的壳命令，运行期数据源 ⛔ 不写死）＋ 分节副标题（contribution 级 `subtitle` / `groupDescriptions`）——渲染原语 = `@linkdesk/ui` 0.2.22 的 `ReadOnlyText` / `SectionSubtitle`（壳统一供给，任何插件可 import）。

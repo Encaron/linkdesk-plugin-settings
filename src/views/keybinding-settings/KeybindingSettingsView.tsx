@@ -9,11 +9,13 @@
  *   编辑单元格 → `InlineChordEditor.tsx`、类型 → `types.ts`（子件留本夹内，不搬去 SettingsView/）。
  */
 
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import InlineChordEditor from "./InlineChordEditor";
 import { useKeybindingEditor } from "./useKeybindingEditor";
 import { useKeybindingReset } from "./useKeybindingReset";
 import { useKeybindingRows } from "./useKeybindingRows";
+import { consumeKeybindingEdit, subscribeKeybindingEdit } from "./keybindingEditRequest";
 import type { KeybindingSettingsViewProps } from "./types";
 import "./KeybindingSettingsView.css";
 
@@ -23,6 +25,24 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
   const editor = useKeybindingEditor(allKeybindings);
   const handleResetDefault = useKeybindingReset();
   const { editingRow, editRowRef, startEdit, splitChord } = editor;
+
+  // ── M2 AI#25：命令侧的「改这条」意图 → 同一个编辑态（与双击**同一条路**）──
+  // 双通道：挂载时领待办（设置页由命令侧打开时，请求早于本视图），在场时走订阅当场收。
+  const [editRequest, setEditRequest] = useState<string | null>(null);
+  useEffect(() => {
+    const pending = consumeKeybindingEdit();
+    if (pending) setEditRequest(pending);
+    return subscribeKeybindingEdit((command) => setEditRequest(command));
+  }, []);
+  // 落进编辑态要等**那一行真在表里**（rows 是异步拉的，且受搜索框过滤）——不在就等 rows 变
+  useEffect(() => {
+    if (!editRequest) return;
+    const row = rows.find((r) => r.command === editRequest);
+    if (!row) return;
+    setEditRequest(null);
+    startEdit(row);
+    splitChord(row);
+  }, [editRequest, rows, startEdit, splitChord]);
 
   const sourceLabel = (s: string) => {
     if (s === "user") return t("用户");

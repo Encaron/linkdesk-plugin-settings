@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@linkdesk/plugin-sdk/schemas/plugin.schema.json",
   "pluginId": "settings",
   "name": "设置",
-  "version": "1.0.21",
+  "version": "1.0.22",
   "minAppVersion": "0.2.22",
   "icon": "resources/icon-bar.svg",
   "marketIcon": "resources/icon.svg",
@@ -40,6 +40,21 @@
       "viewId": "settings",
       "formKey": "settings.openForm"
     },
+    "commands": [
+      {
+        "id": "settings.editKeybinding",
+        "title": "修改快捷键…",
+        "description": "进入某条命令的快捷键编辑态（等于在「快捷键」页双击那一行）：先把设置页开出来并切到快捷键页，再按 command 指定要改哪条——不指定则弹命令选择器让使用者挑。⚠️ 只把那一行切进编辑态，新按键仍由使用者按（Enter 落地、Esc 取消）——不做「代按代存」。",
+        "params": [
+          {
+            "name": "args",
+            "type": "object",
+            "required": false,
+            "description": "{ command: string }——要改的命令 id（如 file-tree.openFile）；省略则弹选择器"
+          }
+        ]
+      }
+    ],
     "configuration": {
       "title": "设置插件",
       "properties": {
