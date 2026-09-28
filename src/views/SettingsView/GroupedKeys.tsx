@@ -15,12 +15,14 @@
  */
 
 import { useTranslation } from "react-i18next";
+import { SectionSubtitle } from "@linkdesk/ui"; // M4 AI#38.12：分节副标题件（P-3 拍板 A）
 import SettingRow from "./SettingRow";
 import { groupSettingsKeys } from "./grouping";
 import type { ConfigProperty } from "./types";
 
 export default function GroupedKeys({
   keys,
+  groupDescriptions,
   allProps,
   appearanceMode,
   userOverrides,
@@ -29,6 +31,7 @@ export default function GroupedKeys({
   onChange,
 }: {
   keys: string[];
+  groupDescriptions?: Record<string, string>;
   allProps: Record<string, ConfigProperty>;
   /** 外观主开关当前值（未加载时为 undefined——空桶过滤只在它等于 dependsOn.value 时放行） */
   appearanceMode: string | undefined;
@@ -48,6 +51,10 @@ export default function GroupedKeys({
     return (
       <div key={bucket.group || `flat-${bucket.keys[0]}`} className="settings-subsection">
         {bucket.group && <h3 className="settings-subsection-title">{t(bucket.group)}</h3>}
+        {/* M4 AI#38.12（P-3）：分节副标题——声明即渲染，一行小字零交互 */}
+        {bucket.group && groupDescriptions?.[bucket.group] && (
+          <SectionSubtitle>{t(groupDescriptions[bucket.group])}</SectionSubtitle>
+        )}
         {visible.map((key) => (
           <SettingRow
             key={key}

@@ -32,7 +32,14 @@ export async function loadSettingsData(t: (key: string) => string): Promise<{
   for (const [pluginId, contrib] of contributions) {
     const keys = Object.keys(contrib.properties ?? {});
     if (keys.length > 0) {
-      result.push({ pluginId, title: t(contrib.title ?? pluginId), keys });
+      // M4 AI#38.12：副标题两字段随行（contribution 级可选；未声明 = undefined，零侵入）
+      result.push({
+        pluginId,
+        title: t(contrib.title ?? pluginId),
+        subtitle: contrib.subtitle,
+        groupDescriptions: contrib.groupDescriptions,
+        keys,
+      });
     }
   }
 

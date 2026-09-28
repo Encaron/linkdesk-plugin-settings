@@ -20,7 +20,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { InlineInput } from "@linkdesk/ui";
+import { InlineInput, SectionSubtitle } from "@linkdesk/ui"; // M4 AI#38.12：分节副标题件（P-3）
 import KeybindingSettingsView from "./keybinding-settings/KeybindingSettingsView";
 import useSettingsEvents from "./SettingsView/useSettingsEvents";
 import { useUserOverridesIpc } from "./hooks/useUserOverridesIpc";
@@ -243,9 +243,12 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
                     </div>
                   )}
                   <h2 className="settings-group-title">{activeGroup.title}</h2>
+                  {/* M4 AI#38.12（P-3 拍板 A）：分区副标题——contribution 声明即渲染（未声明 = 不渲染） */}
+                  {activeGroup.subtitle && <SectionSubtitle>{t(activeGroup.subtitle)}</SectionSubtitle>}
                   {activeGroup.keys.length > 0 ? (
                     <GroupedKeys
                       keys={activeGroup.keys}
+                      groupDescriptions={activeGroup.groupDescriptions}
                       allProps={allProps}
                       appearanceMode={appearanceMode}
                       userOverrides={userOverrides}

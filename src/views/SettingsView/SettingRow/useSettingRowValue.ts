@@ -6,6 +6,7 @@
 import { useCallback } from "react";
 import { useConfigurationValueIpc, useConfigurationValuesIpc } from "../../hooks/useConfigurationValueIpc";
 import { lk } from "../helpers";
+import { isActionDisabled } from "./actionDisabled";
 import type { ConfigProperty } from "../types";
 
 export function useSettingRowValue(
@@ -16,11 +17,13 @@ export function useSettingRowValue(
   // IPC 版 hook——替代 useConfigurationValue
   const currentValue = useConfigurationValueIpc(configKey);
   const depValue = useConfigurationValueIpc(prop?.dependsOn?.key ?? "");
-  // E5.8#50.26：actionDisabledAll——动作按钮禁用条件（混搭复位「6 来源全跟随主题 → 置灰」）：
-  // 全部 {key,value} 匹配当前配置值时禁用（mockup 01 updateMixReset 同款 `!anyCustom`）
-  const actionKeys = prop?.actionDisabledAll?.map((c) => c.key) ?? [];
+  // E5.8#50.26：actionDisabledAll——动作按钮禁用条件（混搭复位「N 来源全跟随主题 → 置灰」）。
+  // 🔴 判据抽到 actionDisabled.ts（纯函数 ＋ 单测）：**没声明 = 永不置灰**——2026-09-28 M4 AI#38.14
+  // 实机暴露，原写法 `(… ?? []).every(…)` 空数组恒真 ⇒ 不带该字段的动作按钮全被置灰、点不动。
+  const disabledAll = prop?.actionDisabledAll;
+  const actionKeys = disabledAll?.map((c) => c.key) ?? [];
   const actionValues = useConfigurationValuesIpc(actionKeys);
-  const actionDisabled = (prop?.actionDisabledAll ?? []).every((c) => actionValues[c.key] === c.value);
+  const actionDisabled = isActionDisabled(disabledAll, actionValues);
 
   const handleChange = useCallback(
     async (value: unknown) => {

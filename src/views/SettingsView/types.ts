@@ -12,6 +12,10 @@ interface SettingsViewProps {
 interface GroupInfo {
   pluginId: string;
   title: string;
+  /** M4 AI#38.12（P-3 拍板 A）：分区大标题下的一行副标题（contribution 级可选字段；未声明 = 不渲染） */
+  subtitle?: string;
+  /** M4 AI#38.12（P-3 拍板 A）：各分节（group）标题下的一行小字——键 = group 原文（可选，零侵入） */
+  groupDescriptions?: Record<string, string>;
   keys: string[];
   /** 角色分组（#41.14 ⑤）——本组是 factoryRole 角色切换组：切换按钮在顶、激活套配置在下。未设置 = 普通配置分组 */
   role?: string;
@@ -48,6 +52,9 @@ interface ConfigProperty {
   actionDisabledAll?: Array<{ key: string; value: unknown }>;
   /** E5.8#78：组内二级标题——无 group 保持平铺（第三方配置零侵入） */
   group?: string;
+  /** M4 AI#38.12（P-2 拍板 A）：renderHint "readonly" 只读状态的运行时数据源——渲染时执行此
+   *  壳命令取值（返回 string；显示话术由命令侧拼装）。值来自命令、不来自配置存储——通用能力。 */
+  statusCommand?: string;
   /** E5.8#77：数值单位——uiHint "slider" 值标签单位（"×" / "px"；空 = 裸数值） */
   unit?: string;
   /** E5.8#87：来源徽标——本键所属外观域 mix 来源 key（混搭生效时徽标显示 🔀 域来源） */

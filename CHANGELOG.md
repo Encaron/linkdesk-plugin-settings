@@ -1,5 +1,13 @@
 # 更新日志
 
+## v1.0.21（2026-09-28）
+
+- **新增两种通用渲染能力（M4 `AI#38.12`，P-2/P-3 拍板 A）**：`renderHint: "readonly"` 只读状态行（值来自 `statusCommand` 指向的壳命令，运行期数据源 ⛔ 不写死）＋ 分节副标题（contribution 级 `subtitle` / `groupDescriptions`）——渲染原语 = `@linkdesk/ui` 0.2.22 的 `ReadOnlyText` / `SectionSubtitle`（壳统一供给，任何插件可 import）。
+- **通用能力、零 AI 特权**：任何插件声明同款 hint/字段即得同款渲染；未声明 = 不渲染（零侵入）。
+- **消费方**：壳「AI 接入」分区的 5 条状态行 / 5 处副标题（M4 `AI#38.4`/`#38.7`/`#38.2`）。
+- **依赖**：`@linkdesk/ui` ^0.2.13 → **^0.2.22**（两个新原语 0.2.22 才在）；新增 `@linkdesk/contracts` **^0.1.23**（contribution 新字段的类型来源）。
+- ⚠️ **`minAppVersion` 0.2.20 → 0.2.22**：只读状态行依赖壳命令出口（`app:getAiBridge`）与 ui 0.2.22 池供给——旧壳上装会缺件。
+
 ## v1.0.20（2026-09-27）
 
 - **新增「打开方式」设置项（首开形态选择）**：`floatingPanel` 补 `formKey: "settings.openForm"`，连同本仓**第一个** `contributes.configuration`（类名「设置插件」＋分组「打开方式」）——**第一次**打开设置时用悬浮面板还是标签页，交给用户选（默认 `floatingPanel` = 今日行为，不动就没变化）。

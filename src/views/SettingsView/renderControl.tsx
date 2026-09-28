@@ -27,6 +27,7 @@ import { formatSliderValue } from "./sliderValueLabel"; // E5.8#77：滑杆值�
 import ObjectEditor from "./ObjectEditor";
 import { mapSegmentedOptions } from "./mapSegmentedOptions"; // E5.8#99：分段单选选项映射（通用 segmented + fontTone/accentSource 预览覆盖共用）
 import type { ConfigProperty } from "./types";
+import ReadOnlyStatus from "./renderControl/readonlyStatus"; // M4 AI#38.12：只读状态行（P-2 拍板 A）
 import { BackgroundImagePicker } from "./renderControl/imagePicker";
 import { AccentSourceControl, FontToneControl } from "./renderControl/toneControls";
 import { splitStringList } from "./renderControl/stringList";
@@ -41,6 +42,12 @@ function renderControl(
   actionDisabled?: boolean,
 ): React.ReactNode {
   const val = value ?? prop.default;
+
+  // M4 AI#38.12（P-2 拍板 A）：renderHint "readonly"——只读状态行（值来自 statusCommand
+  // 运行时数据源，不来自配置存储；与 type 无关放最前——状态行不参与编辑任何形态）。
+  if (prop.renderHint === "readonly") {
+    return <ReadOnlyStatus prop={prop} />;
+  }
 
   // uiHint 优先——plugin.json 声明式控件选择
   switch (prop.uiHint) {
