@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@linkdesk/plugin-sdk/schemas/plugin.schema.json",
   "pluginId": "settings",
   "name": "设置",
-  "version": "1.0.24",
+  "version": "1.0.25",
   "minAppVersion": "0.2.32",
   "icon": "resources/icon-bar.svg",
   "marketIcon": "resources/icon.svg",
