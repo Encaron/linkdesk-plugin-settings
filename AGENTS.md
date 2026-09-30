@@ -1,7 +1,7 @@
 # 设置（settings）——LinkDesk 插件仓
 
 > **本文件是给在这个仓里干活的 AI 看的**（Claude Code / Codex / Cursor / …）。人看 `README.md`。
-> 插件身份的唯一来源 = `plugin.json` 顶层的 `pluginId`（本仓：`settings`）。当前版本 `1.0.22`。
+> 插件身份的唯一来源 = `plugin.json` 顶层的 `pluginId`（本仓：`settings`）。当前版本 `1.0.23`。
 
 ## 1. 这是什么
 
@@ -29,7 +29,6 @@
 `src/index.tsx` 一行 re-export；本体在 `src/views/SettingsView.tsx` ＋ `src/views/SettingsView/*`（分组 / 对象编辑器 / 每行控件渲染 / 来源徽标 / 数据加载），快捷键那半在 `src/views/keybinding-settings/*`。
 
 
-**本仓没有 `i18n/`** —— 文案 key 就是中文原文，英文由语言包插件（`lang-defaults`）提供。
 
 - 数据全部走 `window.linkdesk.*` IPC（配置 / 键位 / 插件管理），**本仓不持有任何存储**。
 - 🔴 `floatingPanel.viewId` 指向 `views.settings` 的 viewId —— 三向自洽（`floatingPanel.viewId` ↔ `views[].id` ↔ `render`）由本仓 `npm run verify` 的「声明自洽」段守着。
