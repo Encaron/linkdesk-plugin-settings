@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@linkdesk/plugin-sdk/schemas/plugin.schema.json",
   "pluginId": "settings",
   "name": "设置",
-  "version": "1.0.22",
+  "version": "1.0.23",
   "minAppVersion": "0.2.22",
   "icon": "resources/icon-bar.svg",
   "marketIcon": "resources/icon.svg",
@@ -20,6 +20,9 @@
     "singleton": true
   },
   "contributes": {
+    "i18n": {
+      "en": "i18n/en.json"
+    },
     "viewsContainers": {
       "settings": {
         "title": "设置",
