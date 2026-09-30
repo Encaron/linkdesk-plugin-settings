@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-09-30T03:33:41.037Z",
+  "updatedAt": "2026-09-30T12:49:12.202Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.23",
+      "version": "1.0.24",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.23/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.24/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.23/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.24/resources/icon.svg",
       "marketIconSource": "url",
-      "minAppVersion": "0.2.22",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.23/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.23/settings.linkdesk-plugin",
-      "size": 37212,
-      "publishedAt": "2026-09-30T03:33:41.037Z",
+      "minAppVersion": "0.2.32",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.24/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.24/settings.linkdesk-plugin",
+      "size": 37647,
+      "publishedAt": "2026-09-30T12:49:12.202Z",
       "versions": [
+        {
+          "version": "1.0.24",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.24/settings.linkdesk-plugin",
+          "publishedAt": "2026-09-30T12:49:12.202Z",
+          "changelog": "- **图标栏底部不再由本插件提供齿轮图标**：此前「左下角那颗齿轮」是靠本插件声明 `appearsIn.iconBar: \"bottom\"` 出现的——插件缺失或停用，齿轮就跟着消失。现在这颗齿轮改由**软件本体自带**（永远可见、与插件装卸/配置切换无关），本插件相应撤掉那条声明，只保留自己的标签页图标（`icon` 一字未动）。\n- **要求 LinkDesk 0.2.32 或更高**（`minAppVersion` 随之抬高）：新行为靠壳自带的齿轮；在旧版软件上会看到「底部多出一颗齿轮」的中间态——请先更新软件、再更新本插件。\n- **行为面零变化**：设置页、悬浮面板、`Ctrl+,`、以及齿轮菜单里的「设置」条目照旧由本插件渲染；`factoryRole: \"settings\"` 的可替换槽位语义不变（换一套第三方设置 UI 仍然照常工作）。"
+        },
         {
           "version": "1.0.23",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.23/settings.linkdesk-plugin",
