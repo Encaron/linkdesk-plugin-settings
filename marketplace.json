@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-09-28T17:17:10.695Z",
+  "updatedAt": "2026-09-30T03:33:41.037Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.22",
+      "version": "1.0.23",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.22/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.23/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.22/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.23/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.22",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.22/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.22/settings.linkdesk-plugin",
-      "size": 46654,
-      "publishedAt": "2026-09-28T17:17:10.695Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.23/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.23/settings.linkdesk-plugin",
+      "size": 37212,
+      "publishedAt": "2026-09-30T03:33:41.037Z",
       "versions": [
+        {
+          "version": "1.0.23",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.23/settings.linkdesk-plugin",
+          "publishedAt": "2026-09-30T03:33:41.037Z",
+          "changelog": "- **自有翻译归位（E6#161「谁的仓谁译文」）**：本仓首次带自己的字典 **`i18n/en.json`（48 条）** ＋ `contributes.i18n` 声明——设置页的**声明项**（配置分组名「打开方式」/ 属性说明 / 命令标题「修改快捷键…」/ 视图与容器标题 / 插件名与描述）与 `src` 里 **43 条 `t()` 中文 key** 的英文译名，从此住本仓，**不再依赖 `lang-defaults` 代管**。根因是跨仓：文案在本仓声明、译名在另一只仓的字典里，本仓加一条声明时那只仓无从跟上（2026-09-30 用户实机立案）。\n- **译名逐字节取自 `lang-defaults` 现成英文**（同一把尺：`@linkdesk/plugin-sdk/own-dict-coverage` 判出 49 条缺口，去重 48 条）⇒ 两本字典同键同值，按 E6#161 的「同值覆盖不出声」规则**运行时行为零变化**（后注册者胜的语义不变，只是不再有静默分歧）。\n- **`@linkdesk/plugin-sdk` ^0.1.50 → ^0.1.61**：`npm run verify` 新增第 ⑧ 段「自有字典覆盖度」（manifest 渲染串缺口 = 红 / 源码 `t()` 缺口 = 黄）随 SDK 0.1.61 下发，本仓铺开即绿。\n- **版本真源同步**：`package.json` 的 `1.0.21`（此前落后 `plugin.json` 一格，本仓卫生）随本笔对齐到 **1.0.23**。"
+        },
         {
           "version": "1.0.22",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.22/settings.linkdesk-plugin",
