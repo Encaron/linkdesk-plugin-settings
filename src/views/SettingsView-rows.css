@@ -122,6 +122,41 @@
   justify-content: flex-end;
 }
 
+/* 设置行案 2.2（2026-10-04 · 伴生件）：主控件右侧的**伴生按钮 / 伴生只读**——同排、留 8px 隙
+   （与生效徽标同规）；顺序由 renderControl 的片段给定 `[主控件][伴生按钮][伴生只读]`。
+   🔴 宽度预算——**2026-10-04 无头 Edge 实测**（真样式 ＋ 真行标记，口径：主窗最低 800px ⇒
+   表单内容宽 = 800 − 42 图标栏 − 200 导航 − 56 内边距 = **502px**；行内固定件 = 齿轮 24 ＋ gap 20）：
+     按钮「打开缓存目录」104 ＋ 8 ＋ 只读 230 = **控制区 342**，标签余 92px（长键名截断）；
+     开关 36 ＋ 8 ＋ 只读 136 = **180**，标签余 254；滑杆 130 ＋ 值标签 44 ＋ 8 ＋ 136 = **318**，标签余 116。
+   ⇒ 三例皆**零横向溢出**，**刻意不加 flex-wrap**（滑杆根 `width:100%` 会借 wrap 把伴生件挤到第二行）。
+   降级形态是**标签截断**（`.settings-row-info` `min-width:0` ＋ 控制区 `flex-shrink:0`），不是整行撑破。
+   🔴 `min-width: 0` 不可省——`.ldk-readonly-text` 是 `white-space:nowrap` 的 flex 项，默认
+   `min-width:auto` ⇒ 长路径不肯收缩、整行被撑破（不截断）；置 0 才让省略号生效。 */
+.settings-row-companion {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  max-width: 230px;
+  margin-left: 8px;
+}
+.settings-row-companion > .ldk-readonly-text {
+  min-width: 0;
+}
+/* 多行读数（正文小字）不设上限——它要换行，不是单行省略号（本轮 companion 定为单行读数，留此守卫防将来） */
+.settings-row-companion:has(> .ldk-readonly-text.multiline) {
+  max-width: none;
+}
+/* 🔴 实测逼出的一条（2026-10-04）：**三件并存**（主控件 ＋ 伴生件 ＋ 行尾生效徽标）在 502px 下会溢出——
+   「按钮 104 ＋ 8 ＋ 只读 230 ＋ 8 ＋ 徽标 156」= 控制区 506 ＋ 44 = 550 > 502，整行横向溢出 48px。
+   声明层**允许**这三件同时出现（`effectiveToken` 与 `statusCommand`/`actionCommand` 正交，壳无机械校验），
+   故布局侧兜住：徽标在时伴生件收缩到 120px（信息量小的让位给信息量大的）。
+   实测收缩后 = 104 ＋ 8 ＋ 120 ＋ 8 ＋ 156 = **396** ≤ 454（控制区可用），零溢出。
+   ⛔ 今日**零键命中**（`effectiveToken` 只在 app.glassTint/app.fontFamily/app.fontFamilyMono，
+   三者都没声明 statusCommand/actionCommand）——本条是给将来第三方声明兜底，不是现症。 */
+.settings-row-control:has(.settings-effective-badge) .settings-row-companion {
+  max-width: 120px;
+}
+
 /* E5.8#50.22：主题配方卡片行（uiHint "themePicker"）——整行铺开（mockup 主题区帧：
    说明在上、卡片网格占满下一行）。:has() Chromium 105+ 安全。 */
 .settings-row:has(.ldk-theme-picker) {

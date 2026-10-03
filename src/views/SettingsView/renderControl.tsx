@@ -5,6 +5,9 @@
  *   + ObjectEditor + types + 同名夹子件；被 SettingRow 消费。
  * E6#87d：四个自定义控件移入同名夹（`renderControl/imagePicker.tsx` / `renderControl/toneControls.tsx`），
  *   stringList 的 locked/editable 前置计算移入 `renderControl/stringList.ts`（纯函数）。
+ * 设置行案 2.2（2026-10-04）：分发器拆成「主部件（`renderPrimary`，原逻辑一字未动）＋ 伴生件包裹
+ *   （`renderControl`）」——`statusCommand`/`actionCommand` 可与任何主控件共存，渲染
+ *   `[主控件][伴生按钮][伴生只读]`（见文件末注释与 01-方案与落点契约 §1.2）。
  */
 
 // E6#54c：共享控件走 @linkdesk/ui（@src/components/shared 双入口已禁——见 eslint 插件块）
@@ -31,14 +34,17 @@ import { ImageControl, ReadonlyControl, UnknownHintControl } from "./renderContr
 import { AccentSourceControl, FontToneControl } from "./renderControl/toneControls";
 import { splitStringList } from "./renderControl/stringList";
 
-/** 根据 property type 渲染对应控件 */
-function renderControl(
+/** 主部件渲染（原分发逻辑，一字未动）——根据 property type/uiHint 渲染对应控件。
+ *  伴生件（statusCommand/actionCommand）由下方 `renderControl` 包裹追加（设置行案 2.2）。 */
+function renderPrimary(
   prop: ConfigProperty,
   value: unknown,
   onChange: (v: unknown) => void,
   t: (key: string) => string,
   onColorSwatchClick?: (e: React.MouseEvent<HTMLDivElement>) => void,
   actionDisabled?: boolean,
+  /** 设置行案 2.2（E1 互斥显示）：true = 本行改显行尾生效徽标 ⇒ 主控件不渲染自带值标签 */
+  suppressValueLabel?: boolean,
 ): React.ReactNode {
   const val = value ?? prop.default;
 
@@ -130,7 +136,11 @@ function renderControl(
           min={sliderMin}
           max={sliderMax}
           step={prop.step ?? inferSliderStep(sliderMin, sliderMax)}
-          unit={prop.unit ?? ""}
+          // E1（设置行案 2.2）：跟随主题态（键声明 effectiveToken ⇒ SettingRow 传 suppressValueLabel 真）
+          //   不传 unit ⇒ Slider 既有语义「unit === undefined ⇒ 不渲染值标签」⇒ 让位给行尾生效徽标；
+          //   自定义态照常显值标签、不显徽标 ⇒ 永不同屏。⛔ 上面 E3 的 `?? ""` 不可省——只有本条命中才走 undefined。
+          //   （fontSize 的 unit 是 NumberInput 件内后缀，语义不同，不在本规则内——真出现重复读数再按同一判据扩。）
+          unit={suppressValueLabel ? undefined : (prop.unit ?? "")}
           unitPosition={prop.unitPosition ?? "after"}
           stepper={prop.stepper}
         />
@@ -191,14 +201,7 @@ function renderControl(
       // 点击改走 actionCommand 执行壳命令（混搭复位 → theme.resetMix 单一写入点触发壳侧 onApply 链）；
       // actionDisabled = actionDisabledAll 全命中当前配置值 → 置灰（mockup 01 updateMixReset）。
       if (prop.renderHint === "action") {
-        return (
-          <Button
-            disabled={actionDisabled}
-            onClick={() => { void window.linkdesk?.commands?.executeCommand?.(prop.actionCommand ?? ""); }}
-          >
-            {t(prop.description ?? "")}
-          </Button>
-        );
+        return <ActionButton prop={prop} t={t} actionDisabled={actionDisabled} />;
       }
       if (prop.enum && prop.enum.length > 0) {
         const enumOptions = prop.enum.map((v, i) => ({
@@ -278,6 +281,75 @@ function renderControl(
       //   该名字全仓零 CSS 规则（宿主只有同名的 --text-muted 变量），一直是空转；摘掉后视觉零变化。
       return <span>{String(val)}</span>;
   }
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   设置行案 2.2（2026-10-04 · 伴生声明正交化）——`[主控件][伴生按钮][伴生只读]`
+   `statusCommand` / `actionCommand` 升为可与**任何**主控件共存的伴生声明；`renderHint:"readonly"/"action"`
+   退化为「主控件就是它」的简写。契约与判据 = docs/04-软件更新/待抉择池/设置行-控制只读同行/01-方案与落点契约.md §1.2。
+   ⛔ 本仓仍**键名零知识**：只认声明字段，不认任何一个具体键。
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/** 动作按钮——主部件形态（`renderHint:"action"`）与伴生形态**共用同一段**（避免两处漂）。
+ *  文案 = `t(description)`（action 行只有这一个字符串可承载文案，先例 `ai.mcp.openDetails`）；
+ *  onApply 被 IPC 剥除插件不可达 ⇒ 点击走 `actionCommand` 执行壳命令；置灰 = `actionDisabledAll` 全命中。 */
+function ActionButton({ prop, t, actionDisabled }: { prop: ConfigProperty; t: (key: string) => string; actionDisabled?: boolean }) {
+  return (
+    <Button
+      disabled={actionDisabled}
+      onClick={() => { void window.linkdesk?.commands?.executeCommand?.(prop.actionCommand ?? ""); }}
+    >
+      {t(prop.description ?? "")}
+    </Button>
+  );
+}
+
+/** 主部件**就是**按钮？——判据 = 分发器的结构本身（`renderPrimary` 里 action 分支只在
+ *  「`renderHint:"action"` ∧ 无 uiHint 命中 ∧ `type:"string"`」时渲染按钮）⇒ 命中则不再追加伴生按钮，
+ *  ⛔ 避免同一动作画两遍。 */
+function isActionPrimary(prop: ConfigProperty): boolean {
+  return prop.renderHint === "action" && !prop.uiHint && prop.type === "string";
+}
+
+/** 主部件**就是**只读状态行？——readonly 分支在 `renderPrimary` 最前（状态行不参与编辑任何形态）。 */
+function isReadonlyPrimary(prop: ConfigProperty): boolean {
+  return prop.renderHint === "readonly";
+}
+
+/** 渲染主控件 ＋ 伴生件（顺序 `[主控件][伴生按钮][伴生只读]`；行尾生效徽标由 SettingRow 追加在其后）。
+ *  ⚠️ 绝大多数键两个伴生字段都不声明 ⇒ **直接返回主控件，与改造前逐字一致（零回归）**。 */
+function renderControl(
+  prop: ConfigProperty,
+  value: unknown,
+  onChange: (v: unknown) => void,
+  t: (key: string) => string,
+  onColorSwatchClick?: (e: React.MouseEvent<HTMLDivElement>) => void,
+  actionDisabled?: boolean,
+  suppressValueLabel?: boolean,
+): React.ReactNode {
+  const primary = renderPrimary(prop, value, onChange, t, onColorSwatchClick, actionDisabled, suppressValueLabel);
+  if (!prop.actionCommand && !prop.statusCommand) return primary;
+
+  return (
+    <>
+      {primary}
+      {/* 伴生按钮——主控件右侧；与主部件形态同源（ActionButton）。外层 span = 同排间隙＋宽度上限钩子 */}
+      {prop.actionCommand && !isActionPrimary(prop) && (
+        <span className="settings-row-companion">
+          <ActionButton prop={prop} t={t} actionDisabled={actionDisabled} />
+        </span>
+      )}
+      {/* 伴生只读——复用只读底座（共享 `ReadOnlyText` 轮询 ↔ 本地 `ReadOnlyStatus` 双轨，见 sharedAdapters）；
+          **不带标题**（它是读数不是键）；⛔ 不造第二套轮询。⚠️ 底座是 `overflow:hidden ＋ text-overflow:ellipsis`
+          且**不设 title** ⇒ 超宽读数被静默截断（2.2b 实测：272px 的绝对路径在 230px 上限处截断）；
+          本格不改底座（加 title 属共享件改动，且有在飞的 `@linkdesk/ui` 列车）。 */}
+      {prop.statusCommand && !isReadonlyPrimary(prop) && (
+        <span className="settings-row-companion">
+          <ReadonlyControl prop={prop} />
+        </span>
+      )}
+    </>
+  );
 }
 
 export default renderControl;

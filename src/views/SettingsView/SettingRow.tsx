@@ -93,7 +93,11 @@ function SettingRow({
           const rect = e.currentTarget.getBoundingClientRect();
           setColorPickerAnchor({ x: rect.right + 4, y: rect.top });
           setColorPickerOpen(true);
-        }, actionDisabled)}
+        }, actionDisabled,
+        // 设置行案 2.2（E1 互斥显示）：本行**跟随主题态**（effectiveBadge 非空 ⟺ 键声明了 effectiveToken
+        //   且值来自主题）⇒ 让主控件（滑杆）收起自带值标签，改显下面这枚行尾生效徽标；自定义态反之。
+        //   ⇒ 同一行永不同屏出现两个含义不同的数字。判据**复用现成信号**，不新造第二把尺子。
+        !!effectiveBadge)}
         {/* E5.8#155：跟随主题生效值徽标——控件容器内、控件右侧（行尾/齿轮左），跟随主题态才现。
             放容器内与控件同一条垂直中心线（容器 align-items:center）——贴住控件而非浮在行中间；
             字体行「生效：‹首族名›」/ 玻璃色行「生效：‹rgba› + 色块」——播种改空后补回「实际生效成什么」可见性 */}
