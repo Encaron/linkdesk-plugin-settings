@@ -27,6 +27,7 @@
   "无背景": "No Background",
   "更多操作": "More Actions",
   "来源": "Source",
+  "此控件类型尚未支持——只读展示当前值，不可编辑：": "This control type is not supported yet — showing the current value read-only (not editable):",
   "添加": "Add",
   "添加模式": "Add Pattern",
   "清除图片": "Clear Image",

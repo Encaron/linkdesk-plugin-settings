@@ -18,10 +18,14 @@
  *    （fontFamily 空 + mixFont=songti → 实际字体来自宋体，14-档案 #87「mix 来源生效 = mix」）。
  */
 
+import { sentinel } from "./sharedUi";
+
 export type SourceBadge = "theme" | "user" | "mix";
 
-/** 混搭来源「跟随主题」哨兵——startup.ts 播种值/缺省值，跨插件字符串契约（对标 __none__）。 */
-export const MIX_FOLLOW_THEME_SENTINEL = "followTheme";
+/** 混搭来源「跟随主题」哨兵——startup.ts 播种值/缺省值，跨插件字符串契约（对标 __none__）。
+ *  本案 5.1（02 E1 双轨）：值从共享正典取（`@linkdesk/ui` settings-hints 单一真相源）；共享件缺席
+ *  （现装壳 0.2.36）时 `sentinel()` 回退同字面量——**契约值本身不变**，零回归。 */
+export const MIX_FOLLOW_THEME_SENTINEL = sentinel("MIX_FOLLOW_THEME_SENTINEL", "followTheme");
 
 export function deriveSourceBadge(input: {
   /** 配置项 sourceKey 声明（startup.ts schema）——无 = 非徽标槽 */

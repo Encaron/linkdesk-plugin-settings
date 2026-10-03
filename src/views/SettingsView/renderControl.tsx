@@ -26,8 +26,8 @@ import {
 import ObjectEditor from "./ObjectEditor";
 import { mapSegmentedOptions } from "./mapSegmentedOptions"; // E5.8#99：分段单选选项映射（通用 segmented + fontTone/accentSource 预览覆盖共用）
 import type { ConfigProperty } from "./types";
-import ReadOnlyStatus from "./renderControl/readonlyStatus"; // M4 AI#38.12：只读状态行（P-2 拍板 A）
-import { BackgroundImagePicker } from "./renderControl/imagePicker";
+// 本案 5.1（02 E1 双轨）：只读行／背景图／未知 hint 降级全走适配层——共享件在就收编、不在退本地件
+import { ImageControl, ReadonlyControl, UnknownHintControl } from "./renderControl/sharedAdapters";
 import { AccentSourceControl, FontToneControl } from "./renderControl/toneControls";
 import { splitStringList } from "./renderControl/stringList";
 
@@ -44,8 +44,9 @@ function renderControl(
 
   // M4 AI#38.12（P-2 拍板 A）：renderHint "readonly"——只读状态行（值来自 statusCommand
   // 运行时数据源，不来自配置存储；与 type 无关放最前——状态行不参与编辑任何形态）。
+  // 本案 5.1：渲染体进适配层（共享件轮询模式 ↔ 本地件双轨，见 sharedAdapters.tsx）。
   if (prop.renderHint === "readonly") {
-    return <ReadOnlyStatus prop={prop} />;
+    return <ReadonlyControl prop={prop} />;
   }
 
   // uiHint 优先——plugin.json 声明式控件选择
@@ -85,8 +86,8 @@ function renderControl(
       return <FilePathInput value={String(val)} onChange={(v) => onChange(v)} dialogType="file" />;
     case "directory":
       return <FilePathInput value={String(val)} onChange={(v) => onChange(v)} dialogType="directory" />;
-    case "image": // E5.8#50.11：背景图——选图拷贝入库 + 清除（受控来源）
-      return <BackgroundImagePicker value={String(val)} onChange={onChange} t={t} />;
+    case "image": // E5.8#50.11：背景图——选图拷贝入库 + 清除（受控来源）；本案 5.1：适配层双轨
+      return <ImageControl value={String(val)} onChange={onChange} t={t} />;
     case "segmented": // E5.8#99 通用化：第三方声明 uiHint:"segmented" + enum + enumDescriptions 即得分段单选（ghost 轨，零预览）
       return (
         <SegmentedRadio
@@ -168,6 +169,10 @@ function renderControl(
       );
     }
     default:
+      // 本案 5.1（01 §四 降级契约 · 判据 4）：**声明了** uiHint 但本渲染器不认识 ⇒ 只读展示＋说明，
+      // 不再落进可编辑文本框（防裸字符串写穿值域——app.backgroundImage 露 __none__ 那类）。
+      // ⛔ 「没声明 uiHint」不走这里：它落到下面的 type switch，是大多数键的正常路径（02 E2）。
+      if (prop.uiHint) return <UnknownHintControl prop={prop} value={val} t={t} />;
       break;
   }
 

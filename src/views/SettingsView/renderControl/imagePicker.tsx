@@ -9,10 +9,12 @@
 
 import { useState } from "react";
 import { Button } from "@linkdesk/ui";
+import { sentinel } from "../sharedUi";
 
 // E5.8#87：显式「无」哨兵——字符串契约（__none__ 与壳 ThemeEngine.CONFIG_NONE_SENTINEL 同字面量，
-// 插件不能 import @src/core，对标 "followTheme" 哨兵契约）
-const CONFIG_NONE_SENTINEL = "__none__";
+// 插件不能 import @src/core，对标 "followTheme" 哨兵契约）。
+// 本案 5.1（02 E1 双轨）：值从共享正典取（settings-hints 单一真相源）；共享件缺席时回退同字面量。
+const CONFIG_NONE_SENTINEL = sentinel("CONFIG_NONE_SENTINEL", "__none__");
 
 export function BackgroundImagePicker({
   value,

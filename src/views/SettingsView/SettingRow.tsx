@@ -15,6 +15,12 @@ import type { ConfigProperty } from "./types";
 import { COLOR_PICKER_PRESETS, SOURCE_BADGE_UI } from "./SettingRow/constants";
 import { SETTING_ITEM_GEAR_MENU, useSettingRowGear } from "./SettingRow/gearMenu";
 import { useSettingRowBadges } from "./SettingRow/useSettingRowBadges";
+// 本案 5.1（02 E1 双轨）：徽标收编共享件——共享件缺席（现装壳）时下面仍走本地同款药丸 markup。
+// 组件别名走 PascalCase（JSX 组件名要求；sharedUi 导出名是全大写常量）。
+import { SHARED_EFFECTIVE_BADGE, SHARED_SOURCE_BADGE } from "./sharedUi";
+
+const SharedSourceBadge = SHARED_SOURCE_BADGE;
+const SharedEffectiveBadge = SHARED_EFFECTIVE_BADGE;
 import { useSettingRowValue } from "./SettingRow/useSettingRowValue";
 
 function SettingRow({
@@ -66,13 +72,18 @@ function SettingRow({
           {/* E5.8#87+#99：来源徽标——只显非默认态（#6 降噪）：改过 ✏️ / 混搭域来源 🔀；
               theme 态无徽标 = 主题来源（清除后徽标消失 = 一眼可见「回主题」，对标 VS Code 非默认态才点显） */}
           {badge === "user" || badge === "mix" ? (
-            <span
-              className={`settings-source-badge settings-source-badge--${badge}`}
-              data-hint={t(SOURCE_BADGE_UI[badge].labelKey)}
-            >
-              <span className={`codicon ${SOURCE_BADGE_UI[badge].glyph}`} aria-hidden="true" />
-              {t(SOURCE_BADGE_UI[badge].labelKey)}
-            </span>
+            SharedSourceBadge ? (
+              // 本案 5.1：共享 SourceBadge（图标/药丸样式随件走）；文案仍由调用方 t() 供给（共享件零中文）
+              <SharedSourceBadge source={badge} label={t(SOURCE_BADGE_UI[badge].labelKey)} />
+            ) : (
+              <span
+                className={`settings-source-badge settings-source-badge--${badge}`}
+                data-hint={t(SOURCE_BADGE_UI[badge].labelKey)}
+              >
+                <span className={`codicon ${SOURCE_BADGE_UI[badge].glyph}`} aria-hidden="true" />
+                {t(SOURCE_BADGE_UI[badge].labelKey)}
+              </span>
+            )
           ) : null}
         </div>
         <span className="settings-row-desc">{t(description ?? prop.description ?? "")}</span>
@@ -86,19 +97,27 @@ function SettingRow({
         {/* E5.8#155：跟随主题生效值徽标——控件容器内、控件右侧（行尾/齿轮左），跟随主题态才现。
             放容器内与控件同一条垂直中心线（容器 align-items:center）——贴住控件而非浮在行中间；
             字体行「生效：‹首族名›」/ 玻璃色行「生效：‹rgba› + 色块」——播种改空后补回「实际生效成什么」可见性 */}
-        {effectiveBadge && (
-          <span className="settings-effective-badge" data-hint={t("当前跟随主题实际生效的值")}>
-            <span className="settings-effective-badge-label">{t("生效：")}</span>
-            {effectiveBadge.color && (
-              <span
-                className="settings-effective-swatch"
-                style={{ background: effectiveBadge.color }}
-                aria-hidden="true"
-              />
-            )}
-            <span className="settings-effective-badge-value">{effectiveBadge.label}</span>
-          </span>
-        )}
+        {effectiveBadge &&
+          (SharedEffectiveBadge ? (
+            // 本案 5.1：共享 EffectiveBadge（前缀＋色块＋值文字随件走，值文字内部复用共享 ReadOnlyText）
+            <SharedEffectiveBadge
+              label={t("生效：")}
+              value={effectiveBadge.label}
+              color={effectiveBadge.color}
+            />
+          ) : (
+            <span className="settings-effective-badge" data-hint={t("当前跟随主题实际生效的值")}>
+              <span className="settings-effective-badge-label">{t("生效：")}</span>
+              {effectiveBadge.color && (
+                <span
+                  className="settings-effective-swatch"
+                  style={{ background: effectiveBadge.color }}
+                  aria-hidden="true"
+                />
+              )}
+              <span className="settings-effective-badge-value">{effectiveBadge.label}</span>
+            </span>
+          ))}
       </div>
       {/* hover 齿轮 */}
       <button
