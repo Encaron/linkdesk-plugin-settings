@@ -57,6 +57,12 @@ interface ConfigProperty {
   statusCommand?: string;
   /** E5.8#77：数值单位——uiHint "slider" 值标签单位（"×" / "px"；空 = 裸数值） */
   unit?: string;
+  /** 滑杆件能力扩展（2026-10-03）：值标签方位——消费侧类型同步（声明从宿主 schema 流下，
+   *  本仓只直传；缺省 after，above/below 只留插件自绘场景） */
+  unitPosition?: "before" | "after" | "above" | "below";
+  /** 滑杆件能力扩展（2026-10-03）：细调步进——uiHint "slider" 轨道两侧 −/＋ 常驻按钮；
+   *  能力在 Slider 组件本体（@linkdesk/ui ≥ 0.2.36），本仓只直传 */
+  stepper?: boolean;
   /** E5.8#87：来源徽标——本键所属外观域 mix 来源 key（混搭生效时徽标显示 🔀 域来源） */
   sourceKey?: string;
   /** E5.8#155：跟随主题生效值徽标——本键跟随主题时行尾显示的生效 token key（零侵入可选字段） */

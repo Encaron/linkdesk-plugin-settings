@@ -134,28 +134,18 @@
   min-width: 0;
 }
 
-/* ── E5.8#77：滑杆值标签——滑杆占满 + 右侧当前值（unit 声明 → ×倍数/px；mockup 数值位置） ── */
+/* ── 滑杆（能力扩展 2026-10-03）：包裹层退场——值标签与 −/＋ 细调长在组件里（@linkdesk/ui ≥ 0.2.36，
+   renderControl 直传声明）。页面只负责让组件根撑满控制列（E13 ②：伸缩由容器 CSS 给；
+   组件自带 130px 固定宽是无容器形态）。值标签样式随组件（--text-secondary / tabular-nums /
+   min-width 44px×scale），此处不再复写。 ── */
 
-.settings-slider-control {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.settings-row-control .ldk-slider-root {
   width: 100%;
 }
 
-.settings-slider-control .ldk-slider {
-  flex: 1;
+.settings-row-control .ldk-slider-root .ldk-slider {
+  width: 100%;
   min-width: 0;
-}
-
-.settings-slider-value {
-  flex-shrink: 0;
-  min-width: 44px;
-  text-align: right;
-  font-size: var(--font-size-sm); /* E5.8 Phase 12 #174：slider-value 12→sm */
-  font-variant-numeric: tabular-nums;
-  color: var(--text-secondary);
-  user-select: none;
 }
 
 /* ── E3f #53c：设置项齿轮——hover 时出现，对标 VS Code Settings Editor ── */

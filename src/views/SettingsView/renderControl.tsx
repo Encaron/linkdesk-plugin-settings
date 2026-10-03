@@ -23,7 +23,6 @@ import {
   inferSliderStep, // E5.8#65：滑杆 step 推导（浮点区间连续可调）
   urlSourceKey, // E6#30c：URL 源身份（owner/repo、分支无关）——stringList 的 itemKey（判重规则见 renderControl/stringList.ts）
 } from "@linkdesk/ui";
-import { formatSliderValue } from "./sliderValueLabel"; // E5.8#77：滑杆值标签格式化（unit 声明 → ×倍数/px）
 import ObjectEditor from "./ObjectEditor";
 import { mapSegmentedOptions } from "./mapSegmentedOptions"; // E5.8#99：分段单选选项映射（通用 segmented + fontTone/accentSource 预览覆盖共用）
 import type { ConfigProperty } from "./types";
@@ -118,20 +117,22 @@ function renderControl(
     case "slider": { // E5.8#50.9：滑杆（#50.10 玻璃五配置消费）——E5.8#65：step 推导（浮点区间 0.01，schema 可显式 step 覆盖）
       const sliderMin = prop.minimum ?? 0;
       const sliderMax = prop.maximum ?? 100;
-      // E5.8#77：右侧值标签——当前值 + 单位（schema unit 元数据；无 unit = 裸数值，第三方零侵入）
+      // 滑杆件能力扩展（2026-10-03）：值标签与 −/＋ 细调已下沉进 Slider 组件本体——本仓只把
+      // 配置键上的声明原样直传（D3：传递者零知识，⛔ 不判键名、不自绘标签）。
+      // 🔴 unit ?? "" 不可省（E3）：空串 = 有标签无单位（无单位键今天显示裸数值 0.5），
+      //    写成 unit={prop.unit} 会让未声明 unit 的键整批丢标签。
+      // 🔴 声明面时序（E2）：本分支传 unit/stepper 的前提 = @linkdesk/ui ≥ 0.2.36（老组件不认）。
       return (
-        <div className="settings-slider-control">
-          <Slider
-            value={Number(val)}
-            onChange={(v) => onChange(v)}
-            min={sliderMin}
-            max={sliderMax}
-            step={prop.step ?? inferSliderStep(sliderMin, sliderMax)}
-          />
-          <span className="settings-slider-value">
-            {formatSliderValue(Number(val), prop.unit)}
-          </span>
-        </div>
+        <Slider
+          value={Number(val)}
+          onChange={(v) => onChange(v)}
+          min={sliderMin}
+          max={sliderMax}
+          step={prop.step ?? inferSliderStep(sliderMin, sliderMax)}
+          unit={prop.unit ?? ""}
+          unitPosition={prop.unitPosition ?? "after"}
+          stepper={prop.stepper}
+        />
       );
     }
     case "themePicker": // E5.8#50.22：主题配方卡片——value=app.theme，点卡片 onChange(recipeId)（onApply 应用配方）
