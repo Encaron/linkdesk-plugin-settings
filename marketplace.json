@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-10-03T16:29:03.811Z",
+  "updatedAt": "2026-10-03T18:26:05.290Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.28",
+      "version": "1.0.29",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.28/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.29/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.28/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.29/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.32",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.28/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.28/settings.linkdesk-plugin",
-      "size": 29222,
-      "publishedAt": "2026-10-03T16:29:03.811Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.29/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.29/settings.linkdesk-plugin",
+      "size": 30121,
+      "publishedAt": "2026-10-03T18:26:05.290Z",
       "versions": [
+        {
+          "version": "1.0.29",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.29/settings.linkdesk-plugin",
+          "publishedAt": "2026-10-03T18:26:05.290Z",
+          "changelog": "- **设置行会摆「伴生件」了**（随「设置行-控制只读同行」）：同一个配置项上可同时声明**主控件**与它右侧的伴生按钮／伴生只读读数——例如「一个按钮 ＋ 右边同排显示路径」「一个开关 ＋ 右边同排显示实时状态」。此前「只读状态」与「动作按钮」只能各自独占一行（`renderHint` 单选互斥）；现在它们升为可与**任意**主控件共存的伴生声明，渲染顺序 `[主控件][伴生按钮][伴生只读]`，而 `renderHint:\"readonly\"/\"action\"` 退化为「主控件就是它」的简写。\n- **未声明伴生件的设置行，外观与行为一字不变**（绝大多数键两个字段都不声明 ⇒ 直接走改造前的渲染路径）。\n- **伴生只读不承载编辑**：读数仍取自运行时命令（3 秒轮询、空值不占位、抛错保现值），不落配置存储——「一键一值」存储模型未动；超长读数按既有只读底座的省略号截断。\n- **行尾生效徽标与控件自带值标签不再同屏**：滑杆行在「跟随主题」态收起自带值标签、让位给行尾生效徽标，「自定义」态反之——同一行不再出现两个含义不同的数字。\n- 布局护栏：主控件 ＋ 伴生件 ＋ 生效徽标三件并存时，伴生件收缩到 120px（无头 Edge 真渲染实测：主窗最窄 800px 下零横向溢出；降级形态是标签截断，不是整行撑破）。\n- 要求 LinkDesk **0.2.32 或更高**（未变）。本轮落的是**渲染能力**——用户可见的变化要等壳侧声明（缓存目录一行／AI 接入四组）随软件发版。"
+        },
         {
           "version": "1.0.28",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.28/settings.linkdesk-plugin",
@@ -47,8 +53,7 @@
         {
           "version": "1.0.24",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.24/settings.linkdesk-plugin",
-          "publishedAt": "2026-09-30T12:49:12.202Z",
-          "changelog": "- **图标栏底部不再由本插件提供齿轮图标**：此前「左下角那颗齿轮」是靠本插件声明 `appearsIn.iconBar: \"bottom\"` 出现的——插件缺失或停用，齿轮就跟着消失。现在这颗齿轮改由**软件本体自带**（永远可见、与插件装卸/配置切换无关），本插件相应撤掉那条声明，只保留自己的标签页图标（`icon` 一字未动）。\n- **要求 LinkDesk 0.2.32 或更高**（`minAppVersion` 随之抬高）：新行为靠壳自带的齿轮；在旧版软件上会看到「底部多出一颗齿轮」的中间态——请先更新软件、再更新本插件。\n- **行为面零变化**：设置页、悬浮面板、`Ctrl+,`、以及齿轮菜单里的「设置」条目照旧由本插件渲染；`factoryRole: \"settings\"` 的可替换槽位语义不变（换一套第三方设置 UI 仍然照常工作）。"
+          "publishedAt": "2026-09-30T12:49:12.202Z"
         },
         {
           "version": "1.0.23",
