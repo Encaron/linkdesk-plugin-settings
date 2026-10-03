@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-10-03T18:26:05.290Z",
+  "updatedAt": "2026-10-03T21:48:05.301Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.29",
+      "version": "1.0.30",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.29/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.30/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.29/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.30/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.32",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.29/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.29/settings.linkdesk-plugin",
-      "size": 30121,
-      "publishedAt": "2026-10-03T18:26:05.290Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.30/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.30/settings.linkdesk-plugin",
+      "size": 30382,
+      "publishedAt": "2026-10-03T21:48:05.301Z",
       "versions": [
+        {
+          "version": "1.0.30",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.30/settings.linkdesk-plugin",
+          "publishedAt": "2026-10-03T21:48:05.301Z",
+          "changelog": "- **设置项的说明文字，悬停就能看全**：每行配置键下面那句说明此前被单行省略号截断——`marketplace.marketplaceSources` 这类长说明**把窗口拉满也显示不全**。现在鼠标停在说明上会立刻浮出完整文字（用的是 LinkDesk 的悬停提示，**不改变行高、不遮挡布局、不接管点击**），截断的那半截不再只能靠猜。鼠标不悬停时，外观与行为一字不变；**没写说明的配置项不会浮出空提示**。\n- 只影响**说明文字**一行；配置键标签、控件、徽标、齿轮菜单均未改动。\n- 要求 LinkDesk **0.2.32 或更高**（未变；悬停提示能力自 0.2.20 起就有）。"
+        },
         {
           "version": "1.0.29",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.29/settings.linkdesk-plugin",
@@ -47,8 +53,7 @@
         {
           "version": "1.0.25",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.25/settings.linkdesk-plugin",
-          "publishedAt": "2026-09-30T21:44:07.034Z",
-          "changelog": "- **安装包瘦身**：包内更新日志只带最近 5 版（更早的更新记录仍在本插件仓库里）——由 SDK 自动施加，用户无需任何操作。"
+          "publishedAt": "2026-09-30T21:44:07.034Z"
         },
         {
           "version": "1.0.24",
