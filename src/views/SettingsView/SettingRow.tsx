@@ -14,6 +14,8 @@ import renderControl from "./renderControl";
 import type { ConfigProperty } from "./types";
 import { COLOR_PICKER_PRESETS, SOURCE_BADGE_UI } from "./SettingRow/constants";
 import { SETTING_ITEM_GEAR_MENU, useSettingRowGear } from "./SettingRow/gearMenu";
+// 说明文字的悬停提示（04「悬停提示系统」揭示类）——`.settings-row-desc` 单行截断，长说明全屏也看不全。
+import { descHintAttrs } from "./SettingRow/descHint";
 import { useSettingRowBadges } from "./SettingRow/useSettingRowBadges";
 // 本案 5.1（02 E1 双轨）：徽标收编共享件——共享件缺席（现装壳）时下面仍走本地同款药丸 markup。
 // 组件别名走 PascalCase（JSX 组件名要求；sharedUi 导出名是全大写常量）。
@@ -64,6 +66,9 @@ function SettingRow({
   // 声明式条件显隐
   if (prop.dependsOn && depValue !== prop.dependsOn.value) return null;
 
+  // 说明文案**一处真相源**：同一串既做行上的内容、又做悬停提示的全文（长说明被单行省略号截断）。
+  const descText = t(description ?? prop.description ?? "");
+
   return (
     <div className="settings-row" id={`setting-row-${configKey}`}>
       <div className="settings-row-info">
@@ -86,7 +91,7 @@ function SettingRow({
             )
           ) : null}
         </div>
-        <span className="settings-row-desc">{t(description ?? prop.description ?? "")}</span>
+        <span className="settings-row-desc" {...descHintAttrs(descText)}>{descText}</span>
       </div>
       <div className="settings-row-control">
         {renderControl(prop, currentValue, handleChange, t, (e) => {
