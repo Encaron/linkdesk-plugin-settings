@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-10-04T15:07:57.758Z",
+  "updatedAt": "2026-10-04T20:28:39.446Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.31",
+      "version": "1.0.32",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.31/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.32/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.31/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.32/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.32",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.31/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.31/settings.linkdesk-plugin",
-      "size": 31054,
-      "publishedAt": "2026-10-04T15:07:57.758Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.32/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.32/settings.linkdesk-plugin",
+      "size": 33172,
+      "publishedAt": "2026-10-04T20:28:39.446Z",
       "versions": [
+        {
+          "version": "1.0.32",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.32/settings.linkdesk-plugin",
+          "publishedAt": "2026-10-04T20:28:39.446Z",
+          "changelog": "- **快捷键页每一行都出齿轮了，点开是一个菜单**：此前齿轮只在「这条被改过」的行上出现，而且一个齿轮 = 一个动作（重置）。现在**每一行**（内置／插件／用户，含没有绑定的行）都有齿轮，外观与设置页的齿轮一致（鼠标扫过去淡入）。\n- **齿轮菜单六项**：**修改快捷键…**、复制命令 ID、复制命令名称、复制快捷键、复制为 JSON、重置为默认。\n  - **「修改快捷键…」补的是一条隐形路径**：以前改一条绑定的键只能**双击那一行**，现在从菜单点同一项即可（效果与双击完全相同）；**没有绑定的行也能用**——原来没有绑定、现在想加一个，走这一项。\n  - 点它会把快捷键页的搜索框预填成该命令 ID（列表收窄到那一行）——这是软件侧「AI/CLI 直达改键」的同一条路；想保留整表视图，把搜索框清空即可。\n  - **「复制快捷键」「复制为 JSON」只在有绑定（不是 `—`）的行上出现**，「重置为默认」只在**你改过**（来源 = 用户）的行上出现——不留点了没反应的死项。\n  - 「复制快捷键」复制的是**原样键位串**（组合键保留中间的空格，如 `ctrl+k ctrl+l`）；「复制为 JSON」按 `keybindings.json` 的**存储形状**（带条件绑定的行连 `when` 一起复制），可以**直接粘回该文件生效**。\n- **键盘可达性修好**：齿轮常显后它每一行都在 Tab 顺序里，而此前没有任何键盘焦点样式——纯键盘操作会停在一个**看不见**的按钮上。现在 Tab 到齿轮时会显形并带焦点框。\n- 要求 LinkDesk **0.2.32 或更高**（未变）。"
+        },
         {
           "version": "1.0.31",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.31/settings.linkdesk-plugin",
@@ -47,8 +53,7 @@
         {
           "version": "1.0.27",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.27/settings.linkdesk-plugin",
-          "publishedAt": "2026-10-03T13:15:57.345Z",
-          "changelog": "- **滑杆行换装全能力版 Slider（随滑杆件能力扩展）**：值标签（当前值＋单位）与轨道两侧 −/＋ 细调按钮已下沉进共享件 `@linkdesk/ui` 的 Slider 组件本体——本插件删掉自己的包裹层与值标签格式化器（`sliderValueLabel`），只把配置键上的声明原样直传。外观组七根滑杆（圆角×2 / 玻璃模糊 / 不透明度×3 / 圆角标尺）声明了细调，行内出现常驻 −/＋；无单位键照旧显示裸数值（如玻璃不透明度 `0.5`）。依赖 `@linkdesk/ui ≥ 0.2.36`。"
+          "publishedAt": "2026-10-03T13:15:57.345Z"
         },
         {
           "version": "1.0.26",
