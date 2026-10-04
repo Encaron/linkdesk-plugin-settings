@@ -1,7 +1,7 @@
 # 设置（settings）——LinkDesk 插件仓
 
 > **本文件是给在这个仓里干活的 AI 看的**（Claude Code / Codex / Cursor / …）。人看 `README.md`。
-> 插件身份的唯一来源 = `plugin.json` 顶层的 `pluginId`（本仓：`settings`）。当前版本 `1.0.31`。
+> 插件身份的唯一来源 = `plugin.json` 顶层的 `pluginId`（本仓：`settings`）。当前版本 `1.0.32`。
 
 ## 1. 这是什么
 
@@ -32,7 +32,8 @@
 
 - 数据全部走 `window.linkdesk.*` IPC（配置 / 键位 / 插件管理），**本仓不持有任何存储**。
 - 🔴 `floatingPanel.viewId` 指向 `views.settings` 的 viewId —— 三向自洽（`floatingPanel.viewId` ↔ `views[].id` ↔ `render`）由本仓 `npm run verify` 的「声明自洽」段守着。
-- **全仓只有它用 `floatingPanel`**；本仓没有 `i18n/`（key 就是中文原文，英文由 `lang-defaults` 提供）。
+- **全仓只有它用 `floatingPanel`**；自有字典在 `i18n/en.json`（`contributes.i18n.en` 声明）——**key 就是中文原文**（硬约束 2），英文由本仓字典给出；manifest 可渲染串（命令 title 等）必须有本仓译名，由 `npm run verify` 第 ⑧ 段判红。
+- 非组件模块（命令 handler / service）要译文就走 `import i18n from "i18next"` 的**默认实例**（宿主已把本插件字典并进全局实例）——先例：file-tree `FileTreeNotify.ts`、marketplace `notifications.ts`；`useTranslation()` 只在组件里用。
 
 ## 4. 规矩去哪找
 

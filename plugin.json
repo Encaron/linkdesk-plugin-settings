@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@linkdesk/plugin-sdk/schemas/plugin.schema.json",
   "pluginId": "settings",
   "name": "设置",
-  "version": "1.0.31",
+  "version": "1.0.32",
   "minAppVersion": "0.2.32",
   "icon": "resources/icon-bar.svg",
   "marketIcon": "resources/icon.svg",
@@ -56,8 +56,104 @@
             "description": "{ command: string }——要改的命令 id（如 file-tree.openFile）；省略则弹选择器"
           }
         ]
+      },
+      {
+        "id": "settings.keybinding.copyId",
+        "title": "复制命令 ID",
+        "description": "把命令 id 复制到剪贴板（快捷键页齿轮菜单用；如 workbench.action.selectLanguage）。",
+        "params": [
+          {
+            "name": "context",
+            "type": "object",
+            "required": false,
+            "description": "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入"
+          }
+        ]
+      },
+      {
+        "id": "settings.keybinding.copyName",
+        "title": "复制命令名称",
+        "description": "把命令的显示名复制到剪贴板（快捷键页齿轮菜单用）。",
+        "params": [
+          {
+            "name": "context",
+            "type": "object",
+            "required": false,
+            "description": "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入"
+          }
+        ]
+      },
+      {
+        "id": "settings.keybinding.copyKey",
+        "title": "复制快捷键",
+        "description": "把本行绑定的键位串原样复制到剪贴板（含 chord 的空格分段，如 ctrl+k ctrl+l）。",
+        "params": [
+          {
+            "name": "context",
+            "type": "object",
+            "required": false,
+            "description": "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入"
+          }
+        ]
+      },
+      {
+        "id": "settings.keybinding.copyJson",
+        "title": "复制为 JSON",
+        "description": "把本行绑定按 keybindings.json 的存储形状复制到剪贴板（{command, key, when?}——有 when 才带），可直接粘回文件生效。",
+        "params": [
+          {
+            "name": "context",
+            "type": "object",
+            "required": false,
+            "description": "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入"
+          }
+        ]
+      },
+      {
+        "id": "settings.keybinding.resetToDefault",
+        "title": "重置为默认",
+        "description": "弹确认框后清掉本行的用户覆盖，回到内置绑定并写入 keybindings.json。",
+        "params": [
+          {
+            "name": "context",
+            "type": "object",
+            "required": false,
+            "description": "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入"
+          }
+        ]
       }
     ],
+    "menus": {
+      "keybindingItemGear": [
+        {
+          "command": "settings.editKeybinding",
+          "group": "0_edit"
+        },
+        {
+          "command": "settings.keybinding.copyId",
+          "group": "1_copy"
+        },
+        {
+          "command": "settings.keybinding.copyName",
+          "group": "1_copy"
+        },
+        {
+          "command": "settings.keybinding.copyKey",
+          "group": "1_copy",
+          "when": "keybindingHasKey"
+        },
+        {
+          "command": "settings.keybinding.copyJson",
+          "group": "1_copy",
+          "when": "keybindingHasKey"
+        },
+        {
+          "command": "settings.keybinding.resetToDefault",
+          "group": "9_reset",
+          "when": "keybindingIsUser"
+        }
+      ]
+    },
     "configuration": {
       "title": "设置插件",
       "properties": {

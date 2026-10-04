@@ -11,10 +11,12 @@
 
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ContextMenu } from "@linkdesk/ui";
 import InlineChordEditor from "./InlineChordEditor";
 import { useKeybindingEditor } from "./useKeybindingEditor";
-import { useKeybindingReset } from "./useKeybindingReset";
+import { useKeybindingGearMenu } from "./useKeybindingGearMenu";
 import { useKeybindingRows } from "./useKeybindingRows";
+import { KEYBINDING_ITEM_GEAR_MENU } from "./keybindingGearTarget";
 import { consumeKeybindingEdit, subscribeKeybindingEdit } from "./keybindingEditRequest";
 import type { KeybindingSettingsViewProps } from "./types";
 import "./KeybindingSettingsView.css";
@@ -23,7 +25,7 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
   const { t } = useTranslation();
   const { search, setSearch, rows, allKeybindings } = useKeybindingRows(initialQuery);
   const editor = useKeybindingEditor(allKeybindings);
-  const handleResetDefault = useKeybindingReset();
+  const { gear, handleGearClick, handleGearClose } = useKeybindingGearMenu();
   const { editingRow, editRowRef, startEdit, splitChord } = editor;
 
   // ── M2 AI#25：命令侧的「改这条」意图 → 同一个编辑态（与双击**同一条路**）──
@@ -97,12 +99,14 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
                       {row.key}
                     </span>
                   )}
-                  {/* E3f #59-G：自定义过（source=user）的行显示重置齿轮 */}
-                  {!isEditing && row.source === "user" && (
+                  {/* 齿轮常显（2026-10-05 件 2）——旧形态只在 `source === "user"` 的行上出现
+                      （=「这条被改过」的指示灯），用户要它像设置页那样**每行都有**；hover 淡入是既有样式。
+                      点开的菜单项与门控见 `keybindingGearTarget.ts` / `plugin.json`（插件自有槽）。 */}
+                  {!isEditing && (
                     <button
                       className="settings-keybindings-row-gear"
-                      data-hint={t("重置为默认")} aria-label={t("重置为默认")}
-                      onClick={(e) => { e.stopPropagation(); handleResetDefault(row); }}
+                      data-hint={t("更多操作")} aria-label={t("更多操作")}
+                      onClick={(e) => { e.stopPropagation(); handleGearClick(e, row); }}
                     >
                       <span className="codicon codicon-gear" />
                     </button>
@@ -115,6 +119,16 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
           })
         )}
       </div>
+      {gear && (
+        /* 非模态：行内轻量菜单不吞首击（backdrop 吞击 = 每次齿轮后首击被吃），与设置页行齿轮同款 */
+        <ContextMenu
+          menuId={KEYBINDING_ITEM_GEAR_MENU}
+          anchor={gear.anchor}
+          context={gear.context}
+          onClose={handleGearClose}
+          variant="non-modal"
+        />
+      )}
     </div>
   );
 }
