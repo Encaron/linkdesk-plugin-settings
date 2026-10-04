@@ -1,13 +1,15 @@
 /**
  * keybindingGearTarget 单测——齿轮菜单的「行身份」与复制载荷（2026-10-05 件 2）。
  *
- * ## 为什么这三条判据值得测
+ * ## 为什么这几条判据值得测
  *
  * 都是**可证伪的窄事实**，而且错了不会报错、只会静默给错东西：
  *   ① `keybindingHasKey` 判错 ⇒ 无绑定的行也冒出「复制快捷键」，粘出来是 `—`（死项）；
  *   ② 「复制为 JSON」多带 / 少带 `when` ⇒ 粘回 `keybindings.json` **不等价**
  *      （少带 = 条件绑定被撕成全局绑定，可能与他人撞车）；
- *   ③ `readGearTarget` 缺 `command` 时若去猜（拿 title 顶）⇒ 重置/复制打到**别的行**。
+ *   ③ `readGearTarget` 缺 `command` 时若去猜（拿 title 顶）⇒ 重置/复制打到**别的行**；
+ *   ④（件 3）能力位 `keybindingCanClear` 若被「从行内容反推」⇒ 旧壳上会冒出
+ *      一项点了必然 TypeError 的死项（真值只该来自壳探测）。
  *
  * ## 测试面
  *
@@ -39,21 +41,23 @@ describe("常量", () => {
     expect(KEYBINDING_ITEM_GEAR_MENU).toBe("keybindingItemGear");
   });
 
-  it("命令 id 一律带 settings. 前缀，且两条 when 键名不同（一个有绑定 / 一个用户覆盖）", () => {
+  it("命令 id 一律带 settings. 前缀，且三条 when 键名互不相同（有绑定 / 用户覆盖 / 壳能力）", () => {
     expect(Object.values(KEYBINDING_GEAR_COMMANDS)).toEqual([
       "settings.keybinding.copyId",
       "settings.keybinding.copyName",
       "settings.keybinding.copyKey",
       "settings.keybinding.copyJson",
       "settings.keybinding.resetToDefault",
+      "settings.keybinding.clear",
     ]);
-    expect(KEYBINDING_GEAR_WHEN.hasKey).not.toBe(KEYBINDING_GEAR_WHEN.isUser);
+    const whens = Object.values(KEYBINDING_GEAR_WHEN);
+    expect(new Set(whens).size).toBe(whens.length);
   });
 });
 
 describe("keybindingGearContext——表格行 → 行身份", () => {
   it("有绑定：门控位为真，when 原样带上", () => {
-    const ctx = keybindingGearContext(row({ when: "resourceIsFile" }));
+    const ctx = keybindingGearContext(row({ when: "resourceIsFile" }), false);
     expect(ctx).toEqual({
       command: "workbench.action.selectLanguage",
       title: "选择语言",
@@ -62,18 +66,25 @@ describe("keybindingGearContext——表格行 → 行身份", () => {
       when: "resourceIsFile",
       keybindingHasKey: true,
       keybindingIsUser: false,
+      keybindingCanClear: false,
     });
   });
 
   it("无绑定（占位符）：有绑定位为假，且**不带 when 字段**（不是空串）", () => {
-    const ctx = keybindingGearContext(row({ key: NO_KEY }));
+    const ctx = keybindingGearContext(row({ key: NO_KEY }), true);
     expect(ctx.keybindingHasKey).toBe(false);
     expect("when" in ctx).toBe(false);
   });
 
   it("用户覆盖行：isUser 位为真（门控「重置为默认」）；plugin 行不是", () => {
-    expect(keybindingGearContext(row({ source: "user" })).keybindingIsUser).toBe(true);
-    expect(keybindingGearContext(row({ source: "plugin" })).keybindingIsUser).toBe(false);
+    expect(keybindingGearContext(row({ source: "user" }), true).keybindingIsUser).toBe(true);
+    expect(keybindingGearContext(row({ source: "plugin" }), true).keybindingIsUser).toBe(false);
+  });
+
+  it("🔴 能力位原样透传——**不从行内容反推**（旧壳传 false ⇒ 清空项不显）", () => {
+    const r = row({ key: "ctrl+k ctrl+l", source: "user" });
+    expect(keybindingGearContext(r, true).keybindingCanClear).toBe(true);
+    expect(keybindingGearContext(r, false).keybindingCanClear).toBe(false);
   });
 });
 
@@ -86,6 +97,7 @@ describe("readGearTarget——菜单项把本行 context 递进来", () => {
     when: "resourceIsFile",
     keybindingHasKey: true,
     keybindingIsUser: true,
+    keybindingCanClear: true,
   };
 
   it("原样收下本行身份", () => {
@@ -110,6 +122,12 @@ describe("readGearTarget——菜单项把本行 context 递进来", () => {
     expect(readGearTarget({ command: "a.b", key: NO_KEY })?.keybindingHasKey).toBe(false);
     expect(readGearTarget({ command: "a.b", source: "user" })?.keybindingIsUser).toBe(true);
     expect(readGearTarget({ command: "a.b", source: "builtin" })?.keybindingIsUser).toBe(false);
+  });
+
+  it("🔴 能力位缺省取 **false**（⛔ 不从 key/source 反推）——它问的是「壳有没有那个 API」", () => {
+    expect(readGearTarget({ command: "a.b", key: "ctrl+s", source: "user" })?.keybindingCanClear).toBe(false);
+    expect(readGearTarget({ command: "a.b", keybindingCanClear: true })?.keybindingCanClear).toBe(true);
+    expect(readGearTarget({ command: "a.b", keybindingCanClear: "yes" })?.keybindingCanClear).toBe(false);
   });
 });
 

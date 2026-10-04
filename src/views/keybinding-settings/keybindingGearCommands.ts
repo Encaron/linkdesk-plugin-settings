@@ -1,22 +1,23 @@
 /**
- * keybindingGearCommands——快捷键行齿轮菜单的五条命令（四条复制 ＋ 重置为默认）。
+ * keybindingGearCommands——快捷键行齿轮菜单的六条命令（四条复制 ＋ 重置为默认 ＋ 清空快捷键）。
  *
  * ## 补的是哪条隐形路径
  *
  * 快捷键页的「改这条绑定的键」此前**只有双击行**（`KeybindingSettingsView` 的 `onDoubleClick`），
  * 而齿轮此前**只在 `source === "user"` 的行上出现**、且一个按钮 = 一个动作（重置）。
  * 本次：齿轮常显（每行都有）＋ 点开是一个菜单——第一项「修改快捷键…」把双击那条路显式化，
- * 其后四条复制让「拿这条绑定的 id / 名字 / 键位 / JSON 去别处用」不必手抄。
+ * 其后四条复制让「拿这条绑定的 id / 名字 / 键位 / JSON 去别处用」不必手抄；
+ * 「重置为默认」回到作者键，「清空快捷键」则是**这条命令不要键**（见 `keybindingClear.ts` 的分工表）。
  *
- * ## 为什么重置项也走命令
+ * ## 为什么重置/清空也走命令
  *
- * 原行内齿轮按钮直接调 hook 里的重置动作；菜单化后按钮没了，重置必须成为**可被菜单项引用**的命令
- * （菜单项 `command` 字段只能指命令）。动作本体仍住 `keybindingReset.ts`——一条路，两个入口
- * （菜单项 / 将来的 AI 调用）共用。
+ * 原行内齿轮按钮直接调 hook 里的重置动作；菜单化后按钮没了，动作必须成为**可被菜单项引用**的命令
+ * （菜单项 `command` 字段只能指命令）。动作本体住 `keybindingReset.ts` / `keybindingClear.ts`
+ * ——一条路，两个入口（菜单项 / 将来的 AI 调用）共用。
  *
  * ## 入参
  *
- * 五条的入参都是**同一份**「本行身份」：`ContextMenu` 执行菜单项时把它的 `context` prop 作为
+ * 六条的入参都是**同一份**「本行身份」：`ContextMenu` 执行菜单项时把它的 `context` prop 作为
  * 最后一枚实参送到 handler（`executeCommand(id, undefined, ...commandArgs, context)`，池侧归一后
  * handler 收到 `args[0]` = 本行 context）。字段解释见 `keybindingGearTarget.ts`。
  *
@@ -27,14 +28,13 @@
 import i18n from "i18next";
 import {
   KEYBINDING_GEAR_COMMANDS,
+  NOTIFY_SOURCE,
   buildKeybindingJson,
   readGearTarget,
   type KeybindingGearContext,
 } from "./keybindingGearTarget";
+import { clearKeybinding } from "./keybindingClear";
 import { resetKeybindingToDefault } from "./keybindingReset";
-
-/** 本插件自己的通知来源 id——壳侧通知面板按它分组（同一次操作的回执落同一组） */
-const NOTIFY_SOURCE = "settings";
 
 /** 复制到系统剪贴板 ＋ 一条回执 toast。剪贴板面不可用（壳进程/预览）⇒ 静默，不影响调用方 */
 async function copyWithReceipt(text: string, receipt: string): Promise<void> {
@@ -49,14 +49,14 @@ async function copyField(text: string): Promise<void> {
 }
 
 /**
- * 注册五条命令。
+ * 注册六条命令。
  * @returns 注册条数（0 = `window.linkdesk.commands` 不可用）
  */
 export function registerKeybindingGearCommands(): number {
   const reg = window.linkdesk?.commands?.registerCommand;
   if (!reg) return 0;
 
-  const { copyId, copyName, copyKey, copyJson, resetToDefault } = KEYBINDING_GEAR_COMMANDS;
+  const { copyId, copyName, copyKey, copyJson, resetToDefault, clear } = KEYBINDING_GEAR_COMMANDS;
 
   reg(copyId, async (args?: unknown) => {
     const ctx = readGearTarget(args);
@@ -90,5 +90,12 @@ export function registerKeybindingGearCommands(): number {
     await resetKeybindingToDefault({ command: ctx.command, title: ctx.title });
   });
 
-  return 5;
+  reg(clear, async (args?: unknown) => {
+    const ctx = readGearTarget(args);
+    if (!ctx) return;
+    // 确认框与能力探测都在动作本体里（`keybindingClear`）——旧壳上给一句说明、不静默失败
+    await clearKeybinding({ command: ctx.command, title: ctx.title });
+  });
+
+  return 6;
 }

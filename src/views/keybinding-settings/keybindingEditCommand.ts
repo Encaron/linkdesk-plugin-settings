@@ -13,9 +13,19 @@
  *    ⇒ 不用鼠标也能走完全程。
  *
  * 两条路都**先把设置页开出来并切到「快捷键」页**——走壳命令
- * `workbench.action.openKeybindingsSettings`（`query` = 命令 id ⇒ 搜索框预填、目标行可见），
- * 再写意图。⚠️ **顺序不能反**：写成「先写意图再开页面」才两种状态都对——页面后开时领待办，
- * 页面已开时走订阅当场投递（见 `keybindingEditRequest.ts` 的双通道）。
+ * `workbench.action.openKeybindingsSettings`，再写意图。
+ *
+ * ⚠️ **两个订正（2026-10-05）**：
+ *
+ * 1. **`{ query }` 预填不存在。** 壳 `settingsCommands.ts` 的 `workbench.action.openKeybindingsSettings`
+ *    只取第一参数当对象瞄一眼就**忽略**（`openKeybindingsSettings()` 不接受 query）——历史注释里
+ *    「搜索框预填、目标行可见」是**空头承诺**。目标行可见靠的是**意图落下后进编辑态**（视图滚到那一行），
+ *    ⛔ 不是搜索框。参数照旧传（未来壳若接上即成真），但别当它是既有能力。
+ * 2. **已在页内就不请壳开页。** 那条壳命令的语义是「打开设置页」，会经 `OPEN_SETTINGS` ⇒
+ *    `icon:selected(settingsId)` **连带选中左栏的设置图标**——用户本来就在快捷键页上时，
+ *    表现为「缩回左侧栏」（用户实测的缺陷）。故加判据：本页**挂载中**（`keybindingViewPresence`）
+ *    ⇒ 只写意图，让挂载中的视图订阅当场进编辑态（与双击**同一条路**）；**不在页内** ⇒ 才请壳开页。
+ *    顺序仍不能反：先写意图再开页——页面后开时领待办，页面已开时走订阅当场投递（见 `keybindingEditRequest.ts`）。
  *
  * ## 🔴 边界（本格不越界）
  *
@@ -28,6 +38,7 @@
  */
 
 import { requestKeybindingEdit } from "./keybindingEditRequest";
+import { isKeybindingViewMounted } from "./keybindingViewPresence";
 
 /** 壳侧命令——打开快捷键设置页（`settingsCommands.ts` 的 `workbench.action.openKeybindingsSettings`） */
 const OPEN_KEYBINDINGS_COMMAND = "workbench.action.openKeybindingsSettings";
@@ -88,9 +99,12 @@ export async function runEditKeybinding(args?: EditKeybindingArgs): Promise<Edit
     }
   }
 
-  // 先写意图再开页面：页面后开 ⇒ 领待办；页面已开 ⇒ 订阅当场投递（两种都成立）
+  // 先写意图：页面后开 ⇒ 领待办；页面已开 ⇒ 订阅当场投递（两种都成立）
   requestKeybindingEdit(target);
-  await lk?.commands?.executeCommand?.(OPEN_KEYBINDINGS_COMMAND, { query: target });
+  // 已在快捷键页内 ⇒ ⛔ 不请壳开页（那条命令会连带选中左栏设置图标 = 用户看到的「缩回左侧栏」）
+  if (!isKeybindingViewMounted()) {
+    await lk?.commands?.executeCommand?.(OPEN_KEYBINDINGS_COMMAND, { query: target });
+  }
 
   return {
     editing: true,

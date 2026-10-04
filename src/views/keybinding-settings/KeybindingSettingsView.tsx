@@ -18,6 +18,7 @@ import { useKeybindingGearMenu } from "./useKeybindingGearMenu";
 import { useKeybindingRows } from "./useKeybindingRows";
 import { KEYBINDING_ITEM_GEAR_MENU } from "./keybindingGearTarget";
 import { consumeKeybindingEdit, subscribeKeybindingEdit } from "./keybindingEditRequest";
+import { setKeybindingViewMounted } from "./keybindingViewPresence";
 import type { KeybindingSettingsViewProps } from "./types";
 import "./KeybindingSettingsView.css";
 
@@ -27,6 +28,15 @@ function KeybindingSettingsView({ initialQuery }: KeybindingSettingsViewProps) {
   const editor = useKeybindingEditor(allKeybindings);
   const { gear, handleGearClick, handleGearClose } = useKeybindingGearMenu();
   const { editingRow, editRowRef, startEdit, splitChord } = editor;
+
+  // ── 2026-10-05：本页在场标志（修「齿轮点『修改快捷键』被弹回左侧栏」）──
+  // 本页是**条件渲染**的（非本 tab 直接卸载）⇒ 挂载中 ⇔ 用户正看着快捷键页。
+  // 命令侧的 `settings.editKeybinding` 据此判断要不要请壳「打开设置页」
+  // （已在页内就别请壳——那条壳命令会连带选中左栏设置图标）。见 `keybindingViewPresence.ts`。
+  useEffect(() => {
+    setKeybindingViewMounted(true);
+    return () => setKeybindingViewMounted(false);
+  }, []);
 
   // ── M2 AI#25：命令侧的「改这条」意图 → 同一个编辑态（与双击**同一条路**）──
   // 双通道：挂载时领待办（设置页由命令侧打开时，请求早于本视图），在场时走订阅当场收。

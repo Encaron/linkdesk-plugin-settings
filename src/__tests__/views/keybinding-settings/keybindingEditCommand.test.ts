@@ -11,14 +11,20 @@
  *
  * `commands` / `quickPick` / `keybindings` 是共享地基（`@linkdesk/plugin-sdk/vitest-setup`）
  * 六通用面之外的三个面，本文件按需 `vi.fn()` 补上——「插件专属桩住本仓测试文件」的写法。
- * 壳命令名与参数做了**字面断言**：`workbench.action.openKeybindingsSettings` 的 `{ query }`
- * 是壳侧那条命令的实参契约（`settingsCommands.ts` / `persistence.ts`），改错了设置页不会跳到那条。
+ * 壳命令名与实参做了**字面断言**：`workbench.action.openKeybindingsSettings` 是壳侧那条命令
+ * （`settingsCommands.ts`）。⚠️ **它不消费 `{ query }`**（只是历史注释里的说法，实为忽略）——
+ * 别把那条断言读成「搜索框会预填」。
+ *
+ * 🔴 **2026-10-05 追加一组负控**：**已在快捷键页内时⛔ 不许调那条壳命令**——那条命令的语义
+ * 是「打开设置页」，会连带把左栏的设置图标选中（用户实测的「缩回左侧栏」）。在场判据的
+ * 置位/归零由 `keybindingViewPresence.test.tsx` 真渲染那只视图来钉。
  */
 
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import {
   consumeKeybindingEdit, resetKeybindingEditRequest,
 } from "../../../views/keybinding-settings/keybindingEditRequest";
+import { setKeybindingViewMounted } from "../../../views/keybinding-settings/keybindingViewPresence";
 import {
   registerKeybindingEditCommand, runEditKeybinding,
 } from "../../../views/keybinding-settings/keybindingEditCommand";
@@ -34,6 +40,7 @@ let show: ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
   resetKeybindingEditRequest();
+  setKeybindingViewMounted(false);
   handlers = new Map();
   executeCommand = vi.fn(async () => undefined);
   show = vi.fn(async () => undefined);
@@ -49,6 +56,7 @@ beforeEach(() => {
 
 afterEach(() => {
   resetKeybindingEditRequest();
+  setKeybindingViewMounted(false);
   vi.restoreAllMocks();
 });
 
@@ -118,5 +126,34 @@ describe("不带 command——选择器（命令面板给不了参数，那条�
     expect(executeCommand).not.toHaveBeenCalled();
     expect(consumeKeybindingEdit()).toBeNull();
     expect(res).toEqual({ editing: false, command: "", note: expect.stringContaining("取消") });
+  });
+});
+
+describe("🔴 已在快捷键页内——不许惊动壳（修「缩回左侧栏」）", () => {
+  it("在场 ⇒ **不调那条壳命令**，但意图照写（挂载中的视图订阅它，当场进编辑态）", async () => {
+    setKeybindingViewMounted(true);
+    const res = await runEditKeybinding({ command: "serial-monitor.openPort" });
+
+    expect(executeCommand).not.toHaveBeenCalled(); // ← 这一条就是「不再被弹回左侧栏」
+    expect(consumeKeybindingEdit()).toBe("serial-monitor.openPort");
+    expect(res.command).toBe("serial-monitor.openPort");
+  });
+
+  it("不在场（命令面板 / AI / CLI 直调）⇒ 仍请壳把这一页开出来", async () => {
+    setKeybindingViewMounted(false);
+    await runEditKeybinding({ command: "serial-monitor.openPort" });
+
+    expect(executeCommand).toHaveBeenCalledWith("workbench.action.openKeybindingsSettings", { query: "serial-monitor.openPort" });
+  });
+
+  it("选择器那条路同样受在场判据管（点齿轮 = 在场，就不弹回左侧栏）", async () => {
+    setKeybindingViewMounted(true);
+    show.mockImplementation(async (opts: { items: Array<{ description?: string }> }) =>
+      opts.items.find((i) => i.description === "serial-monitor.openPort"));
+
+    await runEditKeybinding();
+
+    expect(executeCommand).not.toHaveBeenCalled();
+    expect(consumeKeybindingEdit()).toBe("serial-monitor.openPort");
   });
 });

@@ -16,9 +16,13 @@
  * ## 判据
  *
  * 1. 菜单里每个 `when` 标识符都是行身份的属性名（`in` 判定 = `_readKey` 的真实条件）；
- * 2. `KEYBINDING_GEAR_WHEN` 的两串与 `plugin.json` 实际用的一致（常量不许漂）；
- * 3. 六项的命令都指向本插件自己声明的命令（「修改快捷键…」复用既有 `settings.editKeybinding`）；
- * 4. 常显三项无 `when`、门控三项有 `when`，且组序非降（`0_edit` → `1_copy` → `9_reset`）。
+ * 2. `KEYBINDING_GEAR_WHEN` 的三串与 `plugin.json` 实际用的一致（常量不许漂）；
+ * 3. 七项的命令都指向本插件自己声明的命令（「修改快捷键…」复用既有 `settings.editKeybinding`）；
+ * 4. 常显三项无 `when`、门控四项有 `when`，且组序非降（`0_edit` → `1_copy` → `9_reset`）。
+ *
+ * ⚠️ 1.0.34 起 `keybindingGearContext` **多一枚必填实参**（`canClear`：壳能力位）——
+ * 测试里一律显式传 `true`（「这个壳支持清空」），⭐ 顺手把「漏传就编译不过」这条编译期护栏
+ * 钉在测试里：与上一次「`when` 名字对不上却静默跑通」的事故同类，只是这次让编译器先喊。
  */
 
 import { readFileSync } from "node:fs";
@@ -62,18 +66,18 @@ const identifiersOf = (expr: string): string[] =>
 describe("菜单声明 ↔ 行身份：字段名契约", () => {
   it("菜单槽读得到（槽名写错 ⇒ 空数组——后面几条会集体失效，不是假绿）", () => {
     expect(KEYBINDING_ITEM_GEAR_MENU).toBe("keybindingItemGear");
-    expect(items.length).toBe(6);
+    expect(items.length).toBe(7);
   });
 
   it("每个 when 标识符都是行身份的属性名（🔴 `_readKey` 是 `key in overrides` 裸查表）", () => {
     const guarded = items.filter(i => i.when);
-    expect(guarded.length).toBe(3); // 门控项：复制快捷键 / 复制为 JSON / 重置为默认
+    expect(guarded.length).toBe(4); // 门控项：复制快捷键 / 复制为 JSON / 重置为默认 / 清空快捷键
 
     for (const item of guarded) {
       const ids = identifiersOf(item.when as string);
       expect(ids.length).toBeGreaterThan(0);
       for (const row of rows) {
-        const ctx = keybindingGearContext(row);
+        const ctx = keybindingGearContext(row, true);
         for (const id of ids) {
           expect(id in ctx, `when "${item.when}" 里的 "${id}" 不是行身份字段`).toBe(true);
         }
@@ -81,22 +85,30 @@ describe("菜单声明 ↔ 行身份：字段名契约", () => {
     }
   });
 
-  it("KEYBINDING_GEAR_WHEN 的两串与 plugin.json 实际用的一致（常量不许漂）", () => {
+  it("KEYBINDING_GEAR_WHEN 的三串与 plugin.json 实际用的一致（常量不许漂）", () => {
     const used = new Set(items.filter(i => i.when).flatMap(i => identifiersOf(i.when as string)));
     expect([...used].sort()).toEqual([...Object.values(KEYBINDING_GEAR_WHEN)].sort());
   });
 
-  it("六项都指向本插件声明的命令（「修改快捷键…」复用既有 settings.editKeybinding）", () => {
+  it("七项都指向本插件声明的命令（「修改快捷键…」复用既有 settings.editKeybinding）", () => {
     const allowed = new Set<string>(["settings.editKeybinding", ...Object.values(KEYBINDING_GEAR_COMMANDS)]);
     for (const item of items) expect(allowed.has(item.command), `未声明的命令：${item.command}`).toBe(true);
   });
 
-  it("常显三项无 when、门控三项有 when；组序非降 = 0_edit → 1_copy → 9_reset", () => {
+  it("常显三项无 when、门控四项有 when；组序非降 = 0_edit → 1_copy → 9_reset", () => {
     const unguarded = items.filter(i => !i.when).map(i => i.command).sort();
     const alwaysOn = [KEYBINDING_GEAR_COMMANDS.copyId, KEYBINDING_GEAR_COMMANDS.copyName, "settings.editKeybinding"].sort();
     expect(unguarded).toEqual(alwaysOn);
 
     const groups = items.map(i => i.group ?? "");
     expect(groups).toEqual([...groups].sort());
+  });
+
+  it("🔴 清空那项的 when 带「壳能力位」——旧壳（无 clearKeybindingForCommand）上它必须不显示", () => {
+    const clearItem = items.find(i => i.command === KEYBINDING_GEAR_COMMANDS.clear);
+    expect(clearItem).toBeDefined();
+    // 有绑定但壳不支持 ⇒ canClear 位假 ⇒ 这一项被门控掉（不是显示一个点了必然报错的死项）
+    expect(identifiersOf(clearItem?.when as string)).toContain(KEYBINDING_GEAR_WHEN.canClear);
+    expect(keybindingGearContext(rows[0], false)[KEYBINDING_GEAR_WHEN.canClear]).toBe(false);
   });
 });

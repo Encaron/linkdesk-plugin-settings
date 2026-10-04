@@ -7,6 +7,7 @@
 
 import { useCallback, useState } from "react";
 import i18n from "i18next";
+import { hasClearKeybindingApi } from "./keybindingClear";
 import { keybindingGearContext, type KeybindingGearContext } from "./keybindingGearTarget";
 import type { KeybindingRow } from "./types";
 
@@ -21,7 +22,9 @@ export function useKeybindingGearMenu() {
   /** 行内点击 → 以**那颗按钮**的矩形定位菜单（与设置页 `{x: rect.left, y: rect.bottom + 4}` 同款） */
   const handleGearClick = useCallback((e: { currentTarget: HTMLElement }, row: KeybindingRow) => {
     const rect = e.currentTarget.getBoundingClientRect();
-    const context = keybindingGearContext(row);
+    // 「清空快捷键」的门控位在**开菜单那一刻**探一次壳能力（LinkDesk 0.2.46+ 才有那个 API）——
+    // 旧壳上这一项不显，比显示一个点了必然报错的死项强
+    const context = keybindingGearContext(row, hasClearKeybindingApi());
     setGear({
       anchor: { x: rect.left, y: rect.bottom + 4 },
       // 名字取**界面语言**的显示名（与行的 `t(row.title)` 同口径，也是壳「复制设置名称」的口径）：

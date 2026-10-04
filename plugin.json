@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@linkdesk/plugin-sdk/schemas/plugin.schema.json",
   "pluginId": "settings",
   "name": "设置",
-  "version": "1.0.33",
+  "version": "1.0.34",
   "minAppVersion": "0.2.32",
   "icon": "resources/icon-bar.svg",
   "marketIcon": "resources/icon.svg",
@@ -47,7 +47,7 @@
       {
         "id": "settings.editKeybinding",
         "title": "修改快捷键…",
-        "description": "进入某条命令的快捷键编辑态（等于在「快捷键」页双击那一行）：先把设置页开出来并切到快捷键页，再按 command 指定要改哪条——不指定则弹命令选择器让使用者挑。⚠️ 只把那一行切进编辑态，新按键仍由使用者按（Enter 落地、Esc 取消）——不做「代按代存」。",
+        "description": "进入某条命令的快捷键编辑态（等于在「快捷键」页双击那一行）：人在快捷键页时当场进编辑态，不在时才先请壳把这一页开出来；再按 command 指定要改哪条——不指定则弹命令选择器让使用者挑。⚠️ 只把那一行切进编辑态，新按键仍由使用者按（Enter 落地、Esc 取消）——不做「代按代存」。",
         "params": [
           {
             "name": "args",
@@ -121,6 +121,19 @@
             "description": "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入"
           }
         ]
+      },
+      {
+        "id": "settings.keybinding.clear",
+        "title": "清空快捷键",
+        "description": "弹确认框后把本行的**所有**绑定（含内置/插件默认键）一并清掉——这条命令从此没有按键，且作者声明的默认键不会自动回来（想恢复默认键请用「重置为默认」）。写入 keybindings.json 的形态是 { command, key: \"\" }。需要 LinkDesk 0.2.46+，旧壳上这一项不显示。",
+        "params": [
+          {
+            "name": "context",
+            "type": "object",
+            "required": false,
+            "description": "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入"
+          }
+        ]
       }
     ],
     "menus": {
@@ -151,6 +164,11 @@
           "command": "settings.keybinding.resetToDefault",
           "group": "9_reset",
           "when": "keybindingIsUser"
+        },
+        {
+          "command": "settings.keybinding.clear",
+          "group": "9_reset",
+          "when": "keybindingHasKey && keybindingCanClear"
         }
       ]
     },
