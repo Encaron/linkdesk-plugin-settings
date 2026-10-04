@@ -27,6 +27,7 @@ import {
   urlSourceKey, // E6#30c：URL 源身份（owner/repo、分支无关）——stringList 的 itemKey（判重规则见 renderControl/stringList.ts）
 } from "@linkdesk/ui";
 import ObjectEditor from "./ObjectEditor";
+import { enumDescriptionAt } from "./enumDescription";
 import { mapSegmentedOptions } from "./mapSegmentedOptions"; // E5.8#99：分段单选选项映射（通用 segmented + fontTone/accentSource 预览覆盖共用）
 import type { ConfigProperty } from "./types";
 // 本案 5.1（02 E1 双轨）：只读行／背景图／未知 hint 降级全走适配层——共享件在就收编、不在退本地件
@@ -204,10 +205,12 @@ function renderPrimary(
         return <ActionButton prop={prop} t={t} actionDisabled={actionDisabled} />;
       }
       if (prop.enum && prop.enum.length > 0) {
-        const enumOptions = prop.enum.map((v, i) => ({
-          value: v,
-          label: prop.enumDescriptions?.[i] ? t(prop.enumDescriptions[i]) : t(v),
-        }));
+        const enumOptions = prop.enum.map((v, i) => {
+          // 显示名两种声明形态都吃（对象 = 插件 manifest schema 形态 / 数组 = 壳侧形态）——
+          // 旧写法按下标直读 ⇒ 插件侧的对象形态恒取不到，下拉裸显英文值（见 enumDescription.ts 头注）
+          const label = enumDescriptionAt(prop.enumDescriptions, v, i);
+          return { value: v, label: label ? t(label) : t(v) };
+        });
         return (
           <SelectBox
             value={String(val)}

@@ -48,6 +48,17 @@ describe("filterGroups", () => {
     expect(out[0].keys).toEqual(["app.a"]);
   });
 
+  it("短名（title）命中也算命中——行名已改显短名，用户照行名搜（配置项短名案 T2）", () => {
+    const groups = [g("编辑器", ["editor.autoSave", "editor.tabSize"])];
+
+    const out = filterGroups(groups, "自动保存", props({
+      "editor.autoSave": { title: "自动保存", description: "off 手动保存 / afterDelay 1 秒空闲后自动保存" },
+      "editor.tabSize": { title: "Tab 宽度" },
+    }));
+
+    expect(out[0].keys).toEqual(["editor.autoSave"]);
+  });
+
   it("**组标题命中 ⇒ 组内全部键保留**（标题在 keys 谓词里 ⇒ 整组都满足）", () => {
     const groups = [g("整体配方", ["app.theme", "app.themeColor"])];
 

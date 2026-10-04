@@ -23,6 +23,9 @@ export function useSettingRowGear(
   const handleGearClick = useCallback(async () => {
     try {
       window.linkdesk?.contextKey?.set("settingKey", configKey);
+      // 配置项短名案 T2：本行有短名才亮壳菜单「复制设置名称」项（壳 coreCommands when="settingHasTitle"——
+      // 无短名的行复制不出东西，⛔ 不留永远复制空的死项）
+      window.linkdesk?.contextKey?.set("settingHasTitle", !!prop?.title);
       // E5.8 用户审计 #3：跟随主题门控——键声明 resetsToTheme 才显示齿轮「跟随主题」项
       // （coreCommands when="settingModified && settingFollowTheme"——通用设置插件零外观知识）
       window.linkdesk?.contextKey?.set("settingFollowTheme", !!prop?.resetsToTheme);
@@ -46,6 +49,7 @@ export function useSettingRowGear(
     window.linkdesk?.contextKey?.set("settingModified", false);
     window.linkdesk?.contextKey?.set("settingFollowTheme", false);
     window.linkdesk?.contextKey?.set("settingResetsToDefault", false);
+    window.linkdesk?.contextKey?.set("settingHasTitle", false);
   }, []);
 
   return { gearAnchor, handleGearClick, handleGearClose };

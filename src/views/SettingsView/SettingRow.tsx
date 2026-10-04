@@ -73,7 +73,9 @@ function SettingRow({
     <div className="settings-row" id={`setting-row-${configKey}`}>
       <div className="settings-row-info">
         <div className="settings-row-label-line">
-          <label className="settings-row-label">{configKey}</label>
+          {/* 配置项短名案 T2（D4）：行名取声明里的 title（人话短名），无 title 回退显配置键——
+              第三方存量声明照旧可用（E1）；配置键仍可从齿轮「复制设置 ID」取到。 */}
+          <label className="settings-row-label">{prop.title ? t(prop.title) : configKey}</label>
           {/* E5.8#87+#99：来源徽标——只显非默认态（#6 降噪）：改过 ✏️ / 混搭域来源 🔀；
               theme 态无徽标 = 主题来源（清除后徽标消失 = 一眼可见「回主题」，对标 VS Code 非默认态才点显） */}
           {badge === "user" || badge === "mix" ? (

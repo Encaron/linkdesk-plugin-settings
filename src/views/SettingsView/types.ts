@@ -28,10 +28,15 @@ interface GroupInfo {
 /** ConfigurationProperty 精简版——IPC 序列化后使用的本地类型 */
 interface ConfigProperty {
   type?: string;
+  /** 配置项短名（行级人话名）——设置页行名取它，缺省回退显配置键（配置项短名案 T2）；
+   *  取值口径与 description 同源：声明里的中文原文即 i18n key，英文界面走本仓 i18n/en.json 译名。 */
+  title?: string;
   description?: string;
   default?: unknown;
   enum?: string[];
-  enumDescriptions?: string[];
+  /** 枚举档显示名——**两种形态都合法**：对象（插件 manifest 的 schema 规定形态，`值 → 显示名`）
+   *  或数组（壳侧声明与动态推送的下标对应形态）；取字统一走 `enumDescription.ts`（⛔ 别按下标直读）。 */
+  enumDescriptions?: string[] | Record<string, string>;
   minimum?: number;
   maximum?: number;
   /** E5.8#65：滑杆步进——uiHint "slider" 时第三方显式声明；缺省由 renderControl 按区间推导（浮点区间 0.01） */

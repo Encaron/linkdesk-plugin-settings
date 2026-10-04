@@ -19,6 +19,7 @@ export function filterGroups(
         const prop = allProps[k];
         return (
           k.toLowerCase().includes(q) ||
+          (prop?.title ?? "").toLowerCase().includes(q) ||
           (prop?.description ?? "").toLowerCase().includes(q) ||
           g.title.toLowerCase().includes(q)
         );
