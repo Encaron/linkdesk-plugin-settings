@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-10-04T20:28:39.446Z",
+  "updatedAt": "2026-10-04T20:46:22.153Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.32",
+      "version": "1.0.33",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.32/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.33/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.32/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.33/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.32",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.32/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.32/settings.linkdesk-plugin",
-      "size": 33172,
-      "publishedAt": "2026-10-04T20:28:39.446Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.33/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.33/settings.linkdesk-plugin",
+      "size": 33325,
+      "publishedAt": "2026-10-04T20:46:22.153Z",
       "versions": [
+        {
+          "version": "1.0.33",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.33/settings.linkdesk-plugin",
+          "publishedAt": "2026-10-04T20:46:22.153Z",
+          "changelog": "- 🔴 **修复上一版（1.0.32）的一个问题：齿轮菜单里的「复制快捷键」「复制为 JSON」「重置为默认」三项根本不显示**——点开菜单只看到另外三项（修改快捷键… / 复制命令 ID / 复制命令名称）。原因是这三项的出现条件所用的名字，与插件实际递过去的「本行信息」字段名对不上，而软件是按名字精确查表的（查不到就当条件不成立）⇒ 静默失效、不报错、看着像「这三项没做」。现已对齐，**六项按原设计全部出现**：有绑定的行多出两条复制，你改过的行多出「重置为默认」。\n- 新增一道回归校验：把菜单声明与插件实际递出的字段逐字对账，同类「名字对不上就静默不显示」的问题不会再溜过测试。\n- 其余（齿轮常显、键盘焦点样式、复制内容与 JSON 形状）与 1.0.32 一字不变。\n- 要求 LinkDesk **0.2.32 或更高**（未变）。"
+        },
         {
           "version": "1.0.32",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.32/settings.linkdesk-plugin",
@@ -47,8 +53,7 @@
         {
           "version": "1.0.28",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.28/settings.linkdesk-plugin",
-          "publishedAt": "2026-10-03T16:29:03.811Z",
-          "changelog": "- **设置控件收编进共享层（随「设置控件-词表正典与共享化」）**：只读状态行、背景图选择器、来源徽标（✏️ 用户覆盖／🔀 混搭域）、「生效：」徽标——这四件改由共享件 `@linkdesk/ui` 提供，与本软件其他界面同一套控件、同一条样式来源。**行为与 1.0.27 一致**；在尚未装上新版共享件的软件上（壳 < 0.2.37）自动继续用本插件自带的同款实现——不会崩、不留白。\n- **不认识的控件类型不再可编辑**：某个配置项声明了本插件不认识的控件类型时，改为「只读显示当前值 ＋ 悬停说明」，不再落进可编辑文本框——此前那种情况会把 `__none__` 这类内部标记当普通文字显示、甚至被改坏。**没声明控件类型的配置项**（绝大多数设置项）**行为一字不变**。\n- 生效值徽标里「生效值」的显示形态（颜色带色块／字体只显首个字族）改从共享件取——显示结果不变。\n- 要求 LinkDesk **0.2.32 或更高**（未变）；共享件能力在 **0.2.37 或更高**的软件上自动启用。"
+          "publishedAt": "2026-10-03T16:29:03.811Z"
         },
         {
           "version": "1.0.27",
