@@ -42,7 +42,8 @@ const TARGET: KeybindingGearContext = {
   title: "选择语言",
   key: "ctrl+k ctrl+l",
   source: "user",
-  hasKey: true,
+  keybindingHasKey: true,
+  keybindingIsUser: true,
 };
 
 let handlers: Map<string, (args?: unknown) => unknown>;

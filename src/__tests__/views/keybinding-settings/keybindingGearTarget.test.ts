@@ -4,7 +4,7 @@
  * ## 为什么这三条判据值得测
  *
  * 都是**可证伪的窄事实**，而且错了不会报错、只会静默给错东西：
- *   ① `hasKey` 判错 ⇒ 无绑定的行也冒出「复制快捷键」，粘出来是 `—`（死项）；
+ *   ① `keybindingHasKey` 判错 ⇒ 无绑定的行也冒出「复制快捷键」，粘出来是 `—`（死项）；
  *   ② 「复制为 JSON」多带 / 少带 `when` ⇒ 粘回 `keybindings.json` **不等价**
  *      （少带 = 条件绑定被撕成全局绑定，可能与他人撞车）；
  *   ③ `readGearTarget` 缺 `command` 时若去猜（拿 title 顶）⇒ 重置/复制打到**别的行**。
@@ -52,7 +52,7 @@ describe("常量", () => {
 });
 
 describe("keybindingGearContext——表格行 → 行身份", () => {
-  it("有绑定：hasKey 为真，when 原样带上", () => {
+  it("有绑定：门控位为真，when 原样带上", () => {
     const ctx = keybindingGearContext(row({ when: "resourceIsFile" }));
     expect(ctx).toEqual({
       command: "workbench.action.selectLanguage",
@@ -60,21 +60,36 @@ describe("keybindingGearContext——表格行 → 行身份", () => {
       key: "ctrl+k ctrl+l",
       source: "builtin",
       when: "resourceIsFile",
-      hasKey: true,
+      keybindingHasKey: true,
+      keybindingIsUser: false,
     });
   });
 
-  it("无绑定（占位符）：hasKey 为假，且**不带 when 字段**（不是空串）", () => {
+  it("无绑定（占位符）：有绑定位为假，且**不带 when 字段**（不是空串）", () => {
     const ctx = keybindingGearContext(row({ key: NO_KEY }));
-    expect(ctx.hasKey).toBe(false);
+    expect(ctx.keybindingHasKey).toBe(false);
     expect("when" in ctx).toBe(false);
+  });
+
+  it("用户覆盖行：isUser 位为真（门控「重置为默认」）；plugin 行不是", () => {
+    expect(keybindingGearContext(row({ source: "user" })).keybindingIsUser).toBe(true);
+    expect(keybindingGearContext(row({ source: "plugin" })).keybindingIsUser).toBe(false);
   });
 });
 
 describe("readGearTarget——菜单项把本行 context 递进来", () => {
+  const FULL = {
+    command: "editor.action.rename",
+    title: "重命名",
+    key: "F2",
+    source: "user",
+    when: "resourceIsFile",
+    keybindingHasKey: true,
+    keybindingIsUser: true,
+  };
+
   it("原样收下本行身份", () => {
-    const ctx = readGearTarget({ command: "editor.action.rename", title: "重命名", key: "F2", source: "user", when: "resourceIsFile", hasKey: true });
-    expect(ctx).toEqual({ command: "editor.action.rename", title: "重命名", key: "F2", source: "user", when: "resourceIsFile", hasKey: true });
+    expect(readGearTarget(FULL)).toEqual(FULL);
   });
 
   it("缺 command / 空 command ⇒ undefined（⛔ 不拿 title 猜目标）", () => {
@@ -90,9 +105,11 @@ describe("readGearTarget——菜单项把本行 context 递进来", () => {
     expect(readGearTarget({ command: "a.b" })).toMatchObject({ command: "a.b", title: "a.b", key: NO_KEY, source: "" });
   });
 
-  it("hasKey 缺省时由 key 反推（老壳只送四字段也不至于把复制项藏错）", () => {
-    expect(readGearTarget({ command: "a.b", key: "ctrl+s" })?.hasKey).toBe(true);
-    expect(readGearTarget({ command: "a.b", key: NO_KEY })?.hasKey).toBe(false);
+  it("门控位缺省时由 key / source 反推（只送四字段的调用方也不至于把菜单项藏错）", () => {
+    expect(readGearTarget({ command: "a.b", key: "ctrl+s" })?.keybindingHasKey).toBe(true);
+    expect(readGearTarget({ command: "a.b", key: NO_KEY })?.keybindingHasKey).toBe(false);
+    expect(readGearTarget({ command: "a.b", source: "user" })?.keybindingIsUser).toBe(true);
+    expect(readGearTarget({ command: "a.b", source: "builtin" })?.keybindingIsUser).toBe(false);
   });
 });
 

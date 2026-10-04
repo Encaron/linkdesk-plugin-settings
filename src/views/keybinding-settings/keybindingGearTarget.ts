@@ -34,8 +34,16 @@ export const KEYBINDING_GEAR_COMMANDS = {
 
 /** 菜单项 `when` 用的两个**本行局部**上下文键。
  *  不是全局 context key（⛔ 不走 `contextKey.set`）：它们是 `ContextMenu` 的 `context` prop，
- *  查询期作为 overrides 被 `ContextKeyService._readKey` 直读（`key in overrides` ⇒ 无需预先声明）。
- *  这样既躲开全局键的竞态，也躲开宿主 reserved 键账本。 */
+ *  查询期作为 overrides 被 `ContextKeyService._readKey` 直读。
+ *
+ *  🔴 **这两串必须与 `KeybindingGearContext` 上的属性名逐字相同**——`_readKey` 是裸属性查表
+ *  （`if (overrides && key in overrides) return overrides[key]`）：表达式里的标识符直接当属性名用，
+ *  查不到就退回全局 state（那里没有这两个行局部键）⇒ **求值恒 false、菜单项静默不显示**
+ *  （不报错、不警告，看着只像「这项没做」）。
+ *  2026-10-05 件 2 首版就栽在这里：声明写 `keybindingHasKey` / `keybindingIsUser`，行身份却叫
+ *  `hasKey`／压根没有 isUser ⇒ 三条门控项（复制快捷键 / 复制为 JSON / 重置为默认）一个都不出。
+ *  现在两道锁守着：下面用**计算属性名**从本常量取字段名（改名即编译错），
+ *  `keybindingGearMenuContract.test.ts` 拿 `plugin.json` 对账。 */
 export const KEYBINDING_GEAR_WHEN = {
   /** 本行有绑定（`key !== NO_KEY`）——门控「复制快捷键 / 复制为 JSON」 */
   hasKey: "keybindingHasKey",
@@ -51,8 +59,10 @@ export interface KeybindingGearContext {
   source: string;
   /** 绑定条件原文（`KeybindingRow.when`）——只有有 `when` 才带 */
   when?: string;
-  /** 透明给 handler 的派生位（菜单门控已在 `when` 里判过一次，这里让 handler 不重复推导） */
-  hasKey: boolean;
+  /** 本行有绑定——🔴 属性名 = `KEYBINDING_GEAR_WHEN.hasKey`（⛔ 改名必须同笔改 plugin.json） */
+  keybindingHasKey: boolean;
+  /** 本行有用户覆盖——🔴 属性名 = `KEYBINDING_GEAR_WHEN.isUser`（同上） */
+  keybindingIsUser: boolean;
 }
 
 /** 表格行 → 本行身份 */
@@ -63,7 +73,8 @@ export function keybindingGearContext(row: KeybindingRow): KeybindingGearContext
     key: row.key,
     source: row.source,
     ...(row.when ? { when: row.when } : {}),
-    hasKey: row.key !== NO_KEY,
+    [KEYBINDING_GEAR_WHEN.hasKey]: row.key !== NO_KEY,
+    [KEYBINDING_GEAR_WHEN.isUser]: row.source === "user",
   };
 }
 
@@ -77,13 +88,19 @@ export function keybindingGearContext(row: KeybindingRow): KeybindingGearContext
 export function readGearTarget(args: unknown): KeybindingGearContext | undefined {
   const ctx = args as Partial<KeybindingGearContext> | null | undefined;
   if (!ctx || typeof ctx.command !== "string" || ctx.command === "") return undefined;
+  const key = typeof ctx.key === "string" ? ctx.key : NO_KEY;
+  const source = typeof ctx.source === "string" ? ctx.source : "";
+  const rawHasKey = ctx[KEYBINDING_GEAR_WHEN.hasKey];
+  const rawIsUser = ctx[KEYBINDING_GEAR_WHEN.isUser];
   return {
     command: ctx.command,
     title: typeof ctx.title === "string" && ctx.title ? ctx.title : ctx.command,
-    key: typeof ctx.key === "string" ? ctx.key : NO_KEY,
-    source: typeof ctx.source === "string" ? ctx.source : "",
+    key,
+    source,
     ...(typeof ctx.when === "string" && ctx.when ? { when: ctx.when } : {}),
-    hasKey: typeof ctx.hasKey === "boolean" ? ctx.hasKey : typeof ctx.key === "string" && ctx.key !== NO_KEY,
+    // 门控位缺省时由 key / source 反推——只送四字段的调用方也不至于把菜单项藏错
+    [KEYBINDING_GEAR_WHEN.hasKey]: typeof rawHasKey === "boolean" ? rawHasKey : key !== NO_KEY,
+    [KEYBINDING_GEAR_WHEN.isUser]: typeof rawIsUser === "boolean" ? rawIsUser : source === "user",
   };
 }
 
