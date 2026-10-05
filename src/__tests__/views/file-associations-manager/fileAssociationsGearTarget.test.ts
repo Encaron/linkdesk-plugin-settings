@@ -76,6 +76,24 @@ describe("readPluginCardGearTarget——卡齿轮（共享件固定送 context =
   });
 });
 
+describe("🔴 单参形状一律判空（2026-10-06 纠正案 V3 的机械判据）", () => {
+  // 壳按**展开**喂 handler（`handler(...realArgs)`）⇒ 只有 `(...args)` 形式的 handler 才收得全。
+  // 老写法是单参 ⇒ 解析器收到的是**被剥掉一层**的形状：clearRow 拿到「类型数组本身」、
+  // clearCard 拿到「context 对象本身」。这两条钉住「那种形状必须判空」——它是实机空转的直接成因。
+  it("clearRow：第一枚实参 = 类型数组本身 ⇒ 判空（⛔ 别拿第一个扩展名当目标）", () => {
+    expect(readContestedRowGearTarget(["docx", "pdf"])).toBeUndefined();
+  });
+
+  it("clearCard：第一枚实参 = context 对象本身 ⇒ 判空（同一种剥层）", () => {
+    expect(readPluginCardGearTarget({ pluginId: "plug-a" })).toBeUndefined();
+  });
+
+  it("正控：壳展开后的形状照旧成立（竞争行还带一枚菜单 context，不影响读 args[0]）", () => {
+    expect(readContestedRowGearTarget([["docx"], { pluginId: "plug-a" }])).toEqual({ exts: ["docx"] });
+    expect(readPluginCardGearTarget([{ pluginId: "plug-a" }])).toEqual({ pluginId: "plug-a" });
+  });
+});
+
 describe("planCardClear——只清「真的有键」的类", () => {
   const declared = ["docx", "xlsx", "pdf"];
 

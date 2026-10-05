@@ -6,6 +6,9 @@
  *    （漏一条 ⇒ 点了没反应，且不报错）；② 「清除相关默认覆盖」的**入参形状**取决于菜单由谁弹：
  *    PluginCard 的齿轮固定送 `context = { pluginId }`（共享件契约，管理器管不着），而管理器自弹的
  *    竞争行齿轮送的是 `commandArgs = [exts]`——两条路读同一枚 `args[0]`，形状完全不同，混了就是静默空转；
+ *    🔴 这一句的**前提**＝ handler 写 **rest 形式** `(...args)`（壳按展开调用 handler，
+ *    见 `fileAssociationsGearCommands.ts` 头注「载荷形状」）。单参 handler 喂进来的是**第一枚实参**，
+ *    本文件两个读入参的函数一律判空 ⇒ 静默空转（2026-10-06 · 纠正案加严 V3 实测正是此形）；
  * ③ 「哪些类真的要去清」是一条纯查表规则（键在才清），摘出来才测得动。
  *
  * ⛔ 本文件不 import `window.linkdesk`、不 import React——`fileAssociationsGearCommands.ts` 才碰 IPC。
@@ -38,6 +41,8 @@ export interface ContestedRowGearContext {
  *
  * 管理器自弹的菜单**不带 `context`**（`ContextMenu` 的 `context` 是整菜单共享的，本行身份该走
  * per-item 载荷）⇒ 命令 handler 收到 `args[0]` = `commandArgs[0]` = 类型数组。
+ * ⚠️ `args` 是**壳展开后的实参数组**——只有 `(...args)` 形式收得全；单参 handler 喂进来的就是
+ *    「类型数组本身」，`args[0]` 退化成第一个扩展名字符串 ⇒ 本函数判空（V3 实测的空转形）。
  * ⛔ 也容忍 `{exts: [...]}` 形态：将来若有调用方（AI 直接 exec）习惯命名入参，不必改两端。
  * 非法/空 ⇒ `undefined`（静默不动手，而不是「清了个空的」）。
  */

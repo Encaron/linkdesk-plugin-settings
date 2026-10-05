@@ -10,6 +10,20 @@
  * 写口一律经 `writeDefaults`（`fileAssociationsWrite.ts`）——新壳一次写 N 类、旧壳逐类退化，
  * ⛔ 两个 handler 都不直接碰 `setDefaultBulk`（旧壳上没有它）。
  *
+ * ## 🔴 载荷形状：handler 必须写 **rest 形式** `(...args)`，⛔ 不能写单参
+ *
+ * 壳把命令载荷按**展开**喂给 handler：`ContextMenu` 执行命令走
+ * `executeCommand(id, undefined, ...commandArgs, context)` ⇒ 池预加载归一成 `realArgs` 后
+ * `handler(...realArgs)`（`electron/preload-pool/commands.ts` 的 `callPoolHandler` 与 `:138` 归一）。
+ * ⇒ 本文件两条路读的「同一枚 `args[0]`」（见 `fileAssociationsGearTarget.ts` 头注）**只在 rest 形式下成立**：
+ *   单参会**只收到第一枚实参**——竞争行拿到的是类型数组本身、卡齿轮拿到的是 context 对象，解析器于是判空
+ *   ⇒ 菜单项点了**静默无反应**、且不报错（用户报的「齿轮空转」）。
+ *
+ * 🔴 2026-10-06 实机复验抓到的就是这个（纠正案加严 **V3**：三条齿轮全空转，而单测全绿——
+ *   旧单测把整个 `args` 数组当**一枚实参**直接喂给 handler，恰好与解析器的预期同形，于是「绿」）。
+ * ⚠️ 同仓 `keybindingGearCommands` 是**单参且正确**：它的解析器收「单个 context 对象」、菜单项也不带
+ *   `commandArgs`，正好与展开语义对齐。⇒ 判据不是「单参 or rest」，而是**解析器与实参形状对得上**。
+ *
  * ## 为什么走命令而不是行内回调
  *
  * ① 卡齿轮的菜单项是 `PluginCard` 渲染的，它的 `items` 只能指命令（`MenuItemDescriptor.command`）；
@@ -66,7 +80,8 @@ export function registerFileAssociationGearCommands(): number {
 
   // 竞争行：本格整格恢复自动。格内可能有已在自动态的类型——`applyDefaultBulkOverride` 对无键的
   // 删除是 no-op，整格仍是**一次写盘一次广播**（E31/E32），所以不必先过滤。
-  reg(clearRow, async (args?: unknown) => {
+  // 🔴 rest 形式（⛔ 不是 `(args?: unknown)`——单参只收第一枚实参，见文件头「载荷形状」）
+  reg(clearRow, async (...args: unknown[]) => {
     const target = readContestedRowGearTarget(args);
     if (!target) return;
     const fa = window.linkdesk?.fileAssociation;
@@ -83,7 +98,7 @@ export function registerFileAssociationGearCommands(): number {
   });
 
   // 卡：本插件名下所有「真有键」的类一并清除（键在别家名下的不动——那是别家的选择）
-  reg(clearCard, async (args?: unknown) => {
+  reg(clearCard, async (...args: unknown[]) => {
     const target = readPluginCardGearTarget(args);
     if (!target) return;
     const fa = window.linkdesk?.fileAssociation;
@@ -113,7 +128,10 @@ export function registerFileAssociationGearCommands(): number {
   // C2.4：`clipboard` 是**可选面**——脱窗/旧壳上它可能缺席，`?.()` 一旦缺面就静默什么都不发生
   //   （用户看到的就是「点了没反应」）。所以**先探面**（缺面 ⇒ 明说不可用），**再 try/catch**
   //   （IPC 失败/权限问题 ⇒ 抛出 ⇒ 回执走失败分支；⛔ 不让异常把后面的 toast 吞掉）。
-  reg(copyPluginId, async (args?: unknown) => {
+  // 🔴 2026-10-06 更正：C2.4 把「点了没反应」归因给 `clipboard` 缺席——**实机复验证明真因是载荷形状**
+  //   （单参丢数组，三条齿轮一起空转，copy 只是其中一条）。本探面**保留**（旧壳/脱窗降级仍然需要它），
+  //   ⛔ 但它不是那次的根因。
+  reg(copyPluginId, async (...args: unknown[]) => {
     const target = readPluginCardGearTarget(args);
     if (!target) return;
     const write = window.linkdesk?.clipboard?.writeText;
