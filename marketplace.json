@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-10-05T13:56:44.596Z",
+  "updatedAt": "2026-10-05T15:42:44.752Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.36",
+      "version": "1.0.37",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.36/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.37/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.36/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.37/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.32",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.36/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.36/settings.linkdesk-plugin",
-      "size": 44994,
-      "publishedAt": "2026-10-05T13:56:44.596Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.37/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.37/settings.linkdesk-plugin",
+      "size": 45914,
+      "publishedAt": "2026-10-05T15:42:44.752Z",
       "versions": [
+        {
+          "version": "1.0.37",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.37/settings.linkdesk-plugin",
+          "publishedAt": "2026-10-05T15:42:44.752Z",
+          "changelog": "- **「默认打开方式」组底部新增 OS 登记折叠块（文件打开方式案第 5 波 · T6）**——这一块管的是**系统层**：装上插件后，它的文件类型会出现在 Windows「打开方式」候选里；卸载就撤掉。它和本页上面那些「应用内默认」**互不干涉**（系统只认识「LinkDesk」整体，进门之后归哪只插件是本页的事）。形态照设计图：**折叠块**——summary 上一句话写明「关掉会发生什么」（关 = 停止替插件登记并撤回运行期已登记；安装包自带类型不动；与本页默认无关），展开是一条真设置行（开关）＋一行只读状态。\n- 🔴 **开关的标题与说明住壳、本插件不自造**：两段文案是壳的配置声明（`app.osAssociations.followPlugins`），译名随壳走；本仓只用 `t()` 转一道。壳没声明这个键（第三方壳）时整块不出现。\n- 只读状态行**不新开任何进程间通道**：读数只用本页已有数据（已装插件声明的类型数）。「运行期实际登记了哪些扩展名」住主进程，本波有意不为一行只读文字去扩契约/预加载面。\n- 零行为变化：不装这个键的老壳上，本插件其余部分一字未动。"
+        },
         {
           "version": "1.0.36",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.36/settings.linkdesk-plugin",
@@ -47,8 +53,7 @@
         {
           "version": "1.0.32",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.32/settings.linkdesk-plugin",
-          "publishedAt": "2026-10-04T20:28:39.446Z",
-          "changelog": "- **快捷键页每一行都出齿轮了，点开是一个菜单**：此前齿轮只在「这条被改过」的行上出现，而且一个齿轮 = 一个动作（重置）。现在**每一行**（内置／插件／用户，含没有绑定的行）都有齿轮，外观与设置页的齿轮一致（鼠标扫过去淡入）。\n- **齿轮菜单六项**：**修改快捷键…**、复制命令 ID、复制命令名称、复制快捷键、复制为 JSON、重置为默认。\n  - **「修改快捷键…」补的是一条隐形路径**：以前改一条绑定的键只能**双击那一行**，现在从菜单点同一项即可（效果与双击完全相同）；**没有绑定的行也能用**——原来没有绑定、现在想加一个，走这一项。\n  - 点它会把快捷键页的搜索框预填成该命令 ID（列表收窄到那一行）——这是软件侧「AI/CLI 直达改键」的同一条路；想保留整表视图，把搜索框清空即可。\n  - **「复制快捷键」「复制为 JSON」只在有绑定（不是 `—`）的行上出现**，「重置为默认」只在**你改过**（来源 = 用户）的行上出现——不留点了没反应的死项。\n  - 「复制快捷键」复制的是**原样键位串**（组合键保留中间的空格，如 `ctrl+k ctrl+l`）；「复制为 JSON」按 `keybindings.json` 的**存储形状**（带条件绑定的行连 `when` 一起复制），可以**直接粘回该文件生效**。\n- **键盘可达性修好**：齿轮常显后它每一行都在 Tab 顺序里，而此前没有任何键盘焦点样式——纯键盘操作会停在一个**看不见**的按钮上。现在 Tab 到齿轮时会显形并带焦点框。\n- 要求 LinkDesk **0.2.32 或更高**（未变）。"
+          "publishedAt": "2026-10-04T20:28:39.446Z"
         },
         {
           "version": "1.0.31",
