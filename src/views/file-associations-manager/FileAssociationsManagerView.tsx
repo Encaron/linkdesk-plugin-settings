@@ -25,6 +25,8 @@ import { SHELL_COMMANDS } from "@linkdesk/plugin-sdk/shell-commands";
 import type { MenuItemDescriptor } from "@linkdesk/contracts";
 import { extLabelHead, type CardModel, type ContestedRowModel, type ExtRowModel, type ManagerModel } from "./model";
 import { FILE_ASSOC_GEAR_COMMANDS } from "./fileAssociationsGearTarget";
+import type { ConfigProperty } from "../SettingsView/types";
+import OsFollowBlock from "./osFollowBlock";
 // 本管理器私有样式（族段 `settings-assoc-*`）——只本件用，就地 import（⛔ 不并进设置页那三件）
 import "./file-associations-manager.css";
 
@@ -39,6 +41,8 @@ interface Props {
   error: string | null;
   /** E39：宿主命令 `workbench.action.openWith` 是否在册——不在则「打开方式…（.ext）」整条不出现 */
   openWithAvailable: boolean;
+  /** T6：壳声明的 OS 跟随开关配置项（文案真源住壳）；未声明 ⇒ 底部折叠块不出现 */
+  osFollowProp?: ConfigProperty;
   /** 写入面（hook 提供）：`pluginId: null` = 恢复自动 */
   onPick(exts: readonly string[], pluginId: string | null, label?: string): void;
 }
@@ -50,6 +54,7 @@ export default function FileAssociationsManagerView({
   ready,
   error,
   openWithAvailable,
+  osFollowProp,
   onPick,
 }: Props) {
   const { t } = useTranslation();
@@ -86,10 +91,21 @@ export default function FileAssociationsManagerView({
   }
 
   const nothing = model.contested.length === 0 && model.cards.length === 0;
+  // T6 底部 OS 折叠块的读数：已装插件声明的**去重**类型数（本页已有数据，⛔ 不为一行只读文字新开 IPC）
+  const declaredExtCount = new Set(model.cards.flatMap((c) => c.rows.map((r) => r.ext))).size;
+  // 折叠块**不属于任何一区**：空态（含搜索无匹配）下也照出；只有整页错误/加载态不给（页面本就残缺）
+  const osBlock = osFollowProp ? (
+    <OsFollowBlock declaredExtCount={declaredExtCount} prop={osFollowProp} />
+  ) : null;
   // 搜索无匹配 —— 独立一句（第三处空态）：两区都空且是搜索造成的，说「没有匹配」而不是
   // 分别对用户说「没有竞争类型」「没有声明插件」（那两句在搜索态下是误导：明明有，只是没匹配上）
   if (q && nothing) {
-    return <div className="settings-assoc-empty">{t("没有匹配的类型或插件")}</div>;
+    return (
+      <div className="settings-assoc">
+        <div className="settings-assoc-empty">{t("没有匹配的类型或插件")}</div>
+        {osBlock}
+      </div>
+    );
   }
 
   return (
@@ -126,6 +142,8 @@ export default function FileAssociationsManagerView({
           ))
         )}
       </div>
+
+      {osBlock}
     </div>
   );
 }

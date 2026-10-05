@@ -26,6 +26,14 @@ export const MANAGER_UI_HINT = "fileAssociationsManager";
 /** 覆盖表键（组内唯一键，也是管理器读写的那一处真源）。 */
 export const WORKBENCH_FILE_ASSOCIATIONS_KEY = "workbench.fileAssociations";
 
+/**
+ * OS 跟随总开关键（T6 第 5 波）——声明在**壳**（`src/App/config/fileAssociations.ts`，与本组同属
+ * 一只 contribution），本仓只管渲染。语义与默认值都在壳的声明里，这里只留键名一份字面量。
+ * ⛔ `app.osAssociations.overrides` 不在本文件：它是「无界面项」（D6 留作将来高级位），
+ * 本管理器一个字都不渲染它——留常量 = 留一个没人用的键名。
+ */
+export const OS_FOLLOW_PLUGINS_KEY = "app.osAssociations.followPlugins";
+
 /** 这组是不是管理器组——判据：组内任一键带管理器提示词。 */
 export function isManagerGroup(
   group: Pick<GroupInfo, "keys">,

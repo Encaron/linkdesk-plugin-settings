@@ -34,7 +34,7 @@ import GroupedKeys from "./SettingsView/GroupedKeys";
 // 第 4 波：「默认打开方式」管理器（壳声明 uiHint 挂载位 → 本插件整组自定义渲染）
 import FileAssociationsManagerView from "./file-associations-manager/FileAssociationsManagerView";
 import { useFileAssociationsModel } from "./file-associations-manager/useFileAssociationsModel";
-import { findManagerPluginId } from "./file-associations-manager/managerHint";
+import { findManagerPluginId, OS_FOLLOW_PLUGINS_KEY } from "./file-associations-manager/managerHint";
 import type { GroupInfo, ConfigProperty, SettingsViewProps } from "./SettingsView/types";
 // E6#87d：原 SettingsView.css（630）按现有分节整段一切三——三件同为同一屏的样式，统一在此引入
 import "./SettingsView.css";
@@ -277,6 +277,8 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
                       ready={fileAssociations.ready}
                       error={fileAssociations.error}
                       openWithAvailable={fileAssociations.openWithAvailable}
+                      /* T6 第 5 波：底部 OS 折叠块——配置项从壳声明表取（文案真源住壳）；壳没声明 ⇒ undefined ⇒ 不出现 */
+                      {...(allProps[OS_FOLLOW_PLUGINS_KEY] ? { osFollowProp: allProps[OS_FOLLOW_PLUGINS_KEY] } : {})}
                       onPick={fileAssociations.pick}
                     />
                   ) : activeGroup.keys.length > 0 ? (

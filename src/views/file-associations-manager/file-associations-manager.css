@@ -140,3 +140,42 @@
 }
 
 /* 「N 家」徽标照真共享件（`Badge`）——管理器不自画第二枚徽标，此处不定义样式 */
+
+/* ── 底部 OS 登记折叠块（T6 · 第 5 波；08 图 `<details class="osblock">`） ──
+   折叠态只露 `summary`（语义就写在它上面——D6 要「折起来也看得见关掉会发生什么」）；
+   展开 = 一条真设置行（复用 `.settings-row` 骨架：信息区 ＋ 控制区）＋ 一行只读状态。
+   分隔靠上边框（本块恒在组末），间距落 4px 节奏或 ≤6px 微调（`spacing-grid`）。 */
+
+.settings-assoc-os {
+  margin-top: 16px;
+  padding-top: 8px;
+  border-top: 1px solid var(--separator);
+}
+
+.settings-assoc-os-summary {
+  cursor: pointer;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+.settings-assoc-os-summary:hover {
+  color: var(--text-primary);
+}
+
+.settings-assoc-os-row {
+  margin-top: 4px;
+}
+
+.settings-assoc-os-title {
+  display: block;
+  margin-bottom: 3px;
+  font-size: var(--font-size-md);
+  color: var(--text-primary);
+}
+
+/* 只读状态行——读数来自本页已有数据（已装插件声明的类型数），⛔ 不自造 IPC（见 osFollowBlock 头注） */
+.settings-assoc-os-status {
+  margin-top: 4px;
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}

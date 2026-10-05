@@ -107,5 +107,8 @@
   "（当前没有多家竞争的类型）": "(No type is currently contested)",
   "（没有声明了文件类型的插件）": "(No plugin declares file types)",
   "（用户指定）": "(set by you)",
-  "（自动）": "(automatic)"
+  "（自动）": "(automatic)",
+  "系统「打开方式」登记——关 = 停止替插件登记并撤回运行期已登记；安装包自带类不动；与本页默认无关": "System \"Open With\" registration — off = stop registering on behalf of plugins and withdraw the runtime registrations; the types shipped with the installer are untouched; unrelated to the defaults on this page",
+  "已开启 · 当前已装插件共声明 {{count}} 类文件类型——装卸插件时自动进出系统「打开方式」": "On · installed plugins declare {{count}} file types in total — they enter and leave the system \"Open With\" list automatically as plugins are installed or removed",
+  "已关闭 · 运行期加进系统的类型已撤回；安装包自带类与本页默认不受影响": "Off · the types added at runtime have been withdrawn; the types shipped with the installer and the defaults on this page are unaffected"
 }
