@@ -21,9 +21,10 @@
 import { useCallback, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Badge, ContextMenu, HintTip, PluginCard, SelectBox } from "@linkdesk/ui";
+import { SHELL_COMMANDS } from "@linkdesk/plugin-sdk/shell-commands";
 import type { MenuItemDescriptor } from "@linkdesk/contracts";
 import { extLabelHead, type CardModel, type ContestedRowModel, type ExtRowModel, type ManagerModel } from "./model";
-import { FILE_ASSOC_GEAR_COMMANDS, OPEN_WITH_COMMAND_ID } from "./fileAssociationsGearTarget";
+import { FILE_ASSOC_GEAR_COMMANDS } from "./fileAssociationsGearTarget";
 // 本管理器私有样式（族段 `settings-assoc-*`）——只本件用，就地 import（⛔ 不并进设置页那三件）
 import "./file-associations-manager.css";
 
@@ -36,7 +37,7 @@ interface Props {
   loading: boolean;
   ready: boolean;
   error: string | null;
-  /** E39：`file-tree.openWith` 是否在册——不在则「在文件树中打开选择器」整条不出现 */
+  /** E39：宿主命令 `workbench.action.openWith` 是否在册——不在则「打开方式…（.ext）」整条不出现 */
   openWithAvailable: boolean;
   /** 写入面（hook 提供）：`pluginId: null` = 恢复自动 */
   onPick(exts: readonly string[], pluginId: string | null, label?: string): void;
@@ -165,7 +166,14 @@ function ContestedRow({
     });
   }
   if (openWithAvailable) {
-    items.push({ command: OPEN_WITH_COMMAND_ID, label: t("在文件树中打开选择器") });
+    // 按**类型**开选择器（方案 A）：载荷给该行首个类型，面板列出能处理它的处理器（不需要文件）。
+    // 命令 id 走宿主常量（⛔ 不硬编码宿主命令 id——门禁 R1 红线）；每项身份走 `commandArgs`（载荷律）。
+    const headExt = row.exts[0] ?? "";
+    items.push({
+      command: SHELL_COMMANDS.openWith,
+      label: t("打开方式…（.{{ext}}）", { ext: headExt }),
+      commandArgs: [{ ext: headExt }],
+    });
   }
 
   const openGear = (e: React.MouseEvent<HTMLButtonElement>) => {

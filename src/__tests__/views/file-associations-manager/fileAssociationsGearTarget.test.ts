@@ -17,7 +17,6 @@
 import { describe, expect, it } from "vitest";
 import {
   FILE_ASSOC_GEAR_COMMANDS,
-  OPEN_WITH_COMMAND_ID,
   planCardClear,
   readContestedRowGearTarget,
   readPluginCardGearTarget,
@@ -33,9 +32,9 @@ describe("命令 id（与 plugin.json 的 contributes.commands[] 对账）", () 
     expect(new Set(Object.values(FILE_ASSOC_GEAR_COMMANDS)).size).toBe(3);
   });
 
-  it("跨插件项指的是 file-tree 的选择器命令——⛔ 不是本插件的命令（出不出由运行时探活决定）", () => {
-    expect(OPEN_WITH_COMMAND_ID).toBe("file-tree.openWith");
-    expect(Object.values(FILE_ASSOC_GEAR_COMMANDS)).not.toContain(OPEN_WITH_COMMAND_ID);
+  it("宿主命令 id ⛔ 不住本表——「打开方式」走 @linkdesk/plugin-sdk 的 SHELL_COMMANDS（R1 红线）", () => {
+    // 这条判据防的是「宿主命令 id 又被硬编码回本插件」：本表只放 settings.* 自有命令。
+    expect(Object.values(FILE_ASSOC_GEAR_COMMANDS).every((id) => id.startsWith("settings."))).toBe(true);
   });
 });
 

@@ -110,11 +110,23 @@ export function registerFileAssociationGearCommands(): number {
   });
 
   // 卡：复制插件 id（回执句式与壳侧「复制设置 ID」同款：`已复制：<内容>`）
+  // C2.4：`clipboard` 是**可选面**——脱窗/旧壳上它可能缺席，`?.()` 一旦缺面就静默什么都不发生
+  //   （用户看到的就是「点了没反应」）。所以**先探面**（缺面 ⇒ 明说不可用），**再 try/catch**
+  //   （IPC 失败/权限问题 ⇒ 抛出 ⇒ 回执走失败分支；⛔ 不让异常把后面的 toast 吞掉）。
   reg(copyPluginId, async (args?: unknown) => {
     const target = readPluginCardGearTarget(args);
     if (!target) return;
-    await window.linkdesk?.clipboard?.writeText?.(target.pluginId);
-    toast(i18n.t("已复制：") + target.pluginId);
+    const write = window.linkdesk?.clipboard?.writeText;
+    if (!write) {
+      toast(i18n.t("剪贴板不可用"), "warning");
+      return;
+    }
+    try {
+      await write(target.pluginId);
+      toast(i18n.t("已复制：") + target.pluginId);
+    } catch (e) {
+      toast(i18n.t("复制失败：") + (e instanceof Error ? e.message : String(e)), "error");
+    }
   });
 
   return 3;

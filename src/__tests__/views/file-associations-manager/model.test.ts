@@ -46,15 +46,23 @@ const plugin = (
   name = pluginId.toUpperCase(),
 ): DeclaredPlugin => ({ pluginId, name, exts });
 
-/** 候选快照——第 0 家为宿主认定的当前生效（`isCurrent`），其余候选 */
+/** 候选快照——第 0 家为宿主认定的当前生效（`isCurrent`），其余候选。
+ *  `title`（插件名，前端标签用它）与 `typeLabel`（类型名）**故意取不同串**——若模型读错字段，
+ *  下面断言 `label === "PLUG-B"` 的用例会当场变红（C1.8 防串位）。 */
 const handlers = (...ids: string[]): HandlerSnapshot[] =>
-  ids.map((id, i) => ({ pluginId: id, displayName: id.toUpperCase(), isCurrent: i === 0 }));
+  ids.map((id, i) => ({
+    pluginId: id,
+    title: id.toUpperCase(),
+    typeLabel: `TYPE:${id}`,
+    isCurrent: i === 0,
+  }));
 
 /** 指定生效者（模拟「覆盖表已生效」后的宿主回答） */
 const handlersCurrent = (current: string, ...others: string[]): HandlerSnapshot[] =>
   [current, ...others].map((id) => ({
     pluginId: id,
-    displayName: id.toUpperCase(),
+    title: id.toUpperCase(),
+    typeLabel: `TYPE:${id}`,
     isCurrent: id === current,
   }));
 

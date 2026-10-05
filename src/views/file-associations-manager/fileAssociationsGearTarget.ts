@@ -23,15 +23,12 @@ export const FILE_ASSOC_GEAR_COMMANDS = {
 } as const;
 
 /**
- * 跨插件命令 id——文件树选择器的「打开方式」入口（08/09 图 M6 的「在文件树中打开选择器」项）。
+ * 竞争行齿轮的本行身份——管理器自弹菜单，形状由我们定（简单：一个类型数组）。
  *
- * 🔴 指向的**不是本插件**的命令：file-tree 未装 / 被禁用 / 版本过旧（没有这条命令）时该项必须
- * **整条不出现**（02 E39）——所以菜单项的出与不出取决于运行时探测 `commands.getCommands()` 里
- * 有没有这一条（探测住 `useFileAssociationsModel` 的 `openWithAvailable`），⛔ 不能硬渲染。
+ * ⚠️ 「打开方式」那一项的命令 id **不在这里**：它是**宿主**命令，常量住插件 SDK 的
+ * 子路径 `@linkdesk/plugin-sdk/shell-commands`（`SHELL_COMMANDS`；⛔ 硬编码宿主命令 id 是
+ * 门禁拦的红线，R1）；出与不出仍看运行时探活（`useFileAssociationsModel` 的 `openWithAvailable`）。
  */
-export const OPEN_WITH_COMMAND_ID = "file-tree.openWith";
-
-/** 竞争行齿轮的本行身份——管理器自弹菜单，形状由我们定（简单：一个类型数组）。 */
 export interface ContestedRowGearContext {
   exts: string[];
 }

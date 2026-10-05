@@ -8,7 +8,7 @@
  * | ① 插件清单 | `pluginManager.list()` | 只留 `contributes.fileAssociations` 非空的**启用**插件（禁用插件不带 contributes，天然出不来 = E5） |
  * | ② 候选快照 | `fileAssociation.listHandlersFor(ext)` × 声明过的类型 | 「谁是当前默认」的宿主判据（覆盖表 → 声明序 → 角色兜底）；N 个类型 = N 次读，都是内存查表 |
  * | ③ 覆盖表 | `configuration.get/onChange("workbench.fileAssociations")` | 走既有 `useConfigurationValueIpc`（E31 广播免费拿到：文件树选择器写一下，这边即时收到） |
- * | ④ 跨插件探活 | `commands.getCommands()` | E39：`file-tree.openWith` 在不在册（不在 ⇒ 「在文件树中打开选择器」整条不出现） |
+ * | ④ 跨插件探活 | `commands.getCommands()` | E39：宿主命令 `workbench.action.openWith`（`SHELL_COMMANDS.openWith`）在不在册（不在 ⇒ 「打开方式…」整条不出现） |
  *
  * ## 三条时序口径
  *
@@ -26,6 +26,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { pickIdentityArt } from "@linkdesk/ui";
+import { SHELL_COMMANDS } from "@linkdesk/plugin-sdk/shell-commands";
 import { lk } from "../SettingsView/helpers";
 import { useConfigurationValueIpc } from "../hooks/useConfigurationValueIpc";
 import {
@@ -37,7 +38,6 @@ import {
   type HandlerSnapshot,
   type ManagerModel,
 } from "./model";
-import { OPEN_WITH_COMMAND_ID } from "./fileAssociationsGearTarget";
 import { writeDefaults } from "./fileAssociationsWrite";
 import { WORKBENCH_FILE_ASSOCIATIONS_KEY } from "./managerHint";
 
@@ -85,7 +85,9 @@ async function fetchHandlers(
         ext,
         (list ?? []).map((h) => ({
           pluginId: h.pluginId,
-          displayName: h.displayName,
+          // C1.8：行主标签 = **插件名**（`title`）、类型名（`displayName`）另存 `typeLabel`——⛔ 不混
+          title: h.title,
+          typeLabel: h.displayName,
           isCurrent: !!h.isCurrent,
         })),
       ] as const;
@@ -158,7 +160,7 @@ export function useFileAssociationsModel(search: string, enabled = true): FileAs
       setSource({
         plugins,
         handlersByExt,
-        openWithAvailable: (commandsRaw ?? []).some((c) => c?.id === OPEN_WITH_COMMAND_ID),
+        openWithAvailable: (commandsRaw ?? []).some((c) => c?.id === SHELL_COMMANDS.openWith),
       });
       setReady(true);
       setError(null);

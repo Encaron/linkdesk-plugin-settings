@@ -113,10 +113,19 @@ export interface DeclaredPlugin {
   exts: DeclaredExtension[];
 }
 
-/** 宿主只读面快照——`listHandlersFor(ext)` 的一项（`displayName` 是**插件**显示名）。 */
+/**
+ * 宿主只读面快照——`listHandlersFor(ext)` 的一项。
+ *
+ * 🔴 `title` 与 `typeLabel` 是**两个不同的东西**（C1.8）：`title` = **插件**显示名（宿主取的
+ * `manifest.name`，即「谁在处理」——下拉/行标签一律用它）；`typeLabel` = **文件类型**显示名
+ * （声明里的 `displayName`，如 `.rs → "Rust"`，即「叫它什么」——⛔ 不当插件名用）。
+ */
 export interface HandlerSnapshot {
   pluginId: string;
-  displayName: string;
+  /** **插件**显示名（manifest.name，缺则回退 pluginId）——行主标签/下拉选项文案 */
+  title: string;
+  /** **文件类型**显示名（声明里的 displayName，如 "Rust"；缺则回退 pluginId）——⛔ 不是插件名 */
+  typeLabel: string;
   /** 宿主算出的「当前生效」（覆盖 → 声明序 → 角色兜底）——管理器**只信这个** */
   isCurrent: boolean;
 }
@@ -268,11 +277,11 @@ function rowFor(pluginId: string, decl: DeclaredExtension, input: BuildInput): E
     key: overrideKeyOf(decl.ext),
     state,
     dangling,
-    currentName: handlers.find((h) => h.pluginId === currentId)?.displayName,
+    currentName: handlers.find((h) => h.pluginId === currentId)?.title,
     ...(decl.raw && decl.raw !== decl.ext ? { rawDeclaration: decl.raw } : {}),
     // 下拉显示**覆盖态**（03 §4）：覆盖值不在册（浮幽灵）或压根没覆盖 ⇒ 一律回「自动」
     value: overrideInRegistry && override === currentId ? override! : "",
-    options: handlers.map((h) => ({ value: h.pluginId, label: h.displayName })),
+    options: handlers.map((h) => ({ value: h.pluginId, label: h.title })),
   };
 }
 
@@ -324,7 +333,7 @@ function buildContested(
       if (!q) return true;
       if (`.${ext}`.includes(q)) return true;
       return (input.handlersByExt[ext] ?? []).some(
-        (h) => h.displayName.toLowerCase().includes(q) || h.pluginId.toLowerCase().includes(q),
+        (h) => h.title.toLowerCase().includes(q) || h.pluginId.toLowerCase().includes(q),
       );
     });
 
@@ -339,7 +348,7 @@ function buildContested(
   const rows: ContestedRowModel[] = [];
   for (const members of signatures.values()) {
     const handlers = input.handlersByExt[members[0]] ?? [];
-    const handlerOptions: RowOption[] = handlers.map((h) => ({ value: h.pluginId, label: h.displayName }));
+    const handlerOptions: RowOption[] = handlers.map((h) => ({ value: h.pluginId, label: h.title }));
 
     const byValue = new Map<string, string[]>();
     for (const ext of members) {
@@ -365,7 +374,7 @@ function buildContested(
         exts,
         groupExtsCount: members.length,
         handlers: handlerOptions,
-        effectiveName: handlers.find((h) => h.pluginId === effectiveId)?.displayName ?? effectiveId,
+        effectiveName: handlers.find((h) => h.pluginId === effectiveId)?.title ?? effectiveId,
         source: strong === 0 ? "auto" : strong === exts.length ? "user" : "partial",
         value: uniform,
         overrideCount: anyKey,
