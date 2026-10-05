@@ -134,6 +134,45 @@
             "description": "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入"
           }
         ]
+      },
+      {
+        "id": "settings.fileAssociations.clearRow",
+        "title": "恢复自动（本格全部类型）",
+        "description": "把这一格（同一批候选、同一生效值的若干文件类型）在「默认打开方式」覆盖表里的键一并删掉，全部回到插件声明顺序。由「需要你做选择的类型」区那一行的齿轮菜单调用。需要 LinkDesk 0.2.48+（一次写 N 类）；旧壳上自动退化为逐类写，结果相同。",
+        "params": [
+          {
+            "name": "exts",
+            "type": "object",
+            "required": true,
+            "description": "本格的文件类型数组（无点小写，如 [\"docx\", \"xlsx\"]）——由齿轮菜单作为首枚实参传入"
+          }
+        ]
+      },
+      {
+        "id": "settings.fileAssociations.clearCard",
+        "title": "清除相关默认覆盖",
+        "description": "把某个插件名下**真的被设过默认**的文件类型一并恢复自动（键不记在它名下的不动——那是别家的选择），并回报清掉了几类。由「按插件浏览」插件卡的齿轮菜单调用。",
+        "params": [
+          {
+            "name": "context",
+            "type": "object",
+            "required": true,
+            "description": "插件卡身份 { pluginId }——由共享件 PluginCard 的齿轮菜单作为末枚实参传入"
+          }
+        ]
+      },
+      {
+        "id": "settings.fileAssociations.copyPluginId",
+        "title": "复制插件 ID",
+        "description": "把某个插件的 id 复制到剪贴板（「按插件浏览」插件卡齿轮菜单用）。",
+        "params": [
+          {
+            "name": "context",
+            "type": "object",
+            "required": true,
+            "description": "插件卡身份 { pluginId }——由共享件 PluginCard 的齿轮菜单作为末枚实参传入"
+          }
+        ]
       }
     ],
     "menus": {

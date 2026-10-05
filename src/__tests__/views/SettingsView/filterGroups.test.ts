@@ -115,4 +115,32 @@ describe("filterGroups", () => {
 
     expect(filterGroups([role], "app.a", {})[0]).toEqual(role);
   });
+
+  /* ── 第 4 波：管理器组豁免（E30「检索复用设置页搜索框」的命门） ── */
+
+  const MANAGER_KEY = "workbench.fileAssociations";
+  const managerWorld = () => ({
+    groups: [g("默认打开方式", [MANAGER_KEY], { pluginId: "file-associations" }), g("外观", ["app.themeColor"])],
+    props: props({ [MANAGER_KEY]: { uiHint: "fileAssociationsManager" } }),
+  });
+
+  it("🔴 管理器组恒保留——搜图上的类型名也不许整组消失，且它的键不被滤空", () => {
+    const { groups, props: ap } = managerWorld();
+
+    const out = filterGroups(groups, ".pdf", ap);
+
+    // 判据必须在**原始键**上判：先滤键再判 = 恒假（dev 实机踩到过——搜一下左栏直接「无匹配设置」）
+    expect(out.map((x) => x.pluginId)).toEqual(["file-associations"]);
+    expect(out[0].keys).toEqual([MANAGER_KEY]);
+  });
+
+  it("豁免只给管理器组——其余组照旧：不命中就丢，命中就留（顺序按原表）", () => {
+    const { groups, props: ap } = managerWorld();
+
+    expect(filterGroups(groups, "zzz", ap).map((x) => x.pluginId)).toEqual(["file-associations"]);
+    expect(filterGroups(groups, "themecolor", ap).map((x) => x.pluginId)).toEqual([
+      "file-associations",
+      "demo",
+    ]);
+  });
 });

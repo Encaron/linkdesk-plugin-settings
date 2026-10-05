@@ -1,0 +1,142 @@
+/**
+ * 「默认打开方式」管理器（`uiHint: fileAssociationsManager`）样式。
+ *
+ * 尺寸/形态权威 = 案档 `mockups/08`（整页拟真）＋ `mockups/09`（卡与行逐元素）。
+ * 门禁合规（三条本轮实地核对过 SDK 规则源码）：
+ *   - 颜色一律 `var(--…)` token，零裸 hex/rgb/hsl（`css-hardcode`）；
+ *   - 字号只走 `--font-size-*`、行高 unitless（`font-scale`：裸 px 字号/行高一律拦）；
+ *   - padding/margin/gap 落 4px 节奏或 ≤6px 微调（`spacing-grid`——故 09 图的 `gap:10px`
+ *     与 `.crow` 的 `padding-right:14px` 收成 8px / 12px，与共享 PluginCard 同款处置）。
+ *
+ * 类名族段 `settings-assoc-*`（`<pluginId>-` 前缀，`css-selectors` 判据①）；
+ * 复用本仓既有的 `.settings-row*` / `.settings-row-gear` / `.settings-subsection*` 骨架，
+ * 只补管理器私有件。🔴 `ldk-plugin-card-body` 的限高滚动**不在这里**——那是共享件的自有样式
+ * （`plugin-card.css` 已给 `max-height:280px`），此处只用作后代消费，⛔ 不重定义宿主类。
+ *
+ * 硬约束 16 已过（2026-10-05）：`impeccable detect` 对本件 ＋ 视图 ＋ SettingsView(.tsx/.css) 四件
+ * 返回 `[]`（零发现）；14 枚 token 全部实存于壳 `src/index.css` 两套主题；尺寸逐条对 08/09 图核过，
+ * 徽标两处按本仓既有量纲修正（见该节）。三处**有意偏差**（gap 10→8、padding-right 14→12、
+ * 图 12px 行文→`--font-size-sm`）分别由 `spacing-grid` 门禁与本仓 #174 全屏字号迁移所定——
+ * 后者与「json 12→sm」「row-desc 12→sm」「mono col-key 12→sm」三条既有先例同款。
+ */
+
+.settings-assoc {
+  display: flex;
+  flex-direction: column;
+}
+
+/* 空态：两区各自一句 ＋ 搜索无匹配整页一句（第三处空态——见视图里的判定） */
+.settings-assoc-empty {
+  padding: 12px 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+/* ── 竞争区一行（08 图「需要你做选择的类型」） ──
+   行骨架 = `.settings-row`（本仓既有：信息区＋控制区＋hover 齿轮），此处只补行标签与件序。 */
+
+.settings-assoc-row-label {
+  /* 本行是哪些类型（`.docx / .xlsx / .pptx 等 6 类`）——它顶替泛型行的配置键位（本组行无配置键） */
+  display: block;
+  margin-bottom: 3px;
+  font-size: var(--font-size-md);
+  font-weight: 500;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 控制区件序 = [「N 家」徽标][下拉][齿轮]；`.settings-row-control` 无 gap ⇒ 徽标与下拉之间给隙 */
+.settings-assoc-contested .settings-assoc-select {
+  margin-left: 8px;
+}
+
+/* 行内下拉宽度（08 §尺寸纪律：下拉 180px）——卡内行另有 190px（09 图 `.crow select`） */
+.settings-assoc-select {
+  min-width: 180px;
+}
+
+/* ── 卡体行（09 图 `.crow`）：`.ext` ＋ 状态徽标 ＋ 行尾下拉 ── */
+
+.settings-assoc-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 30px;
+  padding: 4px 12px;
+  border-bottom: 1px solid var(--separator);
+  font-size: var(--font-size-sm);
+}
+
+.settings-assoc-row:last-child {
+  border-bottom: none;
+}
+
+.settings-assoc-row:hover {
+  background: var(--hover-overlay);
+}
+
+.settings-assoc-row .settings-assoc-select {
+  margin-left: auto;
+  min-width: 190px;
+}
+
+/* 扩展名照抄**归一存储键**（声明 `MX` → 显示 `.mx`，E10/E34）；等宽字体一眼区分 `.docx` 与插件名 */
+.settings-assoc-ext {
+  flex: 0 0 92px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: var(--font-size-sm);
+  color: var(--accent-hover);
+}
+
+/* ── 状态徽标（09 图 `pillFor` 六态＋失效覆盖红点） ──
+   基态 = 中性小胶囊；`.user/--auto/--cand/--dang` 只是**点显色**，形态同一（不换皮）。
+   硬约束 16 复核（ui-ux-pro-max ＋ impeccable 对 08/09）改了两处，都朝**本仓既有量纲**靠：
+     - 字号 09 图 10.5px ⇒ 落 `--font-size-xs`（12px）。本仓小徽标一律 xs（`source-badge` /
+       `effective-badge` / `chord-field` 的 #174 迁移都是「11→xs」），⛔ 不另开 `2xs`（11px）——
+       那会在设置面多出第四档、成为全仓唯一用例。
+     - 圆角 09 图 9px ⇒ `--radius-pill`。9px 在 ~19.6px 高的小胶囊上本就≈半高（CSS 会把超大圆角
+       按比例压到半高），而本仓圆角阶梯无 9px 档；转 pill 是**同像素**、上阶梯、且与导航计数胶囊
+       （08 图 `.cnt` 999px）同款。 */
+
+.settings-assoc-pill {
+  display: inline-block;
+  flex-shrink: 0;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  line-height: 1.6;
+  white-space: nowrap;
+}
+
+/* 用户锁定 / 用户指定——唯一带描边的一态（「这是你定的」，与自动态一眼可辨） */
+.settings-assoc-pill--user {
+  color: var(--accent-hover);
+  border: 1px solid var(--accent);
+}
+
+/* 自动（含唯一处理者） */
+.settings-assoc-pill--auto {
+  color: var(--status-connected);
+}
+
+/* 候选 / 无人处理兜底 */
+.settings-assoc-pill--cand {
+  color: var(--warning);
+}
+
+/* 失效覆盖：键还在、指向的插件已不在册（E6 惰性——重装即复活） */
+.settings-assoc-pill--dang {
+  color: var(--error);
+}
+
+/* 「N 家」徽标照真共享件（`Badge`）——管理器不自画第二枚徽标，此处不定义样式 */

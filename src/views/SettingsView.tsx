@@ -31,6 +31,10 @@ import { loadSettingsData } from "./SettingsView/loadSettingsData";
 import { filterGroups } from "./SettingsView/filterGroups";
 import { useSettingsSwitch } from "./SettingsView/useSettingsSwitch";
 import GroupedKeys from "./SettingsView/GroupedKeys";
+// 第 4 波：「默认打开方式」管理器（壳声明 uiHint 挂载位 → 本插件整组自定义渲染）
+import FileAssociationsManagerView from "./file-associations-manager/FileAssociationsManagerView";
+import { useFileAssociationsModel } from "./file-associations-manager/useFileAssociationsModel";
+import { findManagerPluginId } from "./file-associations-manager/managerHint";
 import type { GroupInfo, ConfigProperty, SettingsViewProps } from "./SettingsView/types";
 // E6#87d：原 SettingsView.css（630）按现有分节整段一切三——三件同为同一屏的样式，统一在此引入
 import "./SettingsView.css";
@@ -96,6 +100,18 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
     () => filterGroups(groupsRaw, search, allProps),
     [groupsRaw, search, allProps],
   );
+
+  // ── 「默认打开方式」管理器（第 4 波）──
+  // 组身份按**提示词**认（`uiHint: fileAssociationsManager`），⛔ 不写死壳的 pseudo pluginId
+  // `file-associations`——第三方壳换了实现、只要挂载位还带同一枚 uiHint，本管理器照挂；壳没声明
+  // 这个位 ⇒ `null` ⇒ 下方不发一次 IPC、导航里也不会多出这一组。
+  const managerPluginId = useMemo(
+    () => findManagerPluginId(groupsRaw, allProps),
+    [groupsRaw, allProps],
+  );
+  // 数据**住这一层**（不在管理器视图里）：左侧导航的计数徽标要数管理器的 `navCount`，而管理器视图
+  // 只在该组激活时才挂载——数据若住视图里，徽标在切到那组之前永远是 0（钩子第二参 = 懒加载开关）。
+  const fileAssociations = useFileAssociationsModel(search, managerPluginId !== null);
 
   const { handleRoleSwitch, handleSettingsSwitch } = useSettingsSwitch(
     tabId,
@@ -210,7 +226,13 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
                     >
                       {g.title}
                       <span className="settings-nav-count">
-                        {g.role ? g.candidates?.length ?? 0 : g.keys.length}
+                        {g.role
+                          ? g.candidates?.length ?? 0
+                          : managerPluginId && g.pluginId === managerPluginId
+                            ? // 管理器组**不数配置键**（整组只有一个键）：数「还有多少类要你看」
+                              // = 竞争类型数 ＋ 卡片数（08 图 renderNav 口径），随搜索即时变
+                              fileAssociations.model.navCount
+                            : g.keys.length}
                       </span>
                     </button>
                   ))}
@@ -245,7 +267,19 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
                   <h2 className="settings-group-title">{activeGroup.title}</h2>
                   {/* M4 AI#38.12（P-3 拍板 A）：分区副标题——contribution 声明即渲染（未声明 = 不渲染） */}
                   {activeGroup.subtitle && <SectionSubtitle>{t(activeGroup.subtitle)}</SectionSubtitle>}
-                  {activeGroup.keys.length > 0 ? (
+                  {managerPluginId && activeGroup.pluginId === managerPluginId ? (
+                    /* 管理器组：整组换自定义视图（组内唯一键是渲染**挂载位**，不是「一条设置」——
+                       ⛔ 不走 GroupedKeys，否则会出现一行泛型对象编辑器＝D1 要防的第二处写入面） */
+                    <FileAssociationsManagerView
+                      search={search}
+                      model={fileAssociations.model}
+                      loading={fileAssociations.loading}
+                      ready={fileAssociations.ready}
+                      error={fileAssociations.error}
+                      openWithAvailable={fileAssociations.openWithAvailable}
+                      onPick={fileAssociations.pick}
+                    />
+                  ) : activeGroup.keys.length > 0 ? (
                     <GroupedKeys
                       keys={activeGroup.keys}
                       groupDescriptions={activeGroup.groupDescriptions}

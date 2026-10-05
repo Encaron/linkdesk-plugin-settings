@@ -11,12 +11,18 @@
  *
  * 2026-10-05 件 2 / 件 3：快捷键行齿轮菜单的六条命令（四条复制 ＋ 重置为默认 ＋ 清空）**同处注册**——
  *    理由同上：菜单项执行时视图可能根本没 mount，命令必须随入口顶层副作用就位。
+ *
+ * 第 4 波（4B）：「默认打开方式」管理器两处齿轮的三条命令（竞争行整格恢复自动 ＋ 卡清除覆盖 ＋
+ *    复制插件 id）同处注册，理由一字不差——**卡齿轮的菜单项由共享件 PluginCard 渲染、竞争行齿轮
+ *    是本插件自弹**，两条路的 handler 都可能在设置页未开时被 `exec` 调到。
  */
 
 import { registerKeybindingEditCommand } from "./views/keybinding-settings/keybindingEditCommand";
 import { registerKeybindingGearCommands } from "./views/keybinding-settings/keybindingGearCommands";
+import { registerFileAssociationGearCommands } from "./views/file-associations-manager/fileAssociationsGearCommands";
 
 registerKeybindingEditCommand();
 registerKeybindingGearCommands();
+registerFileAssociationGearCommands();
 
 export { default } from "./views/SettingsView";
