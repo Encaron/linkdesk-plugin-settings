@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-10-05T07:36:14.320Z",
+  "updatedAt": "2026-10-05T13:56:44.596Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.35",
+      "version": "1.0.36",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.35/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.36/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.35/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.36/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.32",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.35/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.35/settings.linkdesk-plugin",
-      "size": 44501,
-      "publishedAt": "2026-10-05T07:36:14.320Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.36/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.36/settings.linkdesk-plugin",
+      "size": 44994,
+      "publishedAt": "2026-10-05T13:56:44.596Z",
       "versions": [
+        {
+          "version": "1.0.36",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.36/settings.linkdesk-plugin",
+          "publishedAt": "2026-10-05T13:56:44.596Z",
+          "changelog": "- **竞争行齿轮里的那一条改了语义：从「在文件树中打开选择器」改成「打开方式…（.扩展名）」**——以前这一项点下去，要么去开**文件树里碰巧选中的那个文件**（跟你点的那一行毫无关系），要么弹一句「没有选中的文件」，看着就是「点了没反应」。原因是它借用的是文件树的命令，而那条命令要的是「一个文件」，设置页这一行给的却是「一个类型」。现在它走**软件自己的「打开方式」命令**，按**这一行的类型**开面板，列出所有能处理该类文件的插件任你挑——**不需要先有文件**。这一项仍然只在**装了对应能力的新版软件**上才出现，老软件上**整条不显示**（不是灰的、更不是点了没反应）。\n- **同一批的候选名字改正**：行内下拉与「默认：X」里显示的**是插件的名字**，不再是**文件类型的名字**（如「Rust」）——这两个以前串了位，于是一只叫 Rust 的处理插件会和类型名撞在一起。下拉现在能一眼分清是哪只插件。\n- 🔴 **修复：插件卡齿轮里的「复制插件 ID」点了没反应**。这一条的回执写在复制动作**之后**，而复制这一步一旦失败（剪贴板不可用 / 被系统拒绝），异常会把回执整个吞掉——于是**既没复制成功、也没有任何提示**。现在**先探测**剪贴板是否可用（不可用就明说「剪贴板不可用」），复制失败则给出失败原因；三条齿轮命令的回执写法就此对齐。新增单测钉住「成功 / 失败 / 面缺失」三态。\n- 内部：宿主命令 id 不再写死在本插件里（改从插件 SDK 的常量取），并补上回归测——「宿主命令 id 不许再被硬编码回设置插件」。🔴 运行时代码从 SDK **子路径** `@linkdesk/plugin-sdk/shell-commands` 取常量（`@linkdesk/plugin-sdk` ^0.1.81）——从根入口取会把 SDK 的构建工具链（vite → rollup）一起打进插件包，Windows 上直接 build 不过。\n- 要求 LinkDesk **0.2.48 或更高**才能看到「打开方式…」这一项与改正后的候选名；更低的软件上这两处**按老样子**工作，本插件其余功能一字不变。"
+        },
         {
           "version": "1.0.35",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.35/settings.linkdesk-plugin",
@@ -47,8 +53,7 @@
         {
           "version": "1.0.31",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.31/settings.linkdesk-plugin",
-          "publishedAt": "2026-10-04T15:07:57.758Z",
-          "changelog": "- **设置页的每一行改显「人话名字」**（随「配置项短名」）：行名改为取配置项声明里的**短名**（`title`），不再直接显示 `editor.autoSave` 这样的配置键。**没有声明短名的第三方配置项照旧显示配置键**——存量插件零影响。配置键仍可从齿轮菜单「复制设置 ID」取到。\n- **搜索框也能按短名搜**：此前只匹配配置键、说明文字与分组名，现在输入「自动保存」这类**行名**同样命中该行。\n- **齿轮菜单新增「复制设置名称」**：本行有短名时，齿轮里会出现这一项，把**当前界面语言**的行名复制到剪贴板；**没有短名的行不出现**（不留复制空的死项）。该菜单项由软件侧提供，需 **LinkDesk 0.2.43 或更高**；在更低版本的软件上齿轮里不出现这一项，其余行为一字不变。\n- **插件声明的枚举档显示名此前从未生效，现已修复**：`enumDescriptions` 按 manifest schema 是「值 → 显示名」的**对象**形态，而本渲染器此前只按下标读数组 ⇒ 别家插件按 schema 声明的中文档名被整片忽略、下拉一直裸显 `powershell` 这类英文值（file-tree「外部终端」今天就长这样）。现在**两种形态都认**——插件按 schema 写的对象形态就此生效，壳侧自用的数组形态行为一字不变。\n- 本插件自己的「打开形态」（`settings.openForm`）配置项补上短名与两个枚举档的中文显示名（「悬浮面板」/「标签页」），下拉框不再裸显 `floatingPanel` / `tab`。\n- 要求 LinkDesk **0.2.32 或更高**（未变）。"
+          "publishedAt": "2026-10-04T15:07:57.758Z"
         },
         {
           "version": "1.0.30",
