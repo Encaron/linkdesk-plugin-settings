@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-10-04T21:12:19.515Z",
+  "updatedAt": "2026-10-05T07:36:14.320Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.34",
+      "version": "1.0.35",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.34/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.35/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.34/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.35/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.32",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.34/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.34/settings.linkdesk-plugin",
-      "size": 34617,
-      "publishedAt": "2026-10-04T21:12:19.515Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.35/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.35/settings.linkdesk-plugin",
+      "size": 44501,
+      "publishedAt": "2026-10-05T07:36:14.320Z",
       "versions": [
+        {
+          "version": "1.0.35",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.35/settings.linkdesk-plugin",
+          "publishedAt": "2026-10-05T07:36:14.320Z",
+          "changelog": "- **设置页多了一组「默认打开方式」——一个地方看全「哪类文件用哪个插件打开」，也能就地改**（左侧导航新出现的一组，带计数字：数字 = **还有多少类要你看**，随搜索即时变）。组里两区：\n  - **「需要你做选择的类型」**：当有**两家以上插件**都声明能打开同一类文件（比如两家都认 `.docx`），这一行就是「你来定」——行尾下拉选一家、或选「恢复自动」交回自动判定；行尾徽标写「**N 家**」告诉你这格有几口人在抢。**候选集合相同的一批类型并成一行一起改**（一次写多条），不是一条一条来；同批里某一类被单独指定过，它会从那行**拆出来单列**（免得「改一行、动一片」）。\n  - **「按插件浏览」**：每只**声明过文件类型**的插件一张卡（卡头是插件名、id 与版本，点一下展开）。展开后逐行列出它认的扩展名——扩展名照**归一后的存储键**显示（声明 `MX` 也显示 `.mx`）——并标明这一行现在是「**你锁定的**」「**自动的**」「**候选的**」还是「**指向的插件已不在册**（失效，重装该插件即复活）」，行尾下拉可直接改这一行归谁。\n  - 顶部搜索框**现在也搜得到这里**：输入扩展名 `.pdf` 或插件名都能命中。\n- **两处齿轮菜单**（鼠标扫到行尾/卡头才现形，与设置页其余齿轮同款）：\n  - **竞争行齿轮**：**「恢复自动（本格 N 类）」**——把这一格整批交回自动判定；**「在文件树中打开选择器」**——同一件事的另一个入口（跳去文件树的「打开方式…」）。后一项**只在装了文件树插件、且那条命令确实在册时才出现**，没装就**不显示这一项**（不是灰的、更不是点了没反应）。\n  - **卡齿轮**：**「清除相关默认覆盖（N 类）」**——把与这只插件相关的「你指定过」一次清掉；**「复制插件 ID」**。\n- 🔴 **修复：在新组里搜「无匹配」，整组会连人一起消失**。此前只要搜索词在组内一条都没命中，**整组**（连同「你来定」的列表）就从页面上没了、只剩一句「无匹配设置」，看着像这功能坏了。实为过滤顺序之误——**先按关键词把键滤空、再判「这是不是管理器组」**，于是组身份判定永远失败。改为**先在原始键上认组身份、再滤其余组**，并给这一组**恒保留**豁免：搜不到时它自己写明「没有匹配的类型或插件」。新增两条回归测钉住（搜图上的类型名 `.pdf`、搜一个纯不命中的词，都要留住这组）。\n- 要求 LinkDesk **0.2.48 或更高**（这一组由软件侧声明挂载位、本插件负责把整组画成管理器）。**更低的软件上这一组不出现**，管理器一次网络请求也不发，本插件其余功能一字不变——所以本版仍可在更低的软件上正常使用。"
+        },
         {
           "version": "1.0.34",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.34/settings.linkdesk-plugin",
@@ -47,8 +53,7 @@
         {
           "version": "1.0.30",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.30/settings.linkdesk-plugin",
-          "publishedAt": "2026-10-03T21:48:05.301Z",
-          "changelog": "- **设置项的说明文字，悬停就能看全**：每行配置键下面那句说明此前被单行省略号截断——`marketplace.marketplaceSources` 这类长说明**把窗口拉满也显示不全**。现在鼠标停在说明上会立刻浮出完整文字（用的是 LinkDesk 的悬停提示，**不改变行高、不遮挡布局、不接管点击**），截断的那半截不再只能靠猜。鼠标不悬停时，外观与行为一字不变；**没写说明的配置项不会浮出空提示**。\n- 只影响**说明文字**一行；配置键标签、控件、徽标、齿轮菜单均未改动。\n- 要求 LinkDesk **0.2.32 或更高**（未变；悬停提示能力自 0.2.20 起就有）。"
+          "publishedAt": "2026-10-03T21:48:05.301Z"
         },
         {
           "version": "1.0.29",
