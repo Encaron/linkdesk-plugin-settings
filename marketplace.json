@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-10-05T15:42:44.752Z",
+  "updatedAt": "2026-10-05T19:03:37.701Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.37",
+      "version": "1.0.38",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.37/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.38/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.37/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.38/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.32",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.37/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.37/settings.linkdesk-plugin",
-      "size": 45914,
-      "publishedAt": "2026-10-05T15:42:44.752Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.38/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.38/settings.linkdesk-plugin",
+      "size": 46148,
+      "publishedAt": "2026-10-05T19:03:37.701Z",
       "versions": [
+        {
+          "version": "1.0.38",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.38/settings.linkdesk-plugin",
+          "publishedAt": "2026-10-05T19:03:37.701Z",
+          "changelog": "- 🔴 **修复：「默认打开方式」管理器两处齿轮菜单的三条命令从 1.0.35 起点了完全没反应**（不报错、不提示，什么都不发生）——行齿轮「恢复自动（本格 N 类）」、插件卡齿轮「清除相关默认覆盖」与「复制插件 ID」三条都中招。原因不在命令本体（三条逻辑都是对的、单测也一直全绿），而在**入参的收法**：软件调插件命令时是**把每一枚实参逐枚展开交给函数**（`handler(...args)`），这三条却按「整包一个」去收——于是收到的永远只有**第一枚**（行齿轮拿到的是「类型数组本身」、卡齿轮拿到的是「身份对象本身」），解析函数按设计判空 ⇒ 走到「没有目标就什么都不做」那一句，静默收场。\n- **修法**：三条命令改为按软件**实际的传参方式**收参（rest 形式），解析函数一行未动（它本来就是对的，错的是喂法）；并**照软件真实的调用形状**补了端到端测试（此前的测试是把整个数组当**一枚**实参喂进去的——形状不对，所以一直绿着却与线上相反，这正是这次翻车的原因）。同时给仓里三条命令与解析函数各加了一段「载荷形状」警示注释，避免下一个人再踩。\n- 兼容性：新旧软件上行为一致（改的是插件自己怎么收参，不依赖任何新面）——不需要更新版本的软件。"
+        },
         {
           "version": "1.0.37",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.37/settings.linkdesk-plugin",
@@ -47,8 +53,7 @@
         {
           "version": "1.0.33",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.33/settings.linkdesk-plugin",
-          "publishedAt": "2026-10-04T20:46:22.153Z",
-          "changelog": "- 🔴 **修复上一版（1.0.32）的一个问题：齿轮菜单里的「复制快捷键」「复制为 JSON」「重置为默认」三项根本不显示**——点开菜单只看到另外三项（修改快捷键… / 复制命令 ID / 复制命令名称）。原因是这三项的出现条件所用的名字，与插件实际递过去的「本行信息」字段名对不上，而软件是按名字精确查表的（查不到就当条件不成立）⇒ 静默失效、不报错、看着像「这三项没做」。现已对齐，**六项按原设计全部出现**：有绑定的行多出两条复制，你改过的行多出「重置为默认」。\n- 新增一道回归校验：把菜单声明与插件实际递出的字段逐字对账，同类「名字对不上就静默不显示」的问题不会再溜过测试。\n- 其余（齿轮常显、键盘焦点样式、复制内容与 JSON 形状）与 1.0.32 一字不变。\n- 要求 LinkDesk **0.2.32 或更高**（未变）。"
+          "publishedAt": "2026-10-04T20:46:22.153Z"
         },
         {
           "version": "1.0.32",
