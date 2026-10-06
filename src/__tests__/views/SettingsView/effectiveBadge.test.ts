@@ -1,7 +1,10 @@
 /**
  * E5.8#155 跟随主题生效值徽标——纯函数单测（settings 插件无组件测试基建，徽标逻辑抽纯函数直测）。
- * 覆盖：跟随主题判定（isFollowingThemeValue）/ 徽标解析（resolveEffectiveBadge 四态）/
- * 生效值展示形态（formatEffectiveValue 字体首族截断 + 色值色块）。
+ * 覆盖：跟随主题判定（isFollowingThemeValue）/ 徽标解析（resolveEffectiveBadge 四态）。
+ * ⚠️ 展示形态 `formatEffectiveValue` **不在本文件测**——它 2026-10-06 双轨塌缩后归 `@linkdesk/ui`
+ *   （判据 C 分工：判定住宿主、格式化住共享层），覆盖率由共享件自己的单测负责
+ *   （壳 `src/components/shared/effective-badge/formatEffectiveValue.test.ts`），
+ *   本仓只留「合并生效」那条集成断言（`SettingRow/useSettingRowBadges.test.ts`）。
  * fixture 用虚构值（硬约束 21：Demo Sans / Demo Mono；token key 为真实契约面）。
  * E5.8#155 归一化后：token 映射声明进配置 schema（appearance.ts effectiveToken）——本测试只测纯函数
  * 对 effectiveToken 声明值的解析（传显式 token），无插件内映射表契约；展示形态按值驱动（零 token 键知识）。
@@ -11,7 +14,6 @@ import { describe, it, expect } from "vitest";
 import {
   isFollowingThemeValue,
   resolveEffectiveBadge,
-  formatEffectiveValue,
 } from "../../../views/SettingsView/effectiveBadge";
 
 describe("E5.8#155 生效值徽标纯函数", () => {
@@ -57,17 +59,5 @@ describe("E5.8#155 生效值徽标纯函数", () => {
     expect(resolveEffectiveBadge("font-ui", {}, "", "")).toBeNull();
     // 透明哨兵（玻璃无实际 tint）→ 不显
     expect(resolveEffectiveBadge("glass-tint", { "glass-tint": "transparent" }, "", "")).toBeNull();
-  });
-
-  it("formatEffectiveValue——字体首族截断逗号栈（去引号）/ 色值（rgba/hex）带色块", () => {
-    expect(formatEffectiveValue("Demo Sans, 'Demo Fallback', sans-serif")).toEqual({
-      label: "Demo Sans",
-    });
-    expect(formatEffectiveValue("Demo Mono")).toEqual({ label: "Demo Mono" });
-    expect(formatEffectiveValue("rgba(59,77,148,0.35)")).toEqual({
-      label: "rgba(59,77,148,0.35)",
-      color: "rgba(59,77,148,0.35)",
-    });
-    expect(formatEffectiveValue("#0078d4")).toEqual({ label: "#0078d4", color: "#0078d4" });
   });
 });

@@ -37,12 +37,6 @@ export function resolveEffectiveBadge(
   return { tokenKey: effectiveToken, value };
 }
 
-/** 色值形态判定——rgba()/rgb()/hsl()/#hex（字体族名不可能以此开头，值驱动零 token 键知识） */
-const COLOR_VALUE_RE = /^(#(?:[0-9a-f]{3,4}|[0-9a-f]{6}|[0-9a-f]{8})\b|rgba?\(|hsla?\()/i;
-
-/** 生效值展示形态——色值带色块；字体栈截断逗号显首族（栈过长徽标只显主族名） */
-export function formatEffectiveValue(value: string): { label: string; color?: string } {
-  if (COLOR_VALUE_RE.test(value)) return { label: value, color: value };
-  const first = value.split(",")[0].trim().replace(/^["']|["']$/g, "");
-  return { label: first };
-}
+/* 生效值**展示形态**（色值带色块 / 字体栈截首族）的正典住共享件 `@linkdesk/ui` 的
+   `formatEffectiveValue`（判据 C 分工：判定住宿主、格式化住共享层）——本文件不再留第二份实现
+   （2026-10-06《分段预览色块边缘串色》案双轨塌缩时删除；两份逐字相同，删的是后来者）。 */

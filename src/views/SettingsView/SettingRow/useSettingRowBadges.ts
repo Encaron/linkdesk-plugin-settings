@@ -5,9 +5,9 @@
 
 import { useConfigurationValueIpc } from "../../hooks/useConfigurationValueIpc";
 import { deriveSourceBadge } from "../deriveSourceBadge";
-import { resolveEffectiveBadge, formatEffectiveValue } from "../effectiveBadge";
-// 本案 5.1（02 E1）：展示形态（截首族／配 swatch）优先用共享件；缺席（现装壳）退本地同款纯函数
-import { SHARED_FORMAT_EFFECTIVE_VALUE } from "../sharedUi";
+import { resolveEffectiveBadge } from "../effectiveBadge";
+// 展示形态（截首族／配 swatch）的正典住共享件——判据 C 分工：判定住宿主、格式化住共享层
+import { formatEffectiveValue } from "@linkdesk/ui";
 import type { ConfigProperty } from "../types";
 
 export function useSettingRowBadges({
@@ -51,10 +51,8 @@ export function useSettingRowBadges({
     userOverrides[configKey],
     baselineSeeds[configKey],
   );
-  // 本案 5.1（02 E1）：共享件在就用共享件，不在用本地件——两者语义逐字相同（同一次平移）
-  const formatValue = SHARED_FORMAT_EFFECTIVE_VALUE ?? formatEffectiveValue;
   const effectiveBadge = effectiveBadgeRaw
-    ? { ...effectiveBadgeRaw, ...formatValue(effectiveBadgeRaw.value) }
+    ? { ...effectiveBadgeRaw, ...formatEffectiveValue(effectiveBadgeRaw.value) }
     : null;
 
   return { badge, effectiveBadge };

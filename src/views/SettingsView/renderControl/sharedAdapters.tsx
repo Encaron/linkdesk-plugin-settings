@@ -1,26 +1,23 @@
 /**
- * 共享件适配层（本案 5.1 · 02 E1 双轨）——「有共享件用共享件、没有退回本地件」的选择**只在这一层**。
+ * 接线件——三处「渲染宿主声明的控件」的组装点（判据 A：控件住共享层，本层只接宿主命令）。
  *
- * 三个接线件都保持**现有语义逐格不变**（12 E12：选图→入库→受控路径三态；只读行挂载即取＋轮询＋抛错保现值）：
- *   · `ReadonlyControl`——renderHint "readonly"：共享件在 ⇒ 共享 `ReadOnlyText` 的轮询模式
- *     （`statusCommand` ＋ 宿主命令句柄）；不在 ⇒ 本地 `ReadOnlyStatus`（现装壳上的实际路径）。
- *   · `ImageControl`——uiHint "image"：共享件在 ⇒ 共享 `BackgroundImagePicker`（对话框/入库经
- *     props 注入，共享件里零 `window.linkdesk`）；不在 ⇒ 本地件。
+ * 2026-10-06《分段预览色块边缘串色》案 · 双轨塌缩（「设置控件-词表正典与共享化」5.3 的收尾）：
+ * 原 E1 双轨（`sharedUi.ts` 的 `pick()` 运行时探测 ＋ 本地兜底件）整层删除。两个理由：
+ *   ① 前置条件已满足——本插件 `minAppVersion` 现为 0.2.52，而三个共享件导入名的 `since`
+ *      最高 0.2.40（`check-ui-min-app-version` 按**静态具名导入**算地板）⇒ 静态 import 天然安全；
+ *   ② 双轨是**死重且有害**——现装壳上它恒走共享件那一支（本地件跑不到），而变量键下标读取
+ *      （`ns[name]`）**不进地板账本**：插件真正依赖的共享面被藏了起来，官方示例插件不能是这个样子。
+ *
+ * 三个接线件语义逐格不变（12 E12：选图→入库→受控路径三态；只读行挂载即取＋轮询＋抛错保现值）：
+ *   · `ReadonlyControl`——renderHint "readonly"：共享 `ReadOnlyText` 的轮询模式（`statusCommand` ＋ 宿主命令句柄）。
+ *   · `ImageControl`——uiHint "image"：共享 `BackgroundImagePicker`（对话框/入库经 props 注入，
+ *     共享件里零 `window.linkdesk`）。
  *   · `UnknownHintControl`——01 §四 降级契约：未知 hint 只读展示当前值＋说明。
- *
- * ⛔ 5.3（壳发版后）删本地件与这里的双轨分支，本层随之塌成直接渲染共享件。
  */
-import { ReadOnlyText } from "@linkdesk/ui";
+import { BackgroundImagePicker, ReadOnlyText } from "@linkdesk/ui";
 import type { ConfigProperty } from "../types";
-import {
-  HAS_POLLING_READONLY,
-  SHARED_IMAGE_PICKER,
-  runStatusCommand,
-} from "../sharedUi";
-import ReadOnlyStatus from "./readonlyStatus";
-import { BackgroundImagePicker } from "./imagePicker";
 
-/** 选图对话框——标题/过滤器与本地件逐字一致（E12：语义不变） */
+/** 选图对话框——标题/过滤器与共享件契约一致（E12：语义不变） */
 async function pickImagePath(t: (key: string) => string): Promise<string | null> {
   const picked = await window.linkdesk?.dialog?.open({
     title: t("选择图片…"),
@@ -35,15 +32,26 @@ async function importImagePath(pickedPath: string): Promise<string | null> {
   return controlled ?? null;
 }
 
-/** renderHint "readonly" 的渲染体（共享件轮询模式 ↔ 本地件双轨） */
-export function ReadonlyControl({ prop }: { prop: ConfigProperty }) {
-  if (HAS_POLLING_READONLY && prop.statusCommand) {
-    return <ReadOnlyText statusCommand={prop.statusCommand} runCommand={runStatusCommand} />;
+/**
+ * 状态行执行句柄——壳命令 → 字符串读数（共享 `ReadOnlyText` 的 `runCommand`）。
+ * 抛错／非字符串 = null（02 E7 保现值；与共享件契约同款语义）。
+ */
+async function runStatusCommand(id: string): Promise<string | null> {
+  try {
+    const r = await window.linkdesk?.commands?.executeCommand?.(id);
+    return typeof r === "string" ? r : null;
+  } catch {
+    return null;
   }
-  return <ReadOnlyStatus prop={prop} />;
 }
 
-/** uiHint "image" 的渲染体（共享件能力注入 ↔ 本地件双轨） */
+/** renderHint "readonly" 的渲染体——值来自 statusCommand 的运行时读数，不来自配置存储 */
+export function ReadonlyControl({ prop }: { prop: ConfigProperty }) {
+  if (!prop.statusCommand) return <ReadOnlyText value="" />;
+  return <ReadOnlyText statusCommand={prop.statusCommand} runCommand={runStatusCommand} />;
+}
+
+/** uiHint "image" 的渲染体——共享件能力注入式（onPick / onImport） */
 export function ImageControl({
   value,
   onChange,
@@ -53,18 +61,14 @@ export function ImageControl({
   onChange: (v: unknown) => void;
   t: (key: string) => string;
 }) {
-  const Shared = SHARED_IMAGE_PICKER;
-  if (Shared) {
-    return (
-      <Shared
-        value={value}
-        onChange={onChange}
-        onPick={() => pickImagePath(t)}
-        onImport={importImagePath}
-      />
-    );
-  }
-  return <BackgroundImagePicker value={value} onChange={onChange} t={t} />;
+  return (
+    <BackgroundImagePicker
+      value={value}
+      onChange={onChange}
+      onPick={() => pickImagePath(t)}
+      onImport={importImagePath}
+    />
+  );
 }
 
 /**

@@ -11,8 +11,8 @@
  * 核心无知原则：Settings Editor 不知道有哪些设置项——全部从 ConfigurationRegistry 派生。
  *
  * E5.8#0d.10-7e：feature-folder 聚合器——SettingsView/ 6 子模块整迁：
- *   types（三接口）· helpers（lk）· ObjectEditor（对象编辑）· renderControl（控件渲染）·
- *   SettingRow（单设置行）· useSettingsEvents（订阅 effect 组）。
+ *   types（三接口）· helpers（lk）· renderControl（控件渲染）· SettingRow（单设置行）· useSettingsEvents（订阅 effect 组）。
+ *   ⚠️ 原列的「ObjectEditor（对象编辑）」已于 2026-10-06 上移共享层（`@linkdesk/ui`，见尾巴 T2），本仓私有件删除。
  * E6#87d：再下沉四件——loadSettingsData（数据拉取与分组组装）· useSettingsSwitch（角色套/设置套切换）·
  *   filterGroups（搜索过滤）· GroupedKeys（组内二级标题渲染）。
  *   本文件仅剩：主组件 state + 数据装载 + JSX 编排。
@@ -39,7 +39,8 @@ import type { GroupInfo, ConfigProperty, SettingsViewProps } from "./SettingsVie
 // E6#87d：原 SettingsView.css（630）按现有分节整段一切三——三件同为同一屏的样式，统一在此引入
 import "./SettingsView.css";
 import "./SettingsView-rows.css";
-import "./SettingsView-objectEditor.css";
+// 2026-10-06《分段预览色块边缘串色》案尾巴 T2：SettingsView-objectEditor.css 整件删除——
+// object/array 键值编辑器上移共享层（`@linkdesk/ui` ObjectEditor，样式随件走 ObjectEditor.css）。
 
 /* ── 组件 ── */
 

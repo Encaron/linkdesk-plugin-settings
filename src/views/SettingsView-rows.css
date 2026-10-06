@@ -27,68 +27,13 @@
   min-width: 0;
 }
 
-/* E5.8#87+#99：来源徽标——✏️ 用户覆盖 / 🔀 域来源（#6 归一化：emoji → codicon 图标 + 降噪——
-   theme 态不显徽标，无徽标 = 主题来源；清除后徽标消失 = 一眼可见「回主题」，对标 VS Code 非默认态才点显）。
-   形态对标 .settings-row-gear 惯例（小胶囊）——不抢行主体 */
-.settings-source-badge {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  font-size: var(--font-size-xs); /* E5.8 Phase 12 #174：source-badge 11→xs */
-  line-height: 1;
-  padding: 3px 6px;
-  border-radius: var(--radius-sm);
-  white-space: nowrap;
-}
-.settings-source-badge .codicon {
-  font-size: var(--font-size-xs); /* E5.8 Phase 12 #174：badge codicon 11→xs */
-}
-.settings-source-badge--user {
-  /* 用户覆盖——主题强调色系点显（非裸 hex） */
-  color: var(--text-on-accent);
-  background: var(--accent);
-  opacity: 0.92;
-}
-.settings-source-badge--mix {
-  /* 域来源——混搭生效，另类强调区分 */
-  color: var(--text-primary);
-  background: var(--tab-active-bg);
-}
+/* 来源徽标样式随共享件走（`@linkdesk/ui` SourceBadge.css 的 .ldk-source-badge*）——
+   2026-10-06《分段预览色块边缘串色》案双轨塌缩：私有拷贝删除，几何/配色/图标以共享件为单一真相源。
+   （原为「共享件缺席时的本地同款药丸」；插件地板 0.2.52 > 共享件 since 0.2.40 ⇒ 早已是死码。） */
 
-/* E5.8#155：跟随主题生效值徽标——控件容器内、控件右侧（行尾/齿轮左）显示行实际生效值（对标 VS Code「从默认值继承」）。
-   只显跟随主题态（非用户修改）；信息性展示 → muted 中性小胶囊（同 .settings-source-badge 惯例，
-   不抢行主体，区别于 user/mix 的状态点显）。垂直对齐借 .settings-row-control align-items:center——
-   与控件同一条中心线（贴住控件而非浮在行中间），margin-left 与控件留隙。 */
-.settings-effective-badge {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-left: 8px;
-  font-size: var(--font-size-xs); /* E5.8 Phase 12 #174：effective-badge 11→xs */
-  line-height: 1;
-  padding: 3px 6px;
-  border-radius: var(--radius-sm);
-  white-space: nowrap;
-  color: var(--text-secondary);
-  background: var(--tab-active-bg);
-}
-.settings-effective-badge-label {
-  color: var(--text-muted);
-}
-.settings-effective-badge-value {
-  max-width: 160px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.settings-effective-swatch {
-  flex-shrink: 0;
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-  border: 1px solid var(--border);
-}
+/* 生效值徽标样式随共享件走（`@linkdesk/ui` EffectiveBadge.css 的 .ldk-effective-badge*）。
+   布局关系（贴住控件、与控件同一条中心线）由下面的 `:has(.ldk-effective-badge)` 规则兜住——
+   ⚠️ 那是本仓的**布局**决定，不属于徽标自己的皮，故留在这里而不进共享件。 */
 
 .settings-row-label {
   display: block;
@@ -153,7 +98,7 @@
    实测收缩后 = 104 ＋ 8 ＋ 120 ＋ 8 ＋ 156 = **396** ≤ 454（控制区可用），零溢出。
    ⛔ 今日**零键命中**（`effectiveToken` 只在 app.glassTint/app.fontFamily/app.fontFamilyMono，
    三者都没声明 statusCommand/actionCommand）——本条是给将来第三方声明兜底，不是现症。 */
-.settings-row-control:has(.settings-effective-badge) .settings-row-companion {
+.settings-row-control:has(.ldk-effective-badge) .settings-row-companion {
   max-width: 120px;
 }
 
@@ -212,84 +157,16 @@
   color: var(--text-primary);
 }
 
-/* E3f #59d3：色块预览——#59e ColorPicker 替换为弹出调色器 */
-.settings-color-control {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
+/* E3f #59d3：色块预览——#59e ColorPicker 替换为弹出调色器。
+   2026-10-06《分段预览色块边缘串色》案尾巴 T1：私有几何（.settings-color-control / .settings-color-swatch）
+   整段删除——`uiHint:"color"` / `renderHint:"color"` 两个分支改吃共享 `ColorField`
+   （几何与 hover 逐字上移进 `@linkdesk/ui` 的 ColorField.css，值不变）；
+   调色弹层仍是共享 `ColorPicker`，由 SettingRow 接线（那里的开合/锚点状态本格不动）。 */
 
-.settings-color-swatch {
-  width: 20px;
-  height: 20px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--separator);
-  flex-shrink: 0;
-  cursor: pointer;
-}
+/* E5.8#50.11——背景图选择（uiHint: "image"）——样式随共享件走（`@linkdesk/ui` BackgroundImagePicker.css）。
+   2026-10-06《分段预览色块边缘串色》案双轨塌缩：私有拷贝（.settings-image-picker / .settings-image-path）删除。 */
 
-.settings-color-swatch:hover {
-  border-color: var(--accent);
-}
-
-/* E5.8#50.11——背景图选择（uiHint: "image"）——按钮行 + 受控路径省略显示 */
-.settings-image-picker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  flex-wrap: wrap; /* E5.8#87：三态按钮（选择/无背景/清除）+ 路径超宽换行，不挤压 */
-}
-.settings-image-path {
-  max-width: 220px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: var(--font-size-sm); /* E5.8 Phase 12 #174：image-path 12→sm */
-  color: var(--text-muted);
-}
-
-/* ── E5.8#99：分段控件段内预览 swatch——单一几何（52×30 + var(--radius-sm)），
-   fontTone（Aa 分半）+ accentSource（色块）共用（#3 归一化——删 #91/#98 各自 swatch 变体）。
-   分段按钮本体（ghost 双轨制）在壳 SegmentedRadio.css（#1+#4 收敛），此处只留预览内容样式。 ── */
-.settings-segmented-swatch {
-  display: flex;
-  width: 52px;
-  height: 30px;
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  border: 1px solid var(--separator);
-  flex-shrink: 0;
-}
-/* 跟随主题配方——中性分半示意「主题决定强调色」（themeable 变量，非运行值）。
-   🔥 E5.8#116：两半改用 --tone-* 实色标尺 token——玻璃合成（synthesizeGlassSurfaces color-mix）把
-   --bg-window 写成 alpha 0 全透明，左半与背后表面融为一体 = 用户报「完全空心」；对标 fontTone 预览
-   （--tone-surface-deep/light 实色标尺渲染正常），零 hex 铁律。 */
-.settings-segmented-swatch--split {
-  background: linear-gradient(90deg, var(--tone-surface-deep) 50%, var(--tone-surface-light) 50%);
-}
-/* 自定义——实时生效强调色：applyAccentColor 恒把 effective accent 写 --accent
-   （自定义色 / 清除回主题 / 跟随主题 三态全对），声明式读 CSS 变量，零 IPC 零 DOM 读 */
-.settings-segmented-swatch--accent {
-  background: var(--accent);
-}
-.settings-font-tone-half {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-sm); /* E5.8 Phase 12 #174：font-tone-half 12→sm */
-  font-weight: 600;
-  line-height: 1;
-  user-select: none;
-}
-/* E5.8#91 文字极性预览两极性取样——色值 = shell 标尺 token（--tone-* 系统双字系，非主题色板） */
-.settings-font-tone-half--deep {
-  background: var(--tone-surface-deep);
-  color: var(--tone-ink-on-deep);
-}
-.settings-font-tone-half--light {
-  background: var(--tone-surface-light);
-  color: var(--tone-ink-on-light);
-}
+/* 段内预览两族样式随共享件走（`@linkdesk/ui` SegmentPreview.css 的 .ldk-segment-preview*）。
+   2026-10-06《分段预览色块边缘串色》案：私有拷贝删除——它与共享件**几何逐字相同**（同源同病），
+   修一处不够、必须两处都改；归一化后单一真相源，边框铺贴几何只在共享件里定义一次。
+   分段按钮本体（ghost 双轨制）仍壳 SegmentedRadio.css，不在此列。 */

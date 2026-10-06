@@ -2,7 +2,9 @@
  * renderControl——根据 property type/uiHint 渲染对应控件（分发器门面）。
  * 自壳迁入（E5.8#41.14）；E6#54c：控件 import 全走 @linkdesk/ui（零 @src/core）。
  * 依赖方向：renderControl → @linkdesk/ui 控件（Toggle/SelectBox/FontFamilySelect/FilePathInput/NumberInput）
- *   + ObjectEditor + types + 同名夹子件；被 SettingRow 消费。
+ *   + types + 同名夹子件；被 SettingRow 消费。
+ * 尾巴 T1／T2（2026-10-06《分段预览色块边缘串色》案）：`color` 渲染体与 object/array 键值编辑器
+ *   **两件转正归共享层**（`@linkdesk/ui` 的 `ColorField` / `ObjectEditor`），本仓私有件与私有 CSS 已删——
  * E6#87d：四个自定义控件移入同名夹（`renderControl/imagePicker.tsx` / `renderControl/toneControls.tsx`），
  *   stringList 的 locked/editable 前置计算移入 `renderControl/stringList.ts`（纯函数）。
  * 设置行案 2.2（2026-10-04）：分发器拆成「主部件（`renderPrimary`，原逻辑一字未动）＋ 伴生件包裹
@@ -13,10 +15,12 @@
 // E6#54c：共享控件走 @linkdesk/ui（@src/components/shared 双入口已禁——见 eslint 插件块）
 import {
   Button, // E5.8#99：实心动作按钮（双轨制实心轨——原 settings-action-btn 收编壳共享）
+  ColorField, // 尾巴 T1：`color` 控件渲染体（色块＋即时写输入）——原自画件删除，转正归共享层
   DynamicSelect, // E5.8#50.23：动态下拉（optionsFrom 渲染时调 listRecipes）
   FilePathInput,
   FontFamilySelect,
   NumberInput,
+  ObjectEditor, // 尾巴 T2：object/array 键值编辑器——原本仓私有件整件上移共享层
   SegmentedRadio, // E5.8#99：分段单选（ghost 双轨制——#91 fontTone/#98 accentSource 收敛共用）
   SelectBox,
   Slider, // E5.8#50.9：滑杆控件
@@ -26,7 +30,6 @@ import {
   inferSliderStep, // E5.8#65：滑杆 step 推导（浮点区间连续可调）
   urlSourceKey, // E6#30c：URL 源身份（owner/repo、分支无关）——stringList 的 itemKey（判重规则见 renderControl/stringList.ts）
 } from "@linkdesk/ui";
-import ObjectEditor from "./ObjectEditor";
 import { enumDescriptionAt } from "./enumDescription";
 import { mapSegmentedOptions } from "./mapSegmentedOptions"; // E5.8#99：分段单选选项映射（通用 segmented + fontTone/accentSource 预览覆盖共用）
 import type { ConfigProperty } from "./types";
@@ -70,21 +73,13 @@ function renderPrimary(
         />
       );
     case "color":
+      // 尾巴 T1：渲染体归共享件（色块 ＋ 即时写文本输入）；调色弹层仍由 SettingRow 用共享 ColorPicker 接。
       return (
-        <div className="settings-color-control">
-          <div
-            className="settings-color-swatch"
-            style={{ background: String(val) }}
-            data-hint={String(val)} data-hint-delay="0"
-            onClick={onColorSwatchClick}
-          />
-          <input
-            className="ldk-input"
-            type="text"
-            value={String(val)}
-            onChange={(e) => onChange(e.target.value)}
-          />
-        </div>
+        <ColorField
+          value={String(val)}
+          onChange={(v) => onChange(v)}
+          onSwatchClick={onColorSwatchClick}
+        />
       );
     case "fontFamily":
       // E5.8#50.20：monoOnly 从 property 声明读（缺省 = 等宽编辑器字体；app.fontFamily monoOnly:false = 全字族）
@@ -219,25 +214,18 @@ function renderPrimary(
           />
         );
       }
-      // renderHint "color" → 色块预览
+      // renderHint "color" → 色块预览（尾巴 T1：与 uiHint "color" 分支**同一件**——原先是同一段 JSX 抄两遍）
       if (prop.renderHint === "color") {
         return (
-          <div className="settings-color-control">
-            <div
-              className="settings-color-swatch"
-              style={{ background: String(val) }}
-              data-hint={String(val)} data-hint-delay="0"
-              onClick={onColorSwatchClick}
-            />
-            <input
-              className="ldk-input"
-              type="text"
-              value={String(val)}
-              onChange={(e) => onChange(e.target.value)}
-            />
-          </div>
+          <ColorField
+            value={String(val)}
+            onChange={(v) => onChange(v)}
+            onSwatchClick={onColorSwatchClick}
+          />
         );
       }
+      // 无 enum／无 renderHint 的裸 string：单个原生输入框 ＋ **宿主 CSS 类** `ldk-input`。
+      // 按 06 §一 判据 T-B **不算尾巴**（外观由宿主供给，第三方照同样写法即可，⛔ 不为此另造一件）。
       return (
         <input
           className="ldk-input"
@@ -261,7 +249,7 @@ function renderPrimary(
       const obj = (typeof val === "object" && val !== null && !Array.isArray(val))
         ? (val as Record<string, unknown>)
         : {};
-      return <ObjectEditor value={obj} onChange={(newObj) => onChange(newObj)} />;
+      return <ObjectEditor value={obj} onChange={(newObj) => onChange(newObj)} {...objectEditorProps(t)} />;
     }
 
     case "array": {
@@ -275,6 +263,7 @@ function renderPrimary(
             const newArr = Object.values(newObj);
             onChange(newArr);
           }}
+          {...objectEditorProps(t)}
         />
       );
     }
@@ -292,6 +281,23 @@ function renderPrimary(
    退化为「主控件就是它」的简写。契约与判据 = docs/04-软件更新/待抉择池/设置行-控制只读同行/01-方案与落点契约.md §1.2。
    ⛔ 本仓仍**键名零知识**：只认声明字段，不认任何一个具体键。
    ══════════════════════════════════════════════════════════════════════════ */
+
+/**
+ * object / array 两分支共用的共享件入参（尾巴 T2）。
+ * · 文案一律由**调用方**供给——共享 `ObjectEditor` 零 i18n（与 `StringListEditor` 同款口径）；
+ * · `newKeyBase` 是**写进用户配置的数据键名**，⛔ 故意不过 `t()`：一旦有人补上 "newPattern" 译文，
+ *   新增行的键名就会被写成译文、损坏用户配置（B-i18n-1；原私有件的同款注释随件上移）。
+ *   值 `newPattern` 与迁移前逐字一致（⛔ 不是笔误，别照着键名去改）。
+ */
+function objectEditorProps(t: (key: string) => string) {
+  return {
+    addLabel: t("添加模式"),
+    deleteLabel: t("删除"),
+    onLabel: t("已启用"),
+    offLabel: t("已禁用"),
+    newKeyBase: "newPattern",
+  };
+}
 
 /** 动作按钮——主部件形态（`renderHint:"action"`）与伴生形态**共用同一段**（避免两处漂）。
  *  文案 = `t(description)`（action 行只有这一个字符串可承载文案，先例 `ai.mcp.openDetails`）；
