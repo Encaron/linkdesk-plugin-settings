@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-10-06T12:07:13.985Z",
+  "updatedAt": "2026-10-06T16:32:44.047Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.39",
+      "version": "1.0.40",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.39/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.40/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.39/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.40/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.52",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.39/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.39/settings.linkdesk-plugin",
-      "size": 41455,
-      "publishedAt": "2026-10-06T12:07:13.985Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.40/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.40/settings.linkdesk-plugin",
+      "size": 39687,
+      "publishedAt": "2026-10-06T16:32:44.047Z",
       "versions": [
+        {
+          "version": "1.0.40",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.40/settings.linkdesk-plugin",
+          "publishedAt": "2026-10-06T16:32:44.047Z",
+          "changelog": "- 🔴 **修复：「跟随主题配方」预览色块在半透明主题下左右各有一条 1px 的串色**（深色那半边的最边上露出浅色、浅色那半边露出深色，看起来像最边上两个竖条换了位置）。根因不在配色，而在**色块的铺贴几何**：盒子是 `box-sizing: border-box`（可绘制区比外框每边小 1px），双色渐变本身又没有固有尺寸 ⇒ 图案铺满时多出的左右两列正好压在**半透明**的边框底下——边框不透明的主题看不出来，半透明主题（如 `theme-aurora-glass`）就露出来。修在**软件自带的分段预览组件**基类上（凡用到它的地方一并正确）。\n- 🔁 **本插件那两处自画的小色块（分段预览、字色深浅预览）改吃「软件自带」的同名组件**——外观与操作一字不变，差别是同一份几何、同一份配色只剩一处实现（换谁来渲染都画得对）。\n- 🌈 **「颜色」类配置行的色块与输入框也改用「软件自带」的组件画**——外观与操作一字不变（20×20 色块、点色块开调色板、旁边输入框边打边改），但这一件不再只属于本插件：任何人都能拿它把一条颜色配置画对。设置页里此前**同一段色块 JSX 抄了两遍**（`uiHint:\"color\"` 与 `renderHint:\"color\"` 两个分支），现在两处都调同一件。\n- 🧩 **对象／列表类配置项的键值编辑器改用「软件自带」的组件画**——键改名、开关、数值、文本、删行、加行一套照旧，行为一字不变（新增行的键名仍是**数据键名**、不参与翻译）；差别是**这类配置不再只有本插件画得出来**：别的渲染方拿到 `object` 类型的配置也能照画。\n- 内部：**本插件私有件再删 2 件**（`ObjectEditor.tsx` ＋ `SettingsView-objectEditor.css`）＋ 一段私有 CSS（`.settings-color-control` / `.settings-color-swatch`）——几何与外观逐值上移进「软件自带」组件（共享类名 `ldk-color-field*` / `ldk-object-editor*`）；编辑器的文案（添加／删除／已启用／已禁用）改由本插件经参数注入，共享件里**不含任何中文字面量、也不做翻译**。\n- 内部：**私有件整删 4 件**——`sharedUi.ts`（早期为「软件版本还不支持时自己顶一份」写的双轨取件层）＋ `imagePicker.tsx` ＋ `readonlyStatus.tsx` ＋ 对应的一份测试；来源徽标／生效徽标／只读值／背景图选择器／生效值格式化／混搭哨兵一律改为**静态具名 import**（`@linkdesk/ui`），并删掉随之作废的私有 CSS 族段（`.settings-source-badge*`／`.settings-effective-badge*`／`.settings-image-picker*`／`.settings-segmented-swatch*`／`.settings-font-tone-half*`），改吃共享件类名。原因记一笔：双轨取件按**变量键**取值，会**逃过**软件那套「插件最低版本地板」的账本（地板是按**静态具名导入**算的）——官方示例插件必须让声明与该插件真正用到的面**对得上**。\n- 要求 LinkDesk **0.2.52 或更高**（地板未变）：本版新用到的两件（色块输入件 `ColorField`、键值编辑器 `ObjectEditor`）同样是 **0.2.52** 面，不抬地板。"
+        },
         {
           "version": "1.0.39",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.39/settings.linkdesk-plugin",
@@ -47,8 +53,7 @@
         {
           "version": "1.0.35",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.35/settings.linkdesk-plugin",
-          "publishedAt": "2026-10-05T07:36:14.320Z",
-          "changelog": "- **设置页多了一组「默认打开方式」——一个地方看全「哪类文件用哪个插件打开」，也能就地改**（左侧导航新出现的一组，带计数字：数字 = **还有多少类要你看**，随搜索即时变）。组里两区：\n  - **「需要你做选择的类型」**：当有**两家以上插件**都声明能打开同一类文件（比如两家都认 `.docx`），这一行就是「你来定」——行尾下拉选一家、或选「恢复自动」交回自动判定；行尾徽标写「**N 家**」告诉你这格有几口人在抢。**候选集合相同的一批类型并成一行一起改**（一次写多条），不是一条一条来；同批里某一类被单独指定过，它会从那行**拆出来单列**（免得「改一行、动一片」）。\n  - **「按插件浏览」**：每只**声明过文件类型**的插件一张卡（卡头是插件名、id 与版本，点一下展开）。展开后逐行列出它认的扩展名——扩展名照**归一后的存储键**显示（声明 `MX` 也显示 `.mx`）——并标明这一行现在是「**你锁定的**」「**自动的**」「**候选的**」还是「**指向的插件已不在册**（失效，重装该插件即复活）」，行尾下拉可直接改这一行归谁。\n  - 顶部搜索框**现在也搜得到这里**：输入扩展名 `.pdf` 或插件名都能命中。\n- **两处齿轮菜单**（鼠标扫到行尾/卡头才现形，与设置页其余齿轮同款）：\n  - **竞争行齿轮**：**「恢复自动（本格 N 类）」**——把这一格整批交回自动判定；**「在文件树中打开选择器」**——同一件事的另一个入口（跳去文件树的「打开方式…」）。后一项**只在装了文件树插件、且那条命令确实在册时才出现**，没装就**不显示这一项**（不是灰的、更不是点了没反应）。\n  - **卡齿轮**：**「清除相关默认覆盖（N 类）」**——把与这只插件相关的「你指定过」一次清掉；**「复制插件 ID」**。\n- 🔴 **修复：在新组里搜「无匹配」，整组会连人一起消失**。此前只要搜索词在组内一条都没命中，**整组**（连同「你来定」的列表）就从页面上没了、只剩一句「无匹配设置」，看着像这功能坏了。实为过滤顺序之误——**先按关键词把键滤空、再判「这是不是管理器组」**，于是组身份判定永远失败。改为**先在原始键上认组身份、再滤其余组**，并给这一组**恒保留**豁免：搜不到时它自己写明「没有匹配的类型或插件」。新增两条回归测钉住（搜图上的类型名 `.pdf`、搜一个纯不命中的词，都要留住这组）。\n- 要求 LinkDesk **0.2.48 或更高**（这一组由软件侧声明挂载位、本插件负责把整组画成管理器）。**更低的软件上这一组不出现**，管理器一次网络请求也不发，本插件其余功能一字不变——所以本版仍可在更低的软件上正常使用。"
+          "publishedAt": "2026-10-05T07:36:14.320Z"
         },
         {
           "version": "1.0.34",
