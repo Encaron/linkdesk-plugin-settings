@@ -13,7 +13,7 @@
  *
  * ⛔ 本文件不 import `window.linkdesk`、不 import React——`fileAssociationsGearCommands.ts` 才碰 IPC。
  */
-import { normalizeExtList, readOverride } from "./model";
+import { normalizeExtList, readOverride } from "@linkdesk/ui";
 
 /** 管理器齿轮菜单的三条命令 id——与 `plugin.json` 的 `contributes.commands[]` 逐字对应。 */
 export const FILE_ASSOC_GEAR_COMMANDS = {

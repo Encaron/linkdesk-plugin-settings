@@ -20,7 +20,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { InlineInput, SectionSubtitle } from "@linkdesk/ui"; // M4 AI#38.12：分节副标题件（P-3）
+import { InlineInput, SectionSubtitle, ManagerView, isSettingsHiddenHint } from "@linkdesk/ui"; // M4 AI#38.12：分节副标题件（P-3）
 import KeybindingSettingsView from "./keybinding-settings/KeybindingSettingsView";
 import useSettingsEvents from "./SettingsView/useSettingsEvents";
 import { useUserOverridesIpc } from "./hooks/useUserOverridesIpc";
@@ -31,10 +31,10 @@ import { loadSettingsData } from "./SettingsView/loadSettingsData";
 import { filterGroups } from "./SettingsView/filterGroups";
 import { useSettingsSwitch } from "./SettingsView/useSettingsSwitch";
 import GroupedKeys from "./SettingsView/GroupedKeys";
-// 第 4 波：「默认打开方式」管理器（壳声明 uiHint 挂载位 → 本插件整组自定义渲染）
-import FileAssociationsManagerView from "./file-associations-manager/FileAssociationsManagerView";
+// 「默认打开方式」管理器（壳声明 uiHint 挂载位 → 整组渲染**共享组装视图**；2026-10-06 共享化案 2.1）
 import { useFileAssociationsModel } from "./file-associations-manager/useFileAssociationsModel";
-import { findManagerPluginId, OS_FOLLOW_PLUGINS_KEY } from "./file-associations-manager/managerHint";
+import { makeGearMenus } from "./file-associations-manager/gearMenus";
+import { findManagerPluginId } from "./file-associations-manager/managerHint";
 import type { GroupInfo, ConfigProperty, SettingsViewProps } from "./SettingsView/types";
 // E6#87d：原 SettingsView.css（630）按现有分节整段一切三——三件同为同一屏的样式，统一在此引入
 import "./SettingsView.css";
@@ -112,6 +112,11 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
   // 数据**住这一层**（不在管理器视图里）：左侧导航的计数徽标要数管理器的 `navCount`，而管理器视图
   // 只在该组激活时才挂载——数据若住视图里，徽标在切到那组之前永远是 0（钩子第二参 = 懒加载开关）。
   const fileAssociations = useFileAssociationsModel(search, managerPluginId !== null);
+  // 三处齿轮的菜单项工厂——共享组装视图**不认识命令 id**，菜单只能由消费方造（见 `gearMenus.ts`）
+  const gearMenus = useMemo(
+    () => makeGearMenus({ t, openWithAvailable: fileAssociations.openWithAvailable }),
+    [t, fileAssociations.openWithAvailable],
+  );
 
   const { handleRoleSwitch, handleSettingsSwitch } = useSettingsSwitch(
     tabId,
@@ -125,6 +130,13 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
     filteredGroups.find((g) =>
       g.role ? g.role === selectedGroup : g.pluginId === selectedGroup
     ) ?? filteredGroups[0] ?? null;
+
+  // 管理器组里的**非隐藏位**键（C3c 形态）：OS 跟随开关摘了 hint ⇒ 走通用布尔行，由 `prop.group`
+  // 归进二级子节；带隐藏位 hint 的键（挂载键、例外表）一行都不画——判据住共享层，⛔ 本仓不自判名单。
+  const managerExtraKeys =
+    managerPluginId && activeGroup?.pluginId === managerPluginId
+      ? activeGroup.keys.filter((k) => !isSettingsHiddenHint(allProps[k]?.uiHint))
+      : [];
 
   return (
     <div className="settings-editor">
@@ -268,19 +280,34 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
                   {/* M4 AI#38.12（P-3 拍板 A）：分区副标题——contribution 声明即渲染（未声明 = 不渲染） */}
                   {activeGroup.subtitle && <SectionSubtitle>{t(activeGroup.subtitle)}</SectionSubtitle>}
                   {managerPluginId && activeGroup.pluginId === managerPluginId ? (
-                    /* 管理器组：整组换自定义视图（组内唯一键是渲染**挂载位**，不是「一条设置」——
-                       ⛔ 不走 GroupedKeys，否则会出现一行泛型对象编辑器＝D1 要防的第二处写入面） */
-                    <FileAssociationsManagerView
-                      search={search}
-                      model={fileAssociations.model}
-                      loading={fileAssociations.loading}
-                      ready={fileAssociations.ready}
-                      error={fileAssociations.error}
-                      openWithAvailable={fileAssociations.openWithAvailable}
-                      /* T6 第 5 波：底部 OS 折叠块——配置项从壳声明表取（文案真源住壳）；壳没声明 ⇒ undefined ⇒ 不出现 */
-                      {...(allProps[OS_FOLLOW_PLUGINS_KEY] ? { osFollowProp: allProps[OS_FOLLOW_PLUGINS_KEY] } : {})}
-                      onPick={fileAssociations.pick}
-                    />
+                    /* 管理器组：整组渲染共享组装视图（默认皮）。共享件不认识命令 id ⇒ 三处齿轮的
+                       菜单项由本仓注入；组内**非隐藏位**键（OS 跟随开关）随后走通用行——⛔ 挂载位
+                       键不进 GroupedKeys，否则会出现一行泛型对象编辑器＝D1 要防的第二处写入面。 */
+                    <>
+                      <ManagerView
+                        model={fileAssociations.model}
+                        search={search}
+                        loading={fileAssociations.loading}
+                        ready={fileAssociations.ready}
+                        error={fileAssociations.error}
+                        onPick={fileAssociations.pick}
+                        contestedGearItems={gearMenus.contested}
+                        cardGearItems={gearMenus.card}
+                        cardRowGearItems={gearMenus.cardRow}
+                      />
+                      {managerExtraKeys.length > 0 && (
+                        <GroupedKeys
+                          keys={managerExtraKeys}
+                          groupDescriptions={activeGroup.groupDescriptions}
+                          allProps={allProps}
+                          appearanceMode={appearanceMode}
+                          userOverrides={userOverrides}
+                          baselineSeeds={baselineSeeds}
+                          effectiveTokens={effectiveTokens}
+                          onChange={() => setVersion((v) => v + 1)}
+                        />
+                      )}
+                    </>
                   ) : activeGroup.keys.length > 0 ? (
                     <GroupedKeys
                       keys={activeGroup.keys}

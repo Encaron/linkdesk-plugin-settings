@@ -18,7 +18,7 @@
  * 这条判据住测试，不靠目视。
  */
 
-import { normalizeExtList } from "./model";
+import { normalizeExtList } from "@linkdesk/ui";
 
 /**
  * 写面最小结构——`setDefaultBulk` **刻意标可选**：这不是「将来可能有」，而是**当下真有无 bulk 的壳

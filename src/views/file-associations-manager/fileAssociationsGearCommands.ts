@@ -43,13 +43,13 @@
  */
 
 import i18n from "i18next";
+import { extractDeclaredExtensions } from "@linkdesk/ui";
 import {
   FILE_ASSOC_GEAR_COMMANDS,
   planCardClear,
   readContestedRowGearTarget,
   readPluginCardGearTarget,
 } from "./fileAssociationsGearTarget";
-import { extractDeclaredExtensions } from "./model";
 import { writeDefaults } from "./fileAssociationsWrite";
 import { WORKBENCH_FILE_ASSOCIATIONS_KEY } from "./managerHint";
 

@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@linkdesk/contracts": "^0.1.39",
-    "@linkdesk/ui": "^0.2.44"
+    "@linkdesk/ui": "^0.2.48"
   },
   "devDependencies": {
     "@linkdesk/plugin-sdk": "^0.1.81",

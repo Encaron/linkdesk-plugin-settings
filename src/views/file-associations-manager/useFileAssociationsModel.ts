@@ -21,23 +21,29 @@
  *    等真实表追上（或 2.5s 兜底）再摘掉。
  * 3. **表一变就重拉候选快照**：宿主 `isCurrent` 是覆盖表感知的，表变了它就可能翻转——
  *    不重拉则「当前单击打开：X」与徽标停在旧答案上（选择器那边也一样在等这份重算）。
+ *
+ * ## 🔴 取数留仓、推导走共享（2026-10-06 共享化案 2.1）
+ *
+ * 本 hook 只做**取数**（三面读 ＋ 乐观覆盖 ＋ 写入转发）；「谁是默认 / 这一格怎么并 / 搜索命不命中」
+ * 一律交 `@linkdesk/ui` 的 `buildManagerModel`（聚合口径全仓一处实现，⛔ 本仓不落第二份）。
+ * 原私有 `./model.ts` 随之整删——它的每个导出都是共享层的子集。
  */
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { pickIdentityArt } from "@linkdesk/ui";
-import { SHELL_COMMANDS } from "@linkdesk/plugin-sdk/shell-commands";
-import { lk } from "../SettingsView/helpers";
-import { useConfigurationValueIpc } from "../hooks/useConfigurationValueIpc";
 import {
   buildManagerModel,
   extractDeclaredExtensions,
   normalizeExtList,
   overrideKeyOf,
+  pickIdentityArt,
   type DeclaredPlugin,
   type HandlerSnapshot,
   type ManagerModel,
-} from "./model";
+} from "@linkdesk/ui";
+import { SHELL_COMMANDS } from "@linkdesk/plugin-sdk/shell-commands";
+import { lk } from "../SettingsView/helpers";
+import { useConfigurationValueIpc } from "../hooks/useConfigurationValueIpc";
 import { writeDefaults } from "./fileAssociationsWrite";
 import { WORKBENCH_FILE_ASSOCIATIONS_KEY } from "./managerHint";
 

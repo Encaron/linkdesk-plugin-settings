@@ -12,11 +12,15 @@
  * 「知道有个管理器」的地方，`filterGroups` 与 `SettingsView` 都从这里取判据。
  *
  * 三处消费：
- *   ① `SettingsView` 组挂载——命中即换掉 `GroupedKeys`（整组自定义视图）；
+ *   ① `SettingsView` 组挂载——命中即换掉 `GroupedKeys`（该组渲染共享组装视图 `ManagerView`）；
  *   ② `filterGroups` 搜索豁免——**任何**搜索词都保留本组（组内唯一键「workbench.fileAssociations」
  *      不可能命中「.pdf」，不豁免则搜扩展名时整组消失，E30 的「检索复用设置页搜索」就成了空话）。
  *      搜不到时由管理器自己出「没有匹配的类型或插件」空态（08/09 图三处空态之一）；
  *   ③ `SettingsView` 导航计数——本组的徽标不数键，改数管理器报上来的 `navCount`。
+ *
+ * 🔴 **组内按 hint 逐键分发**（2026-10-06 共享化案 2.1）：带隐藏位 hint 的键（挂载键 ＋ 例外表）
+ * 一行都不画；**摘了 hint** 的键（T6 的 OS 跟随开关）随后走 `GroupedKeys` 通用布尔行，由它声明的
+ * `group` 归进二级子节。判据是共享层的 `isSettingsHiddenHint`——⛔ 本仓不自己维护一份名单。
  */
 import type { ConfigProperty, GroupInfo } from "../SettingsView/types";
 
@@ -25,14 +29,6 @@ export const MANAGER_UI_HINT = "fileAssociationsManager";
 
 /** 覆盖表键（组内唯一键，也是管理器读写的那一处真源）。 */
 export const WORKBENCH_FILE_ASSOCIATIONS_KEY = "workbench.fileAssociations";
-
-/**
- * OS 跟随总开关键（T6 第 5 波）——声明在**壳**（`src/App/config/fileAssociations.ts`，与本组同属
- * 一只 contribution），本仓只管渲染。语义与默认值都在壳的声明里，这里只留键名一份字面量。
- * ⛔ `app.osAssociations.overrides` 不在本文件：它是「无界面项」（D6 留作将来高级位），
- * 本管理器一个字都不渲染它——留常量 = 留一个没人用的键名。
- */
-export const OS_FOLLOW_PLUGINS_KEY = "app.osAssociations.followPlugins";
 
 /** 这组是不是管理器组——判据：组内任一键带管理器提示词。 */
 export function isManagerGroup(
