@@ -20,7 +20,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { InlineInput, SectionSubtitle, ManagerView, isSettingsHiddenHint } from "@linkdesk/ui"; // M4 AI#38.12：分节副标题件（P-3）
+import { InlineInput, SectionSubtitle, ManagerView, PluginIcon, isSettingsHiddenHint } from "@linkdesk/ui"; // M4 AI#38.12：分节副标题件（P-3）；PluginIcon = 导航行图标位（05 settings-侧栏入口图标）
 import KeybindingSettingsView from "./keybinding-settings/KeybindingSettingsView";
 import useSettingsEvents from "./SettingsView/useSettingsEvents";
 import { useUserOverridesIpc } from "./hooks/useUserOverridesIpc";
@@ -237,7 +237,16 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
                       }`}
                       onClick={() => setSelectedGroup(g.role ?? g.pluginId)}
                     >
-                      {g.title}
+                      <span className="settings-nav-label">
+                        {g.iconManifest && (
+                          <PluginIcon
+                            pluginId={g.pluginId}
+                            manifest={g.iconManifest}
+                            className="settings-nav-icon"
+                          />
+                        )}
+                        {g.title}
+                      </span>
                       <span className="settings-nav-count">
                         {g.role
                           ? g.candidates?.length ?? 0

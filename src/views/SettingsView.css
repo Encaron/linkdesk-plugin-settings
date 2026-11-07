@@ -123,6 +123,32 @@
   border-left-color: var(--accent);
 }
 
+/* 导航行图标位（05 settings-侧栏入口图标）——16px 照 PluginCard 身份图尺寸语言（24px 卡片磁贴的密集导航档）；
+   无图组（iconManifest 缺省）不渲染 ⇒ 不预留空槽（2026-11-07 用户拍板：图标需设计，宁缺毋滥）。 */
+.settings-nav-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.settings-nav-icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+  border-radius: var(--radius-sm);
+}
+
+img.settings-nav-icon {
+  display: block;
+  object-fit: cover;
+}
+
+span.settings-nav-icon {
+  font-size: var(--font-size-lg); /* codicon/emoji 形：字形 16px 满格（PluginCard glyph 同款 token） */
+  line-height: 1;
+}
+
 .settings-nav-count {
   font-size: var(--font-size-xs); /* E5.8 Phase 12 #174：nav-count 11→xs */
   color: var(--text-muted);

@@ -9,6 +9,8 @@ interface SettingsViewProps {
   tabId?: string;
 }
 
+import type { ManifestIconShape } from "@linkdesk/ui";
+
 interface GroupInfo {
   pluginId: string;
   title: string;
@@ -17,6 +19,12 @@ interface GroupInfo {
   /** M4 AI#38.12（P-3 拍板 A）：各分节（group）标题下的一行小字——键 = group 原文（可选，零侵入） */
   groupDescriptions?: Record<string, string>;
   keys: string[];
+  /** 导航行图标来源（05 settings-侧栏入口图标）——装配时裁决（loadSettingsData/groupIcon.ts）：
+   *  插件组 = pickIdentityArt(manifest)（marketIcon ?? icon → 无图默认彩色块）；本体组 = 声明 icon 空消费
+   *  （codicon 全名或绝对 URL——0.2.53 壳声明出货前恒缺 ⇒ 行维持纯文字）。渲染统一走共享件 PluginIcon
+   *  （判据 A：能力在共享件、本仓只喂数据）；缺省 = 无图标位、不预留空槽。
+   *  类型 import 仅类型面（零运行时依赖）。 */
+  iconManifest?: ManifestIconShape;
   /** 角色分组（#41.14 ⑤）——本组是 factoryRole 角色切换组：切换按钮在顶、激活套配置在下。未设置 = 普通配置分组 */
   role?: string;
   /** 角色候选 [{pluginId, title}]——切换按钮遍历渲染 */
