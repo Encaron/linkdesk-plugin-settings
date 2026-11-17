@@ -9,8 +9,12 @@ export function mapSegmentedOptions(
   prop: Pick<ConfigProperty, "enum" | "enumDescriptions">,
   t: (key: string) => string,
 ): { value: string; label: string; title: string }[] {
+  // 🔴 只按下标读**数组形态**（依赖追新 TS 收紧后暴露的存量隐患，2026-11-18 顺手修）：
+  //  对象形态（值 → 显示名）用数字下标索引本来就拿不到档——按枚举值取才是它的语义，
+  //  但本函数服务的是 segmented 的「下标对应」契约（壳侧声明形态），对象形态不在射程。
+  const descList = Array.isArray(prop.enumDescriptions) ? prop.enumDescriptions : undefined;
   return (prop.enum ?? []).map((v, i) => {
-    const full = prop.enumDescriptions?.[i] ? t(prop.enumDescriptions[i]) : t(v);
+    const full = descList?.[i] ? t(descList[i]) : t(v);
     return { value: v, label: full.split("—")[0], title: full };
   });
 }

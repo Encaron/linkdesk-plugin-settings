@@ -46,4 +46,19 @@ describe("resolveGroupIconManifest（导航行图标来源裁决）", () => {
     expect(resolveGroupIconManifest(null, 42)).toBeUndefined();
     expect(resolveGroupIconManifest(null, null)).toBeUndefined();
   });
+
+  // ④bis 共享图标名（04 内置配置组图标 2026-11-18）——裸串按名查快照，url 默认项才接
+  it("④a 共享图标名在快照且有 url 默认项 → 原样＋iconSource:shared", () => {
+    expect(
+      resolveGroupIconManifest(null, "demo.group-x", { "demo.group-x": { url: "https://assets.example/demo.svg" } }),
+    ).toEqual({ icon: "demo.group-x", iconSource: "shared" });
+  });
+
+  it("④b 快照缺省 / 名字不在 / 纯字体默认项 → undefined（宁缺毋滥）", () => {
+    expect(resolveGroupIconManifest(null, "demo.group-x")).toBeUndefined(); // 无快照
+    expect(resolveGroupIconManifest(null, "demo.group-x", {})).toBeUndefined(); // 名字不在
+    expect(
+      resolveGroupIconManifest(null, "demo.group-x", { "demo.group-x": { fontPath: "icons.woff", fontCharacter: "\e001" } }),
+    ).toBeUndefined(); // 池侧不渲染字体
+  });
 });

@@ -50,9 +50,11 @@ export async function loadSettingsData(t: (key: string) => string): Promise<{
         // 导航行图标（05 settings-侧栏入口图标）：插件组 manifest 裁决；本体组走声明 icon 空消费。
         // 🔴 窄化读取 = 0.2.53 前向消费——契约（LinkDeskConfigurationContribution）尚无 icon 字段，
         // 壳仓 04「内置配置组图标声明」补类型后此 cast 可去。
+        // 04 内置配置组图标（2026-11-18）：声明 icon 原值随组透传——共享名渲染期按快照裁决
+        icon: contrib.icon,
         iconManifest: resolveGroupIconManifest(
           manifestByPlugin.get(pluginId) ?? null,
-          (contrib as { icon?: string }).icon,
+          contrib.icon,
         ),
       });
     }
@@ -84,9 +86,10 @@ export async function loadSettingsData(t: (key: string) => string): Promise<{
           pluginId: active.pluginId,
           title: t(existing.title ?? active.title),
           keys: Object.keys(existing.properties ?? {}),
+          icon: existing.icon,
           iconManifest: resolveGroupIconManifest(
             manifestByPlugin.get(active.pluginId) ?? null,
-            (existing as { icon?: string }).icon,
+            existing.icon,
           ),
           role,
           candidates,

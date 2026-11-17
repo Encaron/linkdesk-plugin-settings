@@ -12,9 +12,12 @@
  * `codicon-` 前缀、含 `/`/`.` 一律当插件相对路径拼 linkdesk://——本体组没有插件目录，两态都破）：
  *   - codicon 全名（`codicon-xxx`）→ 剥前缀 ＋ iconSource:"codicon"（共享件再拼回，避免双前缀）；
  *   - 绝对 URL（linkdesk:// 或 https:// 等带 scheme）→ 原样 ＋ iconSource:"url"（跳过相对路径拼接）；
- *   - 其他形态（相对路径等）→ 拒绝返回 undefined（宁缺毋滥，不猜）。
+ *   - 其他裸串 = **IconRegistry 共享图标名**（04 内置配置组图标 2026-11-18——宿主默认项 `app.group-*`
+ *     或第三方 contributes.icons 键）→ 快照里有 **url 默认项**才接，返 iconSource:"shared"
+ *     （PluginIcon 按名查同一快照渲染 ink 剪影）；快照缺省 / 名字不在 / 纯字体默认项（池侧不渲染字体）
+ *     → 拒绝返回 undefined（宁缺毋滥，不猜）。
  */
-import { pickIdentityArt } from "@linkdesk/ui";
+import { pickIdentityArt, type SharedIconDefault } from "@linkdesk/ui";
 
 type IdentityCandidate = Parameters<typeof pickIdentityArt>[0];
 
@@ -24,6 +27,7 @@ export type GroupIconSource = ReturnType<typeof pickIdentityArt>;
 export function resolveGroupIconManifest(
   manifest: IdentityCandidate,
   declaredIcon: unknown,
+  sharedIcons?: Record<string, SharedIconDefault>,
 ): GroupIconSource | undefined {
   if (manifest) return pickIdentityArt(manifest);
   if (typeof declaredIcon === "string" && declaredIcon.trim() !== "") {
@@ -34,7 +38,11 @@ export function resolveGroupIconManifest(
     if (/^[a-z][a-z0-9+.-]*:\/\//i.test(declared)) {
       return { icon: declared, iconSource: "url" };
     }
-    return undefined; // 契约外形态（相对路径等）——本体组无插件目录，拼了必破，宁缺毋滥
+    // 共享图标名（04 内置配置组图标 2026-11-18）——快照按名查，url 默认项才接（宁缺毋滥）
+    if (sharedIcons?.[declared]?.url) {
+      return { icon: declared, iconSource: "shared" };
+    }
+    return undefined; // 快照缺省 / 名字不在 / 纯字体默认项——本体组无插件目录，拼了必破，宁缺毋滥
   }
   return undefined;
 }

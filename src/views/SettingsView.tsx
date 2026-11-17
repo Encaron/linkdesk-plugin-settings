@@ -20,7 +20,7 @@
 
 import { useState, useMemo, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { InlineInput, SectionSubtitle, ManagerView, PluginIcon, isSettingsHiddenHint } from "@linkdesk/ui"; // M4 AI#38.12：分节副标题件（P-3）；PluginIcon = 导航行图标位（05 settings-侧栏入口图标）
+import { InlineInput, SectionSubtitle, ManagerView, PluginIcon, isSettingsHiddenHint, type SharedIconDefault } from "@linkdesk/ui"; // M4 AI#38.12：分节副标题件（P-3）；PluginIcon = 导航行图标位（05 settings-侧栏入口图标）；SharedIconDefault = 共享图标快照值形状（04 本体组图标）
 import KeybindingSettingsView from "./keybinding-settings/KeybindingSettingsView";
 import useSettingsEvents from "./SettingsView/useSettingsEvents";
 import { useUserOverridesIpc } from "./hooks/useUserOverridesIpc";
@@ -28,6 +28,7 @@ import { useBaselineSeedsIpc } from "./hooks/useBaselineSeedsIpc";
 import { useEffectiveTokensIpc } from "./hooks/useEffectiveTokensIpc"; // E5.8#155：生效 token 集——跟随主题生效值徽标数据源
 import { useConfigurationValueIpc } from "./hooks/useConfigurationValueIpc"; // E5.8#90：外观主开关订阅——空桶过滤 + D5 动态描述
 import { loadSettingsData } from "./SettingsView/loadSettingsData";
+import { resolveGroupIconManifest } from "./SettingsView/groupIcon";
 import { filterGroups } from "./SettingsView/filterGroups";
 import { useSettingsSwitch } from "./SettingsView/useSettingsSwitch";
 import GroupedKeys from "./SettingsView/GroupedKeys";
@@ -57,6 +58,20 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
   const [groupsRaw, setGroupsRaw] = useState<GroupInfo[]>([]);
   const [allProps, setAllProps] = useState<Record<string, ConfigProperty>>({});
   const [dataLoaded, setDataLoaded] = useState(false);
+
+  // 04 内置配置组图标（2026-11-18）：共享图标定义快照——iconSource:"shared" 按名查的数据源。
+  // 随 iconTheme:changed 广播进池（宿主默认项 app.group-* 恒静态）；订阅时池 preload 先回放缓存值
+  // （硬约束 20 缓冲回放），晚订阅不丢首帧。本体组声明 icon 在渲染期配合本快照裁决（groupIcon.ts）。
+  const [sharedIcons, setSharedIcons] = useState<Record<string, SharedIconDefault> | undefined>(undefined);
+  useEffect(() => {
+    const events = window.linkdesk?.events;
+    if (!events?.on) return;
+    const off = events.on("iconTheme:changed", (payload: unknown) => {
+      const p = payload as { sharedIcons?: Record<string, SharedIconDefault> };
+      setSharedIcons(p.sharedIcons);
+    });
+    return () => { off(); };
+  }, []);
 
   // E5.8#87：用户覆盖集——来源徽标 presence 派生（单 hook 顶升，SettingRow 按需读 prop，不重复订阅）
   const userOverrides = useUserOverridesIpc();
@@ -238,13 +253,20 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
                       onClick={() => setSelectedGroup(g.role ?? g.pluginId)}
                     >
                       <span className="settings-nav-label">
-                        {g.iconManifest && (
-                          <PluginIcon
-                            pluginId={g.pluginId}
-                            manifest={g.iconManifest}
-                            className="settings-nav-icon"
-                          />
-                        )}
+                        {(() => {
+                          // 04 内置配置组图标（2026-11-18）：插件组 = 装配期 manifest 裁决；
+                          // 本体组 = 声明 icon ＋ 共享图标快照渲染期裁决（快照缺省/名字缺省 → undefined
+                          // ⇒ 纯文字不空位，宁缺毋滥口径不变）
+                          const art = g.iconManifest ?? resolveGroupIconManifest(undefined, g.icon, sharedIcons);
+                          return art ? (
+                            <PluginIcon
+                              pluginId={g.pluginId}
+                              manifest={art}
+                              sharedIcons={sharedIcons}
+                              className="settings-nav-icon"
+                            />
+                          ) : null;
+                        })()}
                         {g.title}
                       </span>
                       <span className="settings-nav-count">

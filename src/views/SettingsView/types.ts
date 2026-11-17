@@ -25,6 +25,10 @@ interface GroupInfo {
    *  （判据 A：能力在共享件、本仓只喂数据）；缺省 = 无图标位、不预留空槽。
    *  类型 import 仅类型面（零运行时依赖）。 */
   iconManifest?: ManifestIconShape;
+  /** 本体组声明 icon 原值（04 内置配置组图标 2026-11-18）——IconRegistry 共享图标名／codicon 全名／
+   *  绝对 URL。装配期只透传不裁决（快照随 iconTheme:changed 广播、晚于数据拉取），渲染期配合
+   *  sharedIcons 快照再走 resolveGroupIconManifest（groupIcon.ts）。 */
+  icon?: string;
   /** 角色分组（#41.14 ⑤）——本组是 factoryRole 角色切换组：切换按钮在顶、激活套配置在下。未设置 = 普通配置分组 */
   role?: string;
   /** 角色候选 [{pluginId, title}]——切换按钮遍历渲染 */
