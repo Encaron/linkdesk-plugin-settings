@@ -1,25 +1,31 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-07T04:39:14.420Z",
+  "updatedAt": "2026-11-17T19:27:05.215Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.41",
+      "version": "1.0.42",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "官方"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.41/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.42/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.41/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.42/resources/icon.svg",
       "marketIconSource": "url",
-      "minAppVersion": "0.2.52",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.41/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.41/settings.linkdesk-plugin",
-      "size": 39857,
-      "publishedAt": "2026-11-07T04:39:14.420Z",
+      "minAppVersion": "0.2.53",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.42/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.42/settings.linkdesk-plugin",
+      "size": 40215,
+      "publishedAt": "2026-11-17T19:27:05.215Z",
       "versions": [
+        {
+          "version": "1.0.42",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.42/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-17T19:27:05.215Z",
+          "changelog": "- ✨ **本体组四行图标点亮**（通用／主题／AI接入／默认打开方式）：软件 0.2.53 把本体组声明改为 **IconRegistry 共享图标名**（宿主默认项 `app.group-*`，B 方案墨线设计稿定稿几何）。本版消费端接上这条新形态：声明裸串按名查共享图标快照（随 `iconTheme:changed` 广播进池，订阅时回放缓存兜晚订阅），有 url 默认项即渲染——**ink 剪影**（mask ＋ `--icon-ink`，随主题墨色自动翻亮暗）。\n- ⚠️ **1.0.41「本体组无需再发版」的承诺就此作废**：壳侧 2026-11-18 拍板把值形态从「codicon 名或地址」改为「注册表图标名」（可被图标主题成套覆盖、替换口三层全占）——解读新形态的代码必须落在本插件。这是**一次性的能力装进**：此后任何插件声明 `iconSource:\"shared\"` 都走同一段代码，不再随插件更新。\n- 🏗️ 图标裁决纯函数加第三形态（裸串＝共享图标名；快照缺省／名字不在／纯字体默认项仍拒收——「宁缺毋滥」口径不变）；渲染统一走共享件 `PluginIcon` 的 `sharedIcons` 注入面。\n- 🧹 依赖追新（@linkdesk/contracts 0.1.45／@linkdesk/ui 0.2.58／plugin-sdk 0.1.92）暴露的存量类型隐患顺手修：分段选项映射只按下标读**数组形态** `enumDescriptions`（对象形态用数字下标本来就拿不到档）。\n- 要求 LinkDesk **0.2.53 或更高**（地板抬升：`iconSource:\"shared\"` 契约、共享图标快照广播、`PluginIcon` ink 分支都是 0.2.53 面）。"
+        },
         {
           "version": "1.0.41",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.41/settings.linkdesk-plugin",
@@ -47,8 +53,7 @@
         {
           "version": "1.0.37",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.37/settings.linkdesk-plugin",
-          "publishedAt": "2026-10-05T15:42:44.752Z",
-          "changelog": "- **「默认打开方式」组底部新增 OS 登记折叠块（文件打开方式案第 5 波 · T6）**——这一块管的是**系统层**：装上插件后，它的文件类型会出现在 Windows「打开方式」候选里；卸载就撤掉。它和本页上面那些「应用内默认」**互不干涉**（系统只认识「LinkDesk」整体，进门之后归哪只插件是本页的事）。形态照设计图：**折叠块**——summary 上一句话写明「关掉会发生什么」（关 = 停止替插件登记并撤回运行期已登记；安装包自带类型不动；与本页默认无关），展开是一条真设置行（开关）＋一行只读状态。\n- 🔴 **开关的标题与说明住壳、本插件不自造**：两段文案是壳的配置声明（`app.osAssociations.followPlugins`），译名随壳走；本仓只用 `t()` 转一道。壳没声明这个键（第三方壳）时整块不出现。\n- 只读状态行**不新开任何进程间通道**：读数只用本页已有数据（已装插件声明的类型数）。「运行期实际登记了哪些扩展名」住主进程，本波有意不为一行只读文字去扩契约/预加载面。\n- 零行为变化：不装这个键的老壳上，本插件其余部分一字未动。"
+          "publishedAt": "2026-10-05T15:42:44.752Z"
         },
         {
           "version": "1.0.36",
