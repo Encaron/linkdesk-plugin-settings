@@ -12,6 +12,10 @@
       },
       "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.43/resources/icon-bar.svg",
       "iconSource": "url",
+      "cover": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/HEAD/resources/cover.svg",
+      "screenshots": [
+        "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/HEAD/resources/cover.svg"
+      ],
       "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.43/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.53",
