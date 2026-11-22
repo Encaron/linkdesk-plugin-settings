@@ -1,5 +1,9 @@
 # 更新日志
 
+## v1.0.44（2026-11-23）
+
+- **背景图选择默认打开受控缓存目录**：`app.backgroundImage` / `app.zoneBackgroundImage` 的「选择图片…」对话框现在从 `userData/appearance`（已入库外观图的缓存）开始——可直接复用之前导入的图。壳 0.2.60+ 解析 `defaultPathKind: "appearance"` 令牌；旧壳忽略该字段，行为不变。
+
 ## v1.0.43（2026-11-20）
 
 - **分类声明（R4-2.8/2.9）**：`plugin.json` 顶层补 `category: "productivity"`（小类可空）——商店分类抽屉归位，随本次发版进入官方目录条目。

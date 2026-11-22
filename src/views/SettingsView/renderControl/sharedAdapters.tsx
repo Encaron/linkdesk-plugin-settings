@@ -22,6 +22,8 @@ async function pickImagePath(t: (key: string) => string): Promise<string | null>
   const picked = await window.linkdesk?.dialog?.open({
     title: t("选择图片…"),
     filters: [{ name: t("图片"), extensions: ["png", "jpg", "jpeg", "webp"] }],
+    // 2026-11-23：默认打开受控缓存目录（壳 0.2.60+ 解析令牌；旧壳忽略 → 行为不变）
+    defaultPathKind: "appearance",
   });
   return picked ?? null;
 }
