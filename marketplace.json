@@ -1,30 +1,32 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-20T11:50:39.124Z",
+  "updatedAt": "2026-11-22T20:21:13.195Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.43",
+      "version": "1.0.44",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
-        "name": "官方"
+        "name": "Encaron"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.43/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.44/resources/icon-bar.svg",
       "iconSource": "url",
-      "cover": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/HEAD/resources/cover.svg",
-      "screenshots": [
-        "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/HEAD/resources/cover.svg"
-      ],
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.43/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.44/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.53",
       "category": "productivity",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.43/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.43/settings.linkdesk-plugin",
-      "size": 39670,
-      "publishedAt": "2026-11-20T11:50:39.124Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.44/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.44/settings.linkdesk-plugin",
+      "size": 38971,
+      "publishedAt": "2026-11-22T20:21:13.195Z",
       "versions": [
+        {
+          "version": "1.0.44",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.44/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-22T20:21:13.195Z",
+          "changelog": "- **背景图选择默认打开受控缓存目录**：`app.backgroundImage` / `app.zoneBackgroundImage` 的「选择图片…」对话框现在从 `userData/appearance`（已入库外观图的缓存）开始——可直接复用之前导入的图。壳 0.2.60+ 解析 `defaultPathKind: \"appearance\"` 令牌；旧壳忽略该字段，行为不变。"
+        },
         {
           "version": "1.0.43",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.43/settings.linkdesk-plugin",
@@ -52,8 +54,7 @@
         {
           "version": "1.0.39",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.39/settings.linkdesk-plugin",
-          "publishedAt": "2026-10-06T12:07:13.985Z",
-          "changelog": "- 🔴 **「默认打开方式」管理器换了渲染体：从本插件自己画，改成用「软件自带」的共享组件画**（同一批共享件也给别的设置界面用）。对使用者来说**外观与操作一模一样**（两区、行内下拉、齿轮菜单、搜索、徽标计数全不变），真正的差别在**换渲染方也能用上管理器**：哪天有人用另一只设置插件把本插件整个替换掉，那只插件现在可以直接把这一组整组画出来（也可以只取聚合数据自己画皮）——聚合口径全软件只有一份，不再各画一套、各算一遍，也就不会两边算出的「谁在抢这类文件」对不上。这一组仍由**软件**声明挂载位、由**本插件**把它画出来，分工未变。\n- **卡内工具条（新）**：声明文件类型较多的卡（**8 类及以上**）展开后多出一行工具条——**过滤框**：输 `.py`、`python`、`PY` 都能命中（大小写、带不带点都认），卡体收窄到命中的行并写出命中数；按 Esc 清空；把卡折叠再展开**过滤复位**。旁边是**排序**：「按默认排序」＝该插件声明类型的**原本顺序**，「按字母序」＝a→z。只声明两三类的小卡**没有**这一行。\n- **组的形态调整**：「系统「打开方式」登记」由原来的**折叠块**升为普通**二级小节**，跟随开关是一条普通设置行（与其他设置行同款，可点可写）；原来折叠块里那行**只读状态文字**随之退役。\n- 要求 LinkDesk **0.2.52 或更高**——管理器现改用软件自带的共享组件渲染，**更低的软件上这一组不出现**（管理器连一次数据请求都不发），本插件其余功能一字不变。\n- 内部：插件仓里那批**私有件整删**（管理器视图本体、私有推导、私有 CSS 族段共 4 件＋1 份 CSS）——同一份口径不再在本仓维护第二遍；词典里随件搬走的 **31 条死词条**同笔清掉；管理器齿轮相关的单测改为**按软件真实的传参形状**喂参。"
+          "publishedAt": "2026-10-06T12:07:13.985Z"
         },
         {
           "version": "1.0.38",
