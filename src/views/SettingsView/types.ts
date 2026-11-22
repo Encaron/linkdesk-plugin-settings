@@ -55,6 +55,8 @@ interface ConfigProperty {
   step?: number;
   uiHint?: string;
   renderHint?: string;
+  /** 2026-11-23：颜色能力档——true = 调色器可调 alpha（玻璃叠加色）；缺省 = 不透明 */
+  allowAlpha?: boolean;
   /** E5.8#50.20：等宽限定——uiHint "fontFamily" 时 monoOnly=false = 全字族（UI 字体） */
   monoOnly?: boolean;
   dependsOn?: { key: string; value: unknown };

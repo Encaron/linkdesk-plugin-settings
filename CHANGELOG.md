@@ -1,5 +1,10 @@
 # 更新日志
 
+## v1.0.45（2026-11-23）
+
+- **颜色行接上 alpha 能力档**：设置行按配置声明 `allowAlpha: true` 把能力传给共享 `ColorPicker`——玻璃叠加色（`app.glassTint`）打开调色器时多一条 alpha 滑杆，可调 `rgba` 透明度；未声明的颜色键（如强调色）保持不透明、行为不变。
+- 依赖 `@linkdesk/ui` 抬到 `^0.2.69`（ColorPicker 2）；要求 LinkDesk **0.2.60** 或更高（旧壳的共享件没有 alpha 档，字段被忽略、调色器仍为旧版）。
+
 ## v1.0.44（2026-11-23）
 
 - **背景图选择默认打开受控缓存目录**：`app.backgroundImage` / `app.zoneBackgroundImage` 的「选择图片…」对话框现在从 `userData/appearance`（已入库外观图的缓存）开始——可直接复用之前导入的图。壳 0.2.60+ 解析 `defaultPathKind: "appearance"` 令牌；旧壳忽略该字段，行为不变。

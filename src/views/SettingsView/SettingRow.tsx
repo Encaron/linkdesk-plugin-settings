@@ -126,6 +126,7 @@ function SettingRow({
           onClose={() => setColorPickerOpen(false)}
           anchor={colorPickerAnchor}
           presets={COLOR_PICKER_PRESETS}
+          allowAlpha={prop.allowAlpha === true}
         />
       )}
     </div>
