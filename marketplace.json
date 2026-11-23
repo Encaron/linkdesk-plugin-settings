@@ -1,26 +1,32 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-22T20:21:13.195Z",
+  "updatedAt": "2026-11-23T04:56:29.462Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.44",
+      "version": "1.0.46",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "Encaron"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.44/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.46/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.44/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.46/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.53",
       "category": "productivity",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.44/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.44/settings.linkdesk-plugin",
-      "size": 38971,
-      "publishedAt": "2026-11-22T20:21:13.195Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.46/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.46/settings.linkdesk-plugin",
+      "size": 37427,
+      "publishedAt": "2026-11-23T04:56:29.462Z",
       "versions": [
+        {
+          "version": "1.0.46",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.46/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-23T04:56:29.462Z",
+          "changelog": "- **复制/恢复类回执改底部轻 Toast**：复制设置 ID / 名称 / 键位 / JSON、复制插件 ID、恢复自动、清除覆盖、改默认打开方式——这些「做完即弃」的回执不再进铃铛留档；失败/警告仍走铃铛。\n- 统一门面 `src/notify.ts`：`info`/`success` → `toasts.show`；`warning`/`error` → `notifications.show`；旧壳（< 0.2.55）无 `toasts` 面时自动回退，回执不消失。"
+        },
         {
           "version": "1.0.44",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.44/settings.linkdesk-plugin",
@@ -48,8 +54,7 @@
         {
           "version": "1.0.40",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.40/settings.linkdesk-plugin",
-          "publishedAt": "2026-10-06T16:32:44.047Z",
-          "changelog": "- 🔴 **修复：「跟随主题配方」预览色块在半透明主题下左右各有一条 1px 的串色**（深色那半边的最边上露出浅色、浅色那半边露出深色，看起来像最边上两个竖条换了位置）。根因不在配色，而在**色块的铺贴几何**：盒子是 `box-sizing: border-box`（可绘制区比外框每边小 1px），双色渐变本身又没有固有尺寸 ⇒ 图案铺满时多出的左右两列正好压在**半透明**的边框底下——边框不透明的主题看不出来，半透明主题（如 `theme-aurora-glass`）就露出来。修在**软件自带的分段预览组件**基类上（凡用到它的地方一并正确）。\n- 🔁 **本插件那两处自画的小色块（分段预览、字色深浅预览）改吃「软件自带」的同名组件**——外观与操作一字不变，差别是同一份几何、同一份配色只剩一处实现（换谁来渲染都画得对）。\n- 🌈 **「颜色」类配置行的色块与输入框也改用「软件自带」的组件画**——外观与操作一字不变（20×20 色块、点色块开调色板、旁边输入框边打边改），但这一件不再只属于本插件：任何人都能拿它把一条颜色配置画对。设置页里此前**同一段色块 JSX 抄了两遍**（`uiHint:\"color\"` 与 `renderHint:\"color\"` 两个分支），现在两处都调同一件。\n- 🧩 **对象／列表类配置项的键值编辑器改用「软件自带」的组件画**——键改名、开关、数值、文本、删行、加行一套照旧，行为一字不变（新增行的键名仍是**数据键名**、不参与翻译）；差别是**这类配置不再只有本插件画得出来**：别的渲染方拿到 `object` 类型的配置也能照画。\n- 内部：**本插件私有件再删 2 件**（`ObjectEditor.tsx` ＋ `SettingsView-objectEditor.css`）＋ 一段私有 CSS（`.settings-color-control` / `.settings-color-swatch`）——几何与外观逐值上移进「软件自带」组件（共享类名 `ldk-color-field*` / `ldk-object-editor*`）；编辑器的文案（添加／删除／已启用／已禁用）改由本插件经参数注入，共享件里**不含任何中文字面量、也不做翻译**。\n- 内部：**私有件整删 4 件**——`sharedUi.ts`（早期为「软件版本还不支持时自己顶一份」写的双轨取件层）＋ `imagePicker.tsx` ＋ `readonlyStatus.tsx` ＋ 对应的一份测试；来源徽标／生效徽标／只读值／背景图选择器／生效值格式化／混搭哨兵一律改为**静态具名 import**（`@linkdesk/ui`），并删掉随之作废的私有 CSS 族段（`.settings-source-badge*`／`.settings-effective-badge*`／`.settings-image-picker*`／`.settings-segmented-swatch*`／`.settings-font-tone-half*`），改吃共享件类名。原因记一笔：双轨取件按**变量键**取值，会**逃过**软件那套「插件最低版本地板」的账本（地板是按**静态具名导入**算的）——官方示例插件必须让声明与该插件真正用到的面**对得上**。\n- 要求 LinkDesk **0.2.52 或更高**（地板未变）：本版新用到的两件（色块输入件 `ColorField`、键值编辑器 `ObjectEditor`）同样是 **0.2.52** 面，不抬地板。"
+          "publishedAt": "2026-10-06T16:32:44.047Z"
         },
         {
           "version": "1.0.39",
