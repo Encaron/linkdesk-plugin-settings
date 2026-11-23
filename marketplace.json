@@ -1,26 +1,32 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-23T04:56:29.462Z",
+  "updatedAt": "2026-11-23T13:51:02.313Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.46",
+      "version": "1.0.47",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "Encaron"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.46/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.47/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.46/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.47/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.53",
       "category": "productivity",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.46/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.46/settings.linkdesk-plugin",
-      "size": 37427,
-      "publishedAt": "2026-11-23T04:56:29.462Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.47/README.md",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.47/settings.linkdesk-plugin",
+      "size": 36623,
+      "publishedAt": "2026-11-23T13:51:02.313Z",
       "versions": [
+        {
+          "version": "1.0.47",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.47/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-23T13:51:02.313Z",
+          "changelog": "- 圆角改吃宿主 `--radius-*`；导航图标接 `--size-icon-sm`（均带 fallback，零视觉）"
+        },
         {
           "version": "1.0.46",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.46/settings.linkdesk-plugin",
@@ -48,8 +54,7 @@
         {
           "version": "1.0.41",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.41/settings.linkdesk-plugin",
-          "publishedAt": "2026-11-07T04:39:14.420Z",
-          "changelog": "- ✨ **设置页左侧导航入口加图标**：每个入口行（「编辑器」「资源管理器」…）行首显示 16px 图标——插件组显**插件市场同款图标**（与市场卡片、标签栏同一台渲染件、同一份图标数据，零新增资产）；没设置图标的插件显示默认彩色块，不留空位。\n- 🏗️ **本体组（通用／主题／AI接入／默认打开方式）的图标走「声明制」**：渲染端已就位，等软件 0.2.53 的内置组声明带上图标字段后**自动显示、本插件无需再发版**；在那之前这四行维持原样（纯文字），不预留空位（图标需要专门设计，宁缺毋滥）。\n- 内部：图标来源裁决收进纯函数（manifest → 共享件 descriptor ＋ 声明 icon 形态归一：codicon 全名剥前缀防双拼、绝对 URL 跳过相对路径拼接），单测 6 例虚构值覆盖。要求 LinkDesk **0.2.52 或更高**（地板未变——本版消费的共享件同为 0.2.52 面）。"
+          "publishedAt": "2026-11-07T04:39:14.420Z"
         },
         {
           "version": "1.0.40",
