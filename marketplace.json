@@ -1,30 +1,35 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-23T20:45:42.293Z",
+  "updatedAt": "2026-11-23T22:37:31.657Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.50",
+      "version": "1.0.51",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "Encaron"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.50/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.51/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.50/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.51/resources/icon.svg",
       "marketIconSource": "url",
-      "minAppVersion": "0.2.53",
+      "minAppVersion": "0.2.62",
       "category": "productivity",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.50/README.md",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.51/README.md",
       "readmeLocales": {
-        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.50/README.md",
-        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.50/docs/readme/en.md"
+        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.51/README.md",
+        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.51/docs/readme/en.md"
       },
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.50/settings.linkdesk-plugin",
-      "size": 40653,
-      "publishedAt": "2026-11-23T20:45:42.293Z",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.51/settings.linkdesk-plugin",
+      "size": 41589,
+      "publishedAt": "2026-11-23T22:37:31.657Z",
       "versions": [
+        {
+          "version": "1.0.51",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.51/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-23T22:37:31.657Z"
+        },
         {
           "version": "1.0.50",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.50/settings.linkdesk-plugin",
@@ -50,8 +55,7 @@
         {
           "version": "1.0.46",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.46/settings.linkdesk-plugin",
-          "publishedAt": "2026-11-23T04:56:29.462Z",
-          "changelog": "- **复制/恢复类回执改底部轻 Toast**：复制设置 ID / 名称 / 键位 / JSON、复制插件 ID、恢复自动、清除覆盖、改默认打开方式——这些「做完即弃」的回执不再进铃铛留档；失败/警告仍走铃铛。\n- 统一门面 `src/notify.ts`：`info`/`success` → `toasts.show`；`warning`/`error` → `notifications.show`；旧壳（< 0.2.55）无 `toasts` 面时自动回退，回执不消失。"
+          "publishedAt": "2026-11-23T04:56:29.462Z"
         },
         {
           "version": "1.0.44",
