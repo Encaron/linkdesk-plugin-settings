@@ -95,5 +95,8 @@
   "{ command: string }——要改的命令 id（如 file-tree.openFile）；省略则弹选择器": "{ command: string }—the command id to edit (e.g. file-tree.openFile); omitted opens the picker.",
   "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入": "Keybinding-row identity { command, title, key, source, when? }—passed by the gear menu as the last argument.",
   "本格的文件类型数组（无点小写，如 [\"docx\", \"xlsx\"]）——由齿轮菜单作为首枚实参传入": "This cell's file-type array (lowercase, no dot, e.g. [\"docx\", \"xlsx\"])—passed by the gear menu as the first argument.",
-  "插件卡身份 { pluginId }——由共享件 PluginCard 的齿轮菜单作为末枚实参传入": "Plugin-card identity { pluginId }—passed by the shared PluginCard gear menu as the last argument."
+  "插件卡身份 { pluginId }——由共享件 PluginCard 的齿轮菜单作为末枚实参传入": "Plugin-card identity { pluginId }—passed by the shared PluginCard gear menu as the last argument.",
+  "AI 现在可以执行所有操作，不会再询问。这个设置会一直有效，直到你在上面对应位置改回来。": "AI can now perform every action without asking. This setting stays in effect until you change it back above.",
+  "改成自主": "Switch to Autonomous",
+  "AI 权限档位": "AI permission level"
 }

@@ -26,7 +26,7 @@ import useSettingsEvents from "./SettingsView/useSettingsEvents";
 import { useUserOverridesIpc } from "./hooks/useUserOverridesIpc";
 import { useBaselineSeedsIpc } from "./hooks/useBaselineSeedsIpc";
 import { useEffectiveTokensIpc } from "./hooks/useEffectiveTokensIpc"; // E5.8#155：生效 token 集——跟随主题生效值徽标数据源
-import { useConfigurationValueIpc } from "./hooks/useConfigurationValueIpc"; // E5.8#90：外观主开关订阅——空桶过滤 + D5 动态描述
+import { useConfigurationValuesIpc } from "./hooks/useConfigurationValueIpc"; // 2026-11-24 V2：dependsOn 通用求值——一次性订阅全部声明依赖键
 import { loadSettingsData } from "./SettingsView/loadSettingsData";
 import { resolveGroupIconManifest } from "./SettingsView/groupIcon";
 import { filterGroups } from "./SettingsView/filterGroups";
@@ -79,8 +79,18 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
   const baselineSeeds = useBaselineSeedsIpc();
   // E5.8#155：生效 token 集——跟随主题生效值徽标数据源（父级单拉取，SettingRow 按需读 prop，不重复订阅）
   const effectiveTokens = useEffectiveTokensIpc();
-  // E5.8#90：外观主开关订阅——空桶过滤（followTheme 下 强调色/外观覆盖/域混搭 整组空不渲染空子标题）+ themeColor D5 动态描述
-  const appearanceMode = useConfigurationValueIpc<string>("app.appearanceMode");
+  // 2026-11-24 语义归属（V2/V3）：依赖值一次性订阅——键集 = 全部 schema 的 dependsOn/descriptionWhen 声明键，
+  // 通用（任何插件、任何键）；本层不再特判 app.appearanceMode。
+  const dependsOnKeys = useMemo(() => {
+    const keys = new Set<string>();
+    for (const prop of Object.values(allProps)) {
+      if (prop.dependsOn?.key) keys.add(prop.dependsOn.key);
+      if (prop.descriptionWhen?.key) keys.add(prop.descriptionWhen.key);
+      if (prop.sourceActiveWhen?.key) keys.add(prop.sourceActiveWhen.key);
+    }
+    return [...keys].sort();
+  }, [allProps]);
+  const configValues = useConfigurationValuesIpc(dependsOnKeys);
 
   // ── 顶部通用区（E5.8#41.13）——本角色（设置套）全部候选 + 激活 id，用于切整套设置 UI ──
   const [settingsCandidates, setSettingsCandidates] = useState<{ pluginId: string; title: string; viewId?: string }[]>([]);
@@ -211,10 +221,16 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
               data-hint={t("打开设置 (JSON)")}
               onClick={async () => {
                 try {
-                  // E5.8#41.14：getFilePath("settings") 消除——linkdesk.path 自包含解析 settings.json 真实落盘路径
-                  //（appDataDir 契约标可选——可选链守卫）
-                  const dir = await window.linkdesk.path?.appDataDir?.();
-                  const filePath = dir ? window.linkdesk.path.join(dir, "settings.json") : "";
+                  // 2026-11-24 语义归属（V6/A1）：宿主存储键 → 落盘路径由壳解析（文件名映射唯一源）。
+                  // 旧壳无 storage.getFilePath ⇒ 兼容兜底（到期条件：minAppVersion 抬到含该面的壳版本后删；
+                  // K10 豁免账本登记，过期即红）。
+                  const getFilePath = window.linkdesk.storage?.getFilePath;
+                  const filePath = getFilePath
+                    ? await getFilePath("settings")
+                    : await (async () => {
+                        const dir = await window.linkdesk.path?.appDataDir?.();
+                        return dir ? window.linkdesk.path.join(dir, "settings.json") : "";
+                      })();
                   if (!filePath) return;
                   const pluginId = await window.linkdesk.fileAssociation.getPluginFor("json");
                   // E5.8#0d.5：与 file-tree 打开文件同一条链——显式查关联不写死编辑器插件 ID（硬约束 #10）
@@ -332,7 +348,7 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
                           keys={managerExtraKeys}
                           groupDescriptions={activeGroup.groupDescriptions}
                           allProps={allProps}
-                          appearanceMode={appearanceMode}
+                          configValues={configValues}
                           userOverrides={userOverrides}
                           baselineSeeds={baselineSeeds}
                           effectiveTokens={effectiveTokens}
@@ -345,7 +361,7 @@ function SettingsView({ isActive: _isActive, tabId }: SettingsViewProps) {
                       keys={activeGroup.keys}
                       groupDescriptions={activeGroup.groupDescriptions}
                       allProps={allProps}
-                      appearanceMode={appearanceMode}
+                      configValues={configValues}
                       userOverrides={userOverrides}
                       baselineSeeds={baselineSeeds}
                       effectiveTokens={effectiveTokens}

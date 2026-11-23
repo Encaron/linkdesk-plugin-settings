@@ -26,17 +26,19 @@ export function useSettingRowBadges({
   /** E5.8#155：生效 token 集（theme.getEffectiveTokens）——跟随主题生效值徽标数据源 */
   effectiveTokens: Record<string, string>;
 }) {
-  // E5.8#87：来源徽标——sourceKey 声明槽才派生（appearanceMode 覆盖 9 键；第三方键零侵入）。
-  // E5.8#90：域来源生效门控读外观主开关 app.appearanceMode（app.mixMode 已删）+ 域来源值走 IPC 订阅；
-  // 无 sourceKey 时空 key 退化为 depValue 同款无订阅污染。
-  const mode = useConfigurationValueIpc<string>("app.appearanceMode");
+  // 2026-11-24 语义归属（V4）：来源徽标——sourceKey 声明槽才派生；激活条件/跟随哨兵全读 schema 声明
+  //（sourceActiveWhen / sourceFollowValue）。本文件不再出现 app.appearanceMode 或 "custom"/"followTheme" 字面量。
+  const activeWhen = prop?.sourceActiveWhen;
+  const activeValue = useConfigurationValueIpc<unknown>(activeWhen?.key ?? "");
   const sourceValue = useConfigurationValueIpc(prop?.sourceKey ?? "");
   const badge = prop?.sourceKey
     ? deriveSourceBadge({
         sourceKey: prop.sourceKey,
         userValue: userOverrides[configKey],
         baseline: baselineSeeds[configKey],
-        mode,
+        activeWhen,
+        activeValue,
+        followValue: prop.sourceFollowValue,
         sourceValue,
       })
     : null;

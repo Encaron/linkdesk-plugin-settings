@@ -18,27 +18,29 @@
  *    （fontFamily 空 + mixFont=songti → 实际字体来自宋体，14-档案 #87「mix 来源生效 = mix」）。
  */
 
-import { MIX_FOLLOW_THEME_SENTINEL } from "@linkdesk/ui";
-
 export type SourceBadge = "theme" | "user" | "mix";
 
 /** 混搭来源「跟随主题」哨兵——跨边界字符串契约的正典住 `@linkdesk/ui`（settings-hints 单一真相源）；
  *  本仓 re-export 只为保住既有 import 路径（同夹消费方与单测），⛔ 不再有本地字面量兜底。 */
-export { MIX_FOLLOW_THEME_SENTINEL };
+export { MIX_FOLLOW_THEME_SENTINEL } from "@linkdesk/ui";
 
 export function deriveSourceBadge(input: {
-  /** 配置项 sourceKey 声明（startup.ts schema）——无 = 非徽标槽 */
+  /** 配置项 sourceKey 声明（壳 schema）——无 = 非徽标槽 */
   sourceKey?: string;
   /** 用户覆盖值（getUserSettings 存在性）——undefined = 无覆盖 */
   userValue?: unknown;
   /** E5.8#88：本键主题/混搭基准种子值（theme.getBaselineSeeds）——播种值/恰与主题同值判「未修改」 */
   baseline?: unknown;
-  /** E5.8#90：app.appearanceMode 当前值（"followTheme" / "custom"）——域来源生效门控 */
-  mode?: unknown;
+  /** 2026-11-24（V4）：域来源激活条件——schema `sourceActiveWhen` 声明（如 appearanceMode=custom） */
+  activeWhen?: { key: string; value: unknown };
+  /** 激活键的当前值（由调用方订阅后传入） */
+  activeValue?: unknown;
+  /** 2026-11-24（V4）：`sourceKey` 的「跟随主题」哨兵——schema `sourceFollowValue` 声明 */
+  followValue?: string;
   /** sourceKey 指向的混搭来源键当前值（如 app.mixFont） */
   sourceValue?: unknown;
 }): SourceBadge | null {
-  const { sourceKey, userValue, baseline, mode, sourceValue } = input;
+  const { sourceKey, userValue, baseline, activeWhen, activeValue, followValue, sourceValue } = input;
   if (!sourceKey) return null;
 
   // 真实用户覆盖——非空且偏离基准（含 __none__）→ ✏️（覆盖值盖过域来源，applyOverrides 在域合并之上）
@@ -50,8 +52,12 @@ export function deriveSourceBadge(input: {
     return "user";
   }
 
-  // 中性槽（未写 / 清除空 / 播种=基准）——实际值由域来源决定：混搭生效 → 🔀，否则跟随主题 🎨
-  if (mode === "custom" && sourceValue !== undefined && sourceValue !== MIX_FOLLOW_THEME_SENTINEL) {
+  // 中性槽（未写 / 清除空 / 播种=基准）——实际值由域来源决定：
+  // 激活条件成立（声明驱动）且来源值 ≠ 跟随主题哨兵 → 🔀；否则跟随主题 🎨。
+  // ⛔ 本文件不再出现 "custom"/"followTheme" 字面量——语义全由 schema 声明给定（V4）。
+  const active = !!activeWhen && activeValue === activeWhen.value;
+  const followsTheme = followValue !== undefined && sourceValue === followValue;
+  if (active && sourceValue !== undefined && !followsTheme) {
     return "mix";
   }
   return "theme";

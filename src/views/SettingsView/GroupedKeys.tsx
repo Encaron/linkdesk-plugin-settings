@@ -8,10 +8,9 @@
  *    followTheme 下 整组空 → 不渲染空子标题（与搜索过滤后空桶同语义）。
  *    E5.8#98：强调色节不入本过滤——accentSource 独立轴恒显（无 dependsOn），accentColor 只门控
  *    accentSource=custom；强调色不再随外观主开关整组消失（mockup「始终可见」）。
- *    通用化：仅对 appearanceMode 门控的键判空（第三方配置 dependsOn 其他键不可评估，保守保留——
- *    SettingRow 自身 dependsOn 显隐兜底，本过滤只负责「整组空不显示标题」）。
- *    D5 语义显性：themeColor 双语义——custom 模式 = colors 域来源描述（覆盖 schema 静态「配色变体」，
- *    配色区变体语义只在跟随主题下成立；14-档案 §四 #90）。
+ *    🔄 2026-11-24 语义归属（V2/V3）：dependsOn 改为**通用求值**——父级一次性订阅全部声明键
+ *    （configValues），任何插件的任何依赖键都可评估；条件说明读 schema `descriptionWhen`。
+ *    本层不再出现 `app.appearanceMode` / `app.themeColor` 等键名特判。
  */
 
 import { useTranslation } from "react-i18next";
@@ -24,7 +23,7 @@ export default function GroupedKeys({
   keys,
   groupDescriptions,
   allProps,
-  appearanceMode,
+  configValues,
   userOverrides,
   baselineSeeds,
   effectiveTokens,
@@ -33,8 +32,8 @@ export default function GroupedKeys({
   keys: string[];
   groupDescriptions?: Record<string, string>;
   allProps: Record<string, ConfigProperty>;
-  /** 外观主开关当前值（未加载时为 undefined——空桶过滤只在它等于 dependsOn.value 时放行） */
-  appearanceMode: string | undefined;
+  /** dependsOn / descriptionWhen 的依赖值——父级一次性订阅全部声明键（通用：任何键，不只外观主开关） */
+  configValues: Record<string, unknown>;
   userOverrides: Record<string, unknown>;
   baselineSeeds: Record<string, unknown>;
   effectiveTokens: Record<string, string>;
@@ -44,8 +43,11 @@ export default function GroupedKeys({
   return groupSettingsKeys(keys, (k) => allProps[k]?.group ?? "").map((bucket) => {
     const visible = bucket.keys.filter((key) => {
       const dep = allProps[key]?.dependsOn;
-      if (dep?.key === "app.appearanceMode") return appearanceMode === dep.value;
-      return true;
+      if (!dep) return true;
+      const current = configValues[dep.key];
+      // 未加载完（undefined）= 保守保留——避免首帧把整组闪隐（旧版仅对 appearanceMode 如此）
+      if (current === undefined) return true;
+      return current === dep.value;
     });
     if (visible.length === 0) return null;
     return (
@@ -55,22 +57,24 @@ export default function GroupedKeys({
         {bucket.group && groupDescriptions?.[bucket.group] && (
           <SectionSubtitle>{t(groupDescriptions[bucket.group])}</SectionSubtitle>
         )}
-        {visible.map((key) => (
-          <SettingRow
-            key={key}
-            configKey={key}
-            prop={allProps[key]}
-            onChange={onChange}
-            userOverrides={userOverrides}
-            baselineSeeds={baselineSeeds}
-            effectiveTokens={effectiveTokens}
-            description={
-              key === "app.themeColor" && appearanceMode === "custom"
-                ? t("颜色域来源——指定主题配方的配色变体（选「跟随主题」= 整体配方配色）")
-                : undefined
-            }
-          />
-        ))}
+        {visible.map((key) => {
+          // 2026-11-24 语义归属（V3）：条件说明读 schema 声明（descriptionWhen）——本层零键名特判
+          const when = allProps[key]?.descriptionWhen;
+          const conditionalDescription =
+            when && configValues[when.key] === when.value ? t(when.description) : undefined;
+          return (
+            <SettingRow
+              key={key}
+              configKey={key}
+              prop={allProps[key]}
+              onChange={onChange}
+              userOverrides={userOverrides}
+              baselineSeeds={baselineSeeds}
+              effectiveTokens={effectiveTokens}
+              description={conditionalDescription}
+            />
+          );
+        })}
       </div>
     );
   });

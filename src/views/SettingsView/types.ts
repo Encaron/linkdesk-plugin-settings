@@ -96,6 +96,16 @@ interface ConfigProperty {
    *  SettingRow 读本字段 → 齿轮「重置此设置」对四键改写成 __none__（真默认，不跟随主题），
    *  context key settingResetsToDefault。玻璃/圆角等无独立默认项键不声明（只显跟随主题）。 */
   resetsToDefault?: boolean;
+  /** 2026-11-24 语义归属：宿主资产域（选图动作的域来源）——由壳 schema 声明，本层只直传 */
+  assetDomain?: string;
+  /** 2026-11-24：资产落点语义（同域不同目标槽，如 app / zone）——由壳 schema 声明 */
+  pickTarget?: string;
+  /** 2026-11-24：条件说明——`{key,value}` 成立时用本文字替换 description（通用，无键特判） */
+  descriptionWhen?: { key: string; value: unknown; description: string };
+  /** 2026-11-24：来源徽标激活条件（如 appearanceMode="custom"）——无声明 = 不派生 mix 来源 */
+  sourceActiveWhen?: { key: string; value: unknown };
+  /** 2026-11-24：sourceKey 的「跟随主题」哨兵值（如 followTheme）——来源徽标第二条件 */
+  sourceFollowValue?: string;
 }
 
 export type { SettingsViewProps, GroupInfo, ConfigProperty };

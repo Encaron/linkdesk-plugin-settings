@@ -28,9 +28,12 @@ vi.mock("../../../../views/hooks/useConfigurationValueIpc", () => ({
 }));
 
 import { useSettingRowBadges } from "../../../../views/SettingsView/SettingRow/useSettingRowBadges";
+import { MIX_FOLLOW_THEME_SENTINEL } from "../../../../views/SettingsView/deriveSourceBadge";
 import type { ConfigProperty } from "../../../../views/SettingsView/types";
 
 const MODE_KEY = "app.appearanceMode";
+/** 声明驱动夹具——2026-11-24 V4：接线层订阅 schema 的 sourceActiveWhen 键，而非写死模式键 */
+const ACTIVE_WHEN = { key: MODE_KEY, value: "custom" };
 
 function render(
   prop: ConfigProperty | undefined,
@@ -39,14 +42,14 @@ function render(
     userOverrides?: Record<string, unknown>;
     baselineSeeds?: Record<string, unknown>;
     effectiveTokens?: Record<string, string>;
-    mode?: unknown;
+    activeValue?: unknown;
     sourceValue?: unknown;
   } = {},
 ) {
   const configKey = opts.configKey ?? "app.mixBackground";
   h.requested.length = 0; // 每例重置观测（模块级替身，不重置会跨例累积）
   h.values.clear();
-  h.values.set(MODE_KEY, opts.mode);
+  h.values.set(prop?.sourceActiveWhen?.key ?? "", opts.activeValue);
   if (prop?.sourceKey) h.values.set(prop.sourceKey, opts.sourceValue);
   return renderHook(() =>
     useSettingRowBadges({
@@ -60,15 +63,18 @@ function render(
 }
 
 describe("useSettingRowBadges · 来源徽标接线", () => {
-  it("无 sourceKey（第三方键）→ badge null，且**仍只订阅模式键 + 空 key**（不读别的键）", () => {
+  it("无 sourceKey（第三方键）→ badge null，且**仍只订阅两个声明键（此处均为空）**", () => {
     const out = render({ type: "string" });
 
     expect(out.badge).toBeNull();
-    expect(h.requested).toEqual([MODE_KEY, ""]);
+    expect(h.requested).toEqual(["", ""]);
   });
 
-  it("有 sourceKey → 订阅模式键 + 该 sourceKey（域来源键）", () => {
-    render({ sourceKey: "app.mixBackground" }, { mode: "followTheme", sourceValue: "followTheme" });
+  it("有 sourceKey + sourceActiveWhen → 订阅声明的激活键 + 该 sourceKey", () => {
+    render(
+      { sourceKey: "app.mixBackground", sourceActiveWhen: ACTIVE_WHEN },
+      { activeValue: "followTheme", sourceValue: MIX_FOLLOW_THEME_SENTINEL },
+    );
 
     expect(h.requested).toEqual([MODE_KEY, "app.mixBackground"]);
   });
@@ -86,14 +92,28 @@ describe("useSettingRowBadges · 来源徽标接线", () => {
     expect(out.badge).toBe("user");
   });
 
-  it("无覆盖 + 混搭生效（mode=custom 且域来源非 followTheme）→ 🔀 mix", () => {
-    const out = render({ sourceKey: "app.mixBackground" }, { mode: "custom", sourceValue: "app.mixFont" });
+  it("无覆盖 + 混搭生效（激活条件成立且域来源非 followTheme）→ 🔀 mix", () => {
+    const out = render(
+      {
+        sourceKey: "app.mixBackground",
+        sourceActiveWhen: ACTIVE_WHEN,
+        sourceFollowValue: MIX_FOLLOW_THEME_SENTINEL,
+      },
+      { activeValue: "custom", sourceValue: "app.mixFont" },
+    );
 
     expect(out.badge).toBe("mix");
   });
 
   it("无覆盖 + 跟随主题 → 🎨 theme（徽标由 SettingRow 按 user/mix 渲染，这里只保证派生不撒谎）", () => {
-    const out = render({ sourceKey: "app.mixBackground" }, { mode: "followTheme", sourceValue: "followTheme" });
+    const out = render(
+      {
+        sourceKey: "app.mixBackground",
+        sourceActiveWhen: ACTIVE_WHEN,
+        sourceFollowValue: MIX_FOLLOW_THEME_SENTINEL,
+      },
+      { activeValue: "followTheme", sourceValue: MIX_FOLLOW_THEME_SENTINEL },
+    );
 
     expect(out.badge).toBe("theme");
   });
@@ -170,8 +190,8 @@ describe("useSettingRowBadges · 跟随主题生效值徽标接线", () => {
       { sourceKey: "app.mixBackground", effectiveToken: "color.zone" },
       {
         configKey: "app.mixBackground",
-        mode: "followTheme",
-        sourceValue: "followTheme",
+        activeValue: "followTheme",
+        sourceValue: MIX_FOLLOW_THEME_SENTINEL,
         effectiveTokens: { "color.zone": "rgba(0,0,0,.5)" },
       },
     );

@@ -11,6 +11,9 @@
 import { describe, it, expect } from "vitest";
 import { deriveSourceBadge, MIX_FOLLOW_THEME_SENTINEL } from "../../../views/SettingsView/deriveSourceBadge";
 
+/** 声明驱动夹具——模拟壳 schema 的 `sourceActiveWhen`（2026-11-24 V4：函数内不再有 "custom" 字面量） */
+const ACTIVE_WHEN = { key: "app.appearanceMode", value: "custom" };
+
 describe("deriveSourceBadge", () => {
   it("无 sourceKey（非徽标槽）→ null——第三方配置键零侵入", () => {
     expect(deriveSourceBadge({})).toBeNull();
@@ -47,40 +50,84 @@ describe("deriveSourceBadge", () => {
     expect(deriveSourceBadge({ sourceKey: "app.mixBackground", userValue: "img.jpg" })).toBe("user");
   });
 
-  it("无覆盖 + appearanceMode=custom 且域来源生效（≠ followTheme）→ 🔀 混搭", () => {
+  it("无覆盖 + 激活条件成立（声明驱动）且域来源生效（≠ followTheme）→ 🔀 混搭", () => {
     expect(
-      deriveSourceBadge({ sourceKey: "app.backgroundOpacity", mode: "custom", sourceValue: "aurora" }),
+      deriveSourceBadge({
+        sourceKey: "app.backgroundOpacity",
+        activeWhen: ACTIVE_WHEN,
+        activeValue: "custom",
+        followValue: MIX_FOLLOW_THEME_SENTINEL,
+        sourceValue: "aurora",
+      }),
     ).toBe("mix");
   });
 
   it("E5.8#90 中性槽 + 域来源生效 → 🔀（清除空 / 播种=基准 均不再被空串规则短路）", () => {
     // 清除空：fontFamily 空 + mixFont=songti → 实际字体来自宋体配方——🔀 而非 🎨（14-档案 #87「mix 来源生效 = 🔀」）
     expect(
-      deriveSourceBadge({ sourceKey: "app.mixFont", userValue: "", mode: "custom", sourceValue: "songti-print" }),
+      deriveSourceBadge({
+        sourceKey: "app.mixFont",
+        userValue: "",
+        activeWhen: ACTIVE_WHEN,
+        activeValue: "custom",
+        followValue: MIX_FOLLOW_THEME_SENTINEL,
+        sourceValue: "songti-print",
+      }),
     ).toBe("mix");
     // 播种=基准：backgroundOpacity 播种 0.5（=主题基准）+ mixBackground=songti → 背景域来源生效 → 🔀
     expect(
-      deriveSourceBadge({ sourceKey: "app.backgroundOpacity", userValue: 0.5, baseline: 0.5, mode: "custom", sourceValue: "songti-print" }),
+      deriveSourceBadge({
+        sourceKey: "app.backgroundOpacity",
+        userValue: 0.5,
+        baseline: 0.5,
+        activeWhen: ACTIVE_WHEN,
+        activeValue: "custom",
+        followValue: MIX_FOLLOW_THEME_SENTINEL,
+        sourceValue: "songti-print",
+      }),
     ).toBe("mix");
     // 对照——域来源 = 跟随主题（未生效）→ 中性槽仍 🎨（A6 清除回主题保持）
     expect(
-      deriveSourceBadge({ sourceKey: "app.mixFont", userValue: "", mode: "custom", sourceValue: MIX_FOLLOW_THEME_SENTINEL }),
+      deriveSourceBadge({
+        sourceKey: "app.mixFont",
+        userValue: "",
+        activeWhen: ACTIVE_WHEN,
+        activeValue: "custom",
+        followValue: MIX_FOLLOW_THEME_SENTINEL,
+        sourceValue: MIX_FOLLOW_THEME_SENTINEL,
+      }),
     ).toBe("theme");
   });
 
-  it("无覆盖 + appearanceMode=custom 但域来源 = followTheme（跟随整体配方）→ 🎨 主题", () => {
+  it("无覆盖 + 激活条件成立但域来源 = followTheme（跟随整体配方）→ 🎨 主题", () => {
     expect(
-      deriveSourceBadge({ sourceKey: "app.mixBackground", mode: "custom", sourceValue: MIX_FOLLOW_THEME_SENTINEL }),
+      deriveSourceBadge({
+        sourceKey: "app.mixBackground",
+        activeWhen: ACTIVE_WHEN,
+        activeValue: "custom",
+        followValue: MIX_FOLLOW_THEME_SENTINEL,
+        sourceValue: MIX_FOLLOW_THEME_SENTINEL,
+      }),
     ).toBe("theme");
   });
 
-  it("无覆盖 + appearanceMode=followTheme（未自定义）→ 🎨 主题", () => {
+  it("无覆盖 + 激活条件不成立（未自定义）→ 🎨 主题", () => {
     expect(
-      deriveSourceBadge({ sourceKey: "app.mixBackground", mode: "followTheme", sourceValue: "aurora" }),
+      deriveSourceBadge({
+        sourceKey: "app.mixBackground",
+        activeWhen: ACTIVE_WHEN,
+        activeValue: "followTheme",
+        followValue: MIX_FOLLOW_THEME_SENTINEL,
+        sourceValue: "aurora",
+      }),
     ).toBe("theme");
   });
 
-  it("无覆盖 + appearanceMode 未定义（读空）→ 🎨 主题", () => {
+  it("无声明激活条件（第三方只写 sourceKey）→ 不派生 mix（读声明，不猜键）", () => {
+    expect(deriveSourceBadge({ sourceKey: "app.mixBackground", sourceValue: "aurora" })).toBe("theme");
+  });
+
+  it("无覆盖 + 激活值未加载（读空）→ 🎨 主题", () => {
     expect(deriveSourceBadge({ sourceKey: "app.mixBackground" })).toBe("theme");
   });
 });

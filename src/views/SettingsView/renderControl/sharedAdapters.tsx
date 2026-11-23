@@ -17,21 +17,51 @@
 import { BackgroundImagePicker, ReadOnlyText } from "@linkdesk/ui";
 import type { ConfigProperty } from "../types";
 
-/** 选图对话框——标题/过滤器与共享件契约一致（E12：语义不变） */
-async function pickImagePath(t: (key: string) => string): Promise<string | null> {
-  const picked = await window.linkdesk?.dialog?.open({
-    title: t("选择图片…"),
-    filters: [{ name: t("图片"), extensions: ["png", "jpg", "jpeg", "webp"] }],
-    // 2026-11-23：默认打开受控缓存目录（壳 0.2.60+ 解析令牌；旧壳忽略 → 行为不变）
-    defaultPathKind: "appearance",
-  });
-  return picked ?? null;
-}
+/** 选图——返回值恒为**受控 URL**（共享件随后 onImport 恒等，见下）。
+ *
+ * 新路（壳含 `appearance.pickImage`）：一次调用完成选图＋入库——起始目录/过滤器/去重全在
+ * `electron/services/hostAssets/appearance/defaults.ts`；本层只把 schema 声明的 `assetDomain/pickTarget`
+ * 原样传下去（2026-11-24 语义归属 V1/V5：换掉本插件，起始目录仍在）。
+ *
+ * 旧路（旧壳无该动作）：先 `dialog.open` 再 `appearance.importImage`——两步收在本函数内。
+ * ⚠️ 兼容期到期条件：`minAppVersion` 抬到含 `pickImage` 的壳版本后删本分支（K2 豁免账本登记，
+ * 过期即红）。无 `assetDomain` 声明的第三方 image 键 = 普通选图（系统默认目录，不传域令牌）。
+ */
+async function pickImagePath(
+  t: (key: string) => string,
+  prop: ConfigProperty,
+): Promise<string | null> {
+  const hostPick = window.linkdesk?.appearance?.pickImage;
+  if (hostPick && prop.assetDomain) {
+    const picked = await hostPick({
+      domain: prop.assetDomain,
+      target: prop.pickTarget ?? "",
+    });
+    return picked.picked ? picked.url : null;
+  }
 
-/** 拷贝入库——受控来源（用户任选路径不可 file:// 直读） */
-async function importImagePath(pickedPath: string): Promise<string | null> {
+  const pickedPath = await window.linkdesk?.dialog?.open(
+    prop.assetDomain
+      ? {
+          title: t("选择图片…"),
+          filters: [{ name: t("图片"), extensions: ["png", "jpg", "jpeg", "webp"] }],
+          // 旧壳兜底：受控缓存目录令牌（壳 0.2.60+ 解析；更旧壳忽略 → 系统默认目录，行为不变）
+          defaultPathKind: "appearance",
+        }
+      : {
+          title: t("选择图片…"),
+          filters: [{ name: t("图片"), extensions: ["png", "jpg", "jpeg", "webp"] }],
+        },
+  );
+  if (!pickedPath) return null;
   const controlled = await window.linkdesk?.appearance?.importImage(pickedPath);
   return controlled ?? null;
+}
+
+/** 共享件 `onImport`——本适配层已在 onPick 内完成入库，故恒等（受控 URL 原样返回）。
+ *  ⛔ 不在此再做一次拷贝/协议判断：共享件零宿主知识，插件层也不该解析协议。 */
+async function importImagePath(controlledUrl: string): Promise<string | null> {
+  return controlledUrl;
 }
 
 /**
@@ -53,12 +83,14 @@ export function ReadonlyControl({ prop }: { prop: ConfigProperty }) {
   return <ReadOnlyText statusCommand={prop.statusCommand} runCommand={runStatusCommand} />;
 }
 
-/** uiHint "image" 的渲染体——共享件能力注入式（onPick / onImport） */
+/** uiHint "image" 的渲染体——共享件能力注入式（onPick / onImport）；语义从 prop 声明读 */
 export function ImageControl({
+  prop,
   value,
   onChange,
   t,
 }: {
+  prop: ConfigProperty;
   value: string;
   onChange: (v: unknown) => void;
   t: (key: string) => string;
@@ -67,7 +99,7 @@ export function ImageControl({
     <BackgroundImagePicker
       value={value}
       onChange={onChange}
-      onPick={() => pickImagePath(t)}
+      onPick={() => pickImagePath(t, prop)}
       onImport={importImagePath}
     />
   );

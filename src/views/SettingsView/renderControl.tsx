@@ -35,6 +35,7 @@ import { mapSegmentedOptions } from "./mapSegmentedOptions"; // E5.8#99：分段
 import type { ConfigProperty } from "./types";
 // 本案 5.1（02 E1 双轨）：只读行／背景图／未知 hint 降级全走适配层——共享件在就收编、不在退本地件
 import { ImageControl, ReadonlyControl, UnknownHintControl } from "./renderControl/sharedAdapters";
+import { AiPolicyControl } from "./renderControl/aiPolicyControl"; // 2026-11-24：AI 权限档位（共享件 AiPolicyPicker）
 import { AccentSourceControl, FontToneControl } from "./renderControl/toneControls";
 import { splitStringList } from "./renderControl/stringList";
 
@@ -88,8 +89,11 @@ function renderPrimary(
       return <FilePathInput value={String(val)} onChange={(v) => onChange(v)} dialogType="file" />;
     case "directory":
       return <FilePathInput value={String(val)} onChange={(v) => onChange(v)} dialogType="directory" />;
-    case "image": // E5.8#50.11：背景图——选图拷贝入库 + 清除（受控来源）；本案 5.1：适配层双轨
-      return <ImageControl value={String(val)} onChange={onChange} t={t} />;
+    case "image": // E5.8#50.11：背景图——选图拷贝入库 + 清除（受控来源）
+      // 2026-11-24 语义归属（V1/V5）：域/落点由 prop 声明给出（assetDomain/pickTarget），本层零字符串
+      return <ImageControl prop={prop} value={String(val)} onChange={onChange} t={t} />;
+    case "aiPolicy": // 2026-11-24：AI 权限档位——共享件 AiPolicyPicker（数据=壳命令，插件零档位字面量）
+      return <AiPolicyControl prop={prop} t={t} />;
     case "segmented": // E5.8#99 通用化：第三方声明 uiHint:"segmented" + enum + enumDescriptions 即得分段单选（ghost 轨，零预览）
       return (
         <SegmentedRadio
