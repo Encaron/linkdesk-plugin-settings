@@ -79,5 +79,21 @@
   "重置为默认": "Reset to Default",
   "需要你做选择的类型": "Types that need your choice",
   "颜色域来源——指定主题配方的配色变体（选「跟随主题」= 整体配方配色）": "Color domain source — pick a colorway of a theme recipe (choose \"Follow Theme\" for the whole recipe's colors)",
-  "默认打开方式": "Default Applications"
+  "默认打开方式": "Default Applications",
+  "、": ", ",
+  "JSON": "JSON",
+  "进入某条命令的快捷键编辑态（等于在「快捷键」页双击那一行）：人在快捷键页时当场进编辑态，不在时才先请壳把这一页开出来；再按 command 指定要改哪条——不指定则弹命令选择器让使用者挑。⚠️ 只把那一行切进编辑态，新按键仍由使用者按（Enter 落地、Esc 取消）——不做「代按代存」。": "Start editing a command's keybinding (same as double-clicking its row on the Keybindings page): if the page is open, enter edit mode immediately; otherwise ask the shell to open it first. Then use command to select the row—when omitted, show the command picker. Only that row enters edit mode; the user still presses the new keys (Enter commits, Esc cancels).",
+  "把命令 id 复制到剪贴板（快捷键页齿轮菜单用；如 workbench.action.selectLanguage）。": "Copy the command id to the clipboard (used by the Keybindings page gear menu; e.g. workbench.action.selectLanguage).",
+  "把命令的显示名复制到剪贴板（快捷键页齿轮菜单用）。": "Copy the command's display name to the clipboard (used by the Keybindings page gear menu).",
+  "把本行绑定的键位串原样复制到剪贴板（含 chord 的空格分段，如 ctrl+k ctrl+l）。": "Copy this row's keybinding string verbatim to the clipboard (including chord segments, e.g. ctrl+k ctrl+l).",
+  "把本行绑定按 keybindings.json 的存储形状复制到剪贴板（{command, key, when?}——有 when 才带），可直接粘回文件生效。": "Copy this row's binding in the keybindings.json storage shape ({command, key, when?}—when is included only when present) so it can be pasted back into the file.",
+  "弹确认框后清掉本行的用户覆盖，回到内置绑定并写入 keybindings.json。": "After confirmation, clear this row's user override, restore the built-in binding, and write keybindings.json.",
+  "弹确认框后把本行的**所有**绑定（含内置/插件默认键）一并清掉——这条命令从此没有按键，且作者声明的默认键不会自动回来（想恢复默认键请用「重置为默认」）。写入 keybindings.json 的形态是 { command, key: \"\" }。需要 LinkDesk 0.2.46+，旧壳上这一项不显示。": "After confirmation, clear **all** bindings for this row (including built-in/plugin defaults)—the command then has no key, and author-declared defaults do not come back automatically (use Reset to Default to restore them). Writes { command, key: \"\" } to keybindings.json. Requires LinkDesk 0.2.46+; hidden on older shells.",
+  "把这一格（同一批候选、同一生效值的若干文件类型）在「默认打开方式」覆盖表里的键一并删掉，全部回到插件声明顺序。由「需要你做选择的类型」区那一行的齿轮菜单调用。需要 LinkDesk 0.2.48+（一次写 N 类）；旧壳上自动退化为逐类写，结果相同。": "Remove this cell's keys (several file types sharing the same candidates and effective value) from the Default Open With override table in one go, restoring plugin declaration order. Called from the gear menu on the Needs Your Choice row. Requires LinkDesk 0.2.48+ (writes N types at once); older shells degrade to per-type writes with the same result.",
+  "把某个插件名下**真的被设过默认**的文件类型一并恢复自动（键不记在它名下的不动——那是别家的选择），并回报清掉了几类。由「按插件浏览」插件卡的齿轮菜单调用。": "Restore automatic handling for every file type that was **actually set as default** under a plugin (keys owned by others are left alone—those are someone else's choice), and report how many were cleared. Called from the gear menu on a plugin card in Browse by Plugin.",
+  "把某个插件的 id 复制到剪贴板（「按插件浏览」插件卡齿轮菜单用）。": "Copy a plugin's id to the clipboard (used by the gear menu on a plugin card in Browse by Plugin).",
+  "{ command: string }——要改的命令 id（如 file-tree.openFile）；省略则弹选择器": "{ command: string }—the command id to edit (e.g. file-tree.openFile); omitted opens the picker.",
+  "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入": "Keybinding-row identity { command, title, key, source, when? }—passed by the gear menu as the last argument.",
+  "本格的文件类型数组（无点小写，如 [\"docx\", \"xlsx\"]）——由齿轮菜单作为首枚实参传入": "This cell's file-type array (lowercase, no dot, e.g. [\"docx\", \"xlsx\"])—passed by the gear menu as the first argument.",
+  "插件卡身份 { pluginId }——由共享件 PluginCard 的齿轮菜单作为末枚实参传入": "Plugin-card identity { pluginId }—passed by the shared PluginCard gear menu as the last argument."
 }
