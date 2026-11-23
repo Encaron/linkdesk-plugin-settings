@@ -1,30 +1,35 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-23T16:41:44.696Z",
+  "updatedAt": "2026-11-23T20:04:37.598Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.48",
+      "version": "1.0.49",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "Encaron"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.48/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.49/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.48/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.49/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.53",
       "category": "productivity",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.48/README.md",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.49/README.md",
       "readmeLocales": {
-        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.48/README.md",
-        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.48/docs/readme/en.md"
+        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.49/README.md",
+        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.49/docs/readme/en.md"
       },
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.48/settings.linkdesk-plugin",
-      "size": 40642,
-      "publishedAt": "2026-11-23T16:41:44.696Z",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.49/settings.linkdesk-plugin",
+      "size": 40646,
+      "publishedAt": "2026-11-23T20:04:37.598Z",
       "versions": [
+        {
+          "version": "1.0.49",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.49/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-23T20:04:37.598Z"
+        },
         {
           "version": "1.0.48",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.48/settings.linkdesk-plugin",
@@ -52,8 +57,7 @@
         {
           "version": "1.0.43",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.43/settings.linkdesk-plugin",
-          "publishedAt": "2026-11-20T11:50:39.124Z",
-          "changelog": "- **分类声明（R4-2.8/2.9）**：`plugin.json` 顶层补 `category: \"productivity\"`（小类可空）——商店分类抽屉归位，随本次发版进入官方目录条目。"
+          "publishedAt": "2026-11-20T11:50:39.124Z"
         },
         {
           "version": "1.0.42",
