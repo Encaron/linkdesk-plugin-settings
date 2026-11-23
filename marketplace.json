@@ -1,30 +1,35 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-23T20:04:37.598Z",
+  "updatedAt": "2026-11-23T20:45:42.293Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.49",
+      "version": "1.0.50",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "Encaron"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.49/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.50/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.49/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.50/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.53",
       "category": "productivity",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.49/README.md",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.50/README.md",
       "readmeLocales": {
-        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.49/README.md",
-        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.49/docs/readme/en.md"
+        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.50/README.md",
+        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.50/docs/readme/en.md"
       },
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.49/settings.linkdesk-plugin",
-      "size": 40646,
-      "publishedAt": "2026-11-23T20:04:37.598Z",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.50/settings.linkdesk-plugin",
+      "size": 40653,
+      "publishedAt": "2026-11-23T20:45:42.293Z",
       "versions": [
+        {
+          "version": "1.0.50",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.50/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-23T20:45:42.293Z"
+        },
         {
           "version": "1.0.49",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.49/settings.linkdesk-plugin",
@@ -51,8 +56,7 @@
         {
           "version": "1.0.44",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.44/settings.linkdesk-plugin",
-          "publishedAt": "2026-11-22T20:21:13.195Z",
-          "changelog": "- **背景图选择默认打开受控缓存目录**：`app.backgroundImage` / `app.zoneBackgroundImage` 的「选择图片…」对话框现在从 `userData/appearance`（已入库外观图的缓存）开始——可直接复用之前导入的图。壳 0.2.60+ 解析 `defaultPathKind: \"appearance\"` 令牌；旧壳忽略该字段，行为不变。"
+          "publishedAt": "2026-11-22T20:21:13.195Z"
         },
         {
           "version": "1.0.43",
