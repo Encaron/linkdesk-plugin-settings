@@ -52,14 +52,7 @@ import {
 } from "./fileAssociationsGearTarget";
 import { writeDefaults } from "./fileAssociationsWrite";
 import { WORKBENCH_FILE_ASSOCIATIONS_KEY } from "./managerHint";
-
-/** 通知来源 id——与 `keybindingGearTarget.NOTIFY_SOURCE` 同值（都是本插件这个生产者） */
-const NOTIFY_SOURCE = "settings";
-
-/** 回执 toast——通知面不可用（壳进程/预览）时静默，不影响动作本身 */
-function toast(message: string, type: "info" | "warning" | "error" = "info"): void {
-  void window.linkdesk?.notifications?.show?.(message, { type, source: NOTIFY_SOURCE });
-}
+import { notify } from "../../notify";
 
 /** 该插件声明过的类型——`pluginManager.list()` 里找它那一条（找不到 = 已卸载/禁用 ⇒ 空数组） */
 async function declaredExtsOf(pluginId: string): Promise<string[]> {
@@ -88,9 +81,9 @@ export function registerFileAssociationGearCommands(): number {
     if (!fa) return;
     try {
       await writeDefaults(fa, target.exts, null);
-      toast(i18n.t("{{count}} 类已恢复自动", { count: target.exts.length }));
+      notify(i18n.t("{{count}} 类已恢复自动", { count: target.exts.length }));
     } catch (e) {
-      toast(
+      notify(
         i18n.t("写默认打开方式失败：{{msg}}", { msg: e instanceof Error ? e.message : String(e) }),
         "error",
       );
@@ -111,13 +104,13 @@ export function registerFileAssociationGearCommands(): number {
       ]);
       const toClear = planCardClear(declared, table);
       if (toClear.length === 0) {
-        toast(i18n.t("这个插件名下没有需要清除的默认覆盖"));
+        notify(i18n.t("这个插件名下没有需要清除的默认覆盖"));
         return;
       }
       await writeDefaults(fa, toClear, null);
-      toast(i18n.t("已清除 {{count}} 类覆盖，全部恢复自动", { count: toClear.length }));
+      notify(i18n.t("已清除 {{count}} 类覆盖，全部恢复自动", { count: toClear.length }));
     } catch (e) {
-      toast(
+      notify(
         i18n.t("写默认打开方式失败：{{msg}}", { msg: e instanceof Error ? e.message : String(e) }),
         "error",
       );
@@ -136,14 +129,14 @@ export function registerFileAssociationGearCommands(): number {
     if (!target) return;
     const write = window.linkdesk?.clipboard?.writeText;
     if (!write) {
-      toast(i18n.t("剪贴板不可用"), "warning");
+      notify(i18n.t("剪贴板不可用"), "warning");
       return;
     }
     try {
       await write(target.pluginId);
-      toast(i18n.t("已复制：") + target.pluginId);
+      notify(i18n.t("已复制：") + target.pluginId);
     } catch (e) {
-      toast(i18n.t("复制失败：") + (e instanceof Error ? e.message : String(e)), "error");
+      notify(i18n.t("复制失败：") + (e instanceof Error ? e.message : String(e)), "error");
     }
   });
 

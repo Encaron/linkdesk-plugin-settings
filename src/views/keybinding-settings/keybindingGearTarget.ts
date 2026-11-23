@@ -35,8 +35,8 @@ export const KEYBINDING_GEAR_COMMANDS = {
   clear: "settings.keybinding.clear",
 } as const;
 
-/** 本插件自己的通知来源 id——壳侧通知面板按它分组（同一次操作的回执落同一组） */
-export const NOTIFY_SOURCE = "settings";
+/** 本插件自己的通知来源 id——壳侧通知面板按它分组（同一份常量住 `src/notify.ts`） */
+export { NOTIFY_SOURCE } from "../../notify";
 
 /** 菜单项 `when` 用的三个**本行局部**上下文键。
  *  不是全局 context key（⛔ 不走 `contextKey.set`）：它们是 `ContextMenu` 的 `context` prop，

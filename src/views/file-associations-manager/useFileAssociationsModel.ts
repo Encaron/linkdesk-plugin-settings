@@ -46,10 +46,7 @@ import { lk } from "../SettingsView/helpers";
 import { useConfigurationValueIpc } from "../hooks/useConfigurationValueIpc";
 import { writeDefaults } from "./fileAssociationsWrite";
 import { WORKBENCH_FILE_ASSOCIATIONS_KEY } from "./managerHint";
-
-/** 本插件自己的通知来源 id——壳通知面板按它分桶（与 `keybindingGearTarget.NOTIFY_SOURCE` 同值：
- *  都是「设置插件」这个生产者；两处各留一份常量是因为两个特性互不 import，值由 plugin.json 的 id 定）。 */
-const NOTIFY_SOURCE = "settings";
+import { notify } from "../../notify";
 
 /** 乐观覆盖的兜底时限——广播丢/写失败时别让界面一直挂着假值（两跳 IPC 正常在 100ms 内回来） */
 const PENDING_TTL_MS = 2500;
@@ -261,13 +258,6 @@ export function useFileAssociationsModel(search: string, enabled = true): FileAs
     [source, mergedTable, search],
   );
 
-  const notify = useCallback(
-    (message: string, type: "info" | "warning" | "error") => {
-      void window.linkdesk?.notifications?.show?.(message, { type, source: NOTIFY_SOURCE });
-    },
-    [],
-  );
-
   const pick = useCallback(
     (exts: readonly string[], pluginId: string | null, label?: string) => {
       const list = normalizeExtList(exts);
@@ -311,7 +301,7 @@ export function useFileAssociationsModel(search: string, enabled = true): FileAs
         }
       })();
     },
-    [bump, notify, t],
+    [bump, t],
   );
 
   return { model, loading, ready, error, openWithAvailable: source.openWithAvailable, pick };

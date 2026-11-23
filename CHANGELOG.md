@@ -1,5 +1,10 @@
 # 更新日志
 
+## v1.0.46（2026-11-23）
+
+- **复制/恢复类回执改底部轻 Toast**：复制设置 ID / 名称 / 键位 / JSON、复制插件 ID、恢复自动、清除覆盖、改默认打开方式——这些「做完即弃」的回执不再进铃铛留档；失败/警告仍走铃铛。
+- 统一门面 `src/notify.ts`：`info`/`success` → `toasts.show`；`warning`/`error` → `notifications.show`；旧壳（< 0.2.55）无 `toasts` 面时自动回退，回执不消失。
+
 ## v1.0.45（2026-11-23）
 
 - **颜色行接上 alpha 能力档**：设置行按配置声明 `allowAlpha: true` 把能力传给共享 `ColorPicker`——玻璃叠加色（`app.glassTint`）打开调色器时多一条 alpha 滑杆，可调 `rgba` 透明度；未声明的颜色键（如强调色）保持不透明、行为不变。

@@ -28,19 +28,19 @@
 import i18n from "i18next";
 import {
   KEYBINDING_GEAR_COMMANDS,
-  NOTIFY_SOURCE,
   buildKeybindingJson,
   readGearTarget,
   type KeybindingGearContext,
 } from "./keybindingGearTarget";
+import { notify } from "../../notify";
 import { clearKeybinding } from "./keybindingClear";
 import { resetKeybindingToDefault } from "./keybindingReset";
 
-/** 复制到系统剪贴板 ＋ 一条回执 toast。剪贴板面不可用（壳进程/预览）⇒ 静默，不影响调用方 */
+/** 复制到系统剪贴板 ＋ 一条轻 toast 回执。剪贴板面不可用（壳进程/预览）⇒ 静默，不影响调用方 */
 async function copyWithReceipt(text: string, receipt: string): Promise<void> {
   const lk = window.linkdesk;
   await lk?.clipboard?.writeText?.(text);
-  void lk?.notifications?.show?.(receipt, { type: "info", source: NOTIFY_SOURCE });
+  notify(receipt);
 }
 
 /** 复制类的统一回执句式——与壳侧「复制设置 ID」齿轮项同款（`已复制：<内容>`） */
