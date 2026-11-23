@@ -1,26 +1,36 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-23T13:51:02.313Z",
+  "updatedAt": "2026-11-23T16:41:44.696Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.47",
+      "version": "1.0.48",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "Encaron"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.47/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.48/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.47/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.48/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.53",
       "category": "productivity",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.47/README.md",
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.47/settings.linkdesk-plugin",
-      "size": 36623,
-      "publishedAt": "2026-11-23T13:51:02.313Z",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.48/README.md",
+      "readmeLocales": {
+        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.48/README.md",
+        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.48/docs/readme/en.md"
+      },
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.48/settings.linkdesk-plugin",
+      "size": 40642,
+      "publishedAt": "2026-11-23T16:41:44.696Z",
       "versions": [
+        {
+          "version": "1.0.48",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.48/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-23T16:41:44.696Z",
+          "changelog": "- **i18n 收口**：命令/设置等 manifest 显示文本补齐英文；宿主按插件命名空间解析显示文本（市场/命令面板/菜单不再自己 t() 插件数据）。\n- **README 多语言**：新增 `docs/readme/en.md`，`plugin.json` 声明 `readme.locales`（zh→README.md，en→docs/readme/en.md）；共享图仍住 `resources/`。"
+        },
         {
           "version": "1.0.47",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.47/settings.linkdesk-plugin",
@@ -48,8 +58,7 @@
         {
           "version": "1.0.42",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.42/settings.linkdesk-plugin",
-          "publishedAt": "2026-11-17T19:27:05.215Z",
-          "changelog": "- ✨ **本体组四行图标点亮**（通用／主题／AI接入／默认打开方式）：软件 0.2.53 把本体组声明改为 **IconRegistry 共享图标名**（宿主默认项 `app.group-*`，B 方案墨线设计稿定稿几何）。本版消费端接上这条新形态：声明裸串按名查共享图标快照（随 `iconTheme:changed` 广播进池，订阅时回放缓存兜晚订阅），有 url 默认项即渲染——**ink 剪影**（mask ＋ `--icon-ink`，随主题墨色自动翻亮暗）。\n- ⚠️ **1.0.41「本体组无需再发版」的承诺就此作废**：壳侧 2026-11-18 拍板把值形态从「codicon 名或地址」改为「注册表图标名」（可被图标主题成套覆盖、替换口三层全占）——解读新形态的代码必须落在本插件。这是**一次性的能力装进**：此后任何插件声明 `iconSource:\"shared\"` 都走同一段代码，不再随插件更新。\n- 🏗️ 图标裁决纯函数加第三形态（裸串＝共享图标名；快照缺省／名字不在／纯字体默认项仍拒收——「宁缺毋滥」口径不变）；渲染统一走共享件 `PluginIcon` 的 `sharedIcons` 注入面。\n- 🧹 依赖追新（@linkdesk/contracts 0.1.45／@linkdesk/ui 0.2.58／plugin-sdk 0.1.92）暴露的存量类型隐患顺手修：分段选项映射只按下标读**数组形态** `enumDescriptions`（对象形态用数字下标本来就拿不到档）。\n- 要求 LinkDesk **0.2.53 或更高**（地板抬升：`iconSource:\"shared\"` 契约、共享图标快照广播、`PluginIcon` ink 分支都是 0.2.53 面）。"
+          "publishedAt": "2026-11-17T19:27:05.215Z"
         },
         {
           "version": "1.0.41",
