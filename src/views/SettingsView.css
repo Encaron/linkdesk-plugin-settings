@@ -133,8 +133,8 @@
 }
 
 .settings-nav-icon {
-  width: 16px;
-  height: 16px;
+  width: var(--size-icon-sm, 16px);
+  height: var(--size-icon-sm, 16px);
   flex: none;
   border-radius: var(--radius-sm);
 }
