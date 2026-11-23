@@ -309,7 +309,7 @@ function ActionButton({ prop, t, actionDisabled }: { prop: ConfigProperty; t: (k
       onClick={() => { void window.linkdesk?.commands?.executeCommand?.(prop.actionCommand ?? ""); }}
     >
       {/* 2026-11-24：按钮文案优先取 title（短、一眼懂）；description 让给行下说明（可长）——无 title 的存量回退 description */}
-      {t(prop.title ?? prop.description ?? "")}
+      {t(prop.actionLabel ?? prop.title ?? prop.description ?? "")}
     </Button>
   );
 }

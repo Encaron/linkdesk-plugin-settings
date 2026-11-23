@@ -66,6 +66,8 @@ interface ConfigProperty {
   /** 混搭来源域过滤——optionsFrom "theme.sources" 时按此域过滤（RecipeMeta.domains 六域之一） */
   optionsFromDomain?: string;
   /** E5.8#50.26：renderHint "action" 按钮动作——点击执行此壳命令（混搭复位 → theme.resetMix） */
+  /** 2026-11-24：伴生/动作按钮的短标签（缺省 = title，简写动作行 = description） */
+  actionLabel?: string;
   actionCommand?: string;
   /** E5.8#50.26：renderHint "action" 按钮禁用条件——全部 {key,value} 匹配当前配置值时禁用（混搭复位置灰） */
   actionDisabledAll?: Array<{ key: string; value: unknown }>;
