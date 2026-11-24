@@ -1,30 +1,37 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-24T11:20:35.714Z",
+  "updatedAt": "2026-11-24T22:00:08.211Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.53",
+      "version": "1.0.55",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "Encaron"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.53/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.55/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.53/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.55/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.63",
       "category": "productivity",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.53/README.md",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.55/README.md",
       "readmeLocales": {
-        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.53/README.md",
-        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.53/docs/readme/en.md"
+        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.55/README.md",
+        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.55/docs/readme/en.md"
       },
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.53/settings.linkdesk-plugin",
-      "size": 41546,
-      "publishedAt": "2026-11-24T11:20:35.714Z",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.55/settings.linkdesk-plugin",
+      "size": 41577,
+      "publishedAt": "2026-11-24T22:00:08.211Z",
       "versions": [
+        {
+          "version": "1.0.55",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.55/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-24T22:00:08.211Z",
+          "changelog": "- AI 门外契约补齐：命令声明补 `risk`/`activation`/`returns`/`example`。",
+          "sha256": "2f46671d08646bc51373011d6f7f9cb4995d5eb3e07e313e7ab838a535f7ffef"
+        },
         {
           "version": "1.0.53",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.53/settings.linkdesk-plugin",
@@ -49,8 +56,7 @@
         {
           "version": "1.0.47",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.47/settings.linkdesk-plugin",
-          "publishedAt": "2026-11-23T13:51:02.313Z",
-          "changelog": "- 圆角改吃宿主 `--radius-*`；导航图标接 `--size-icon-sm`（均带 fallback，零视觉）"
+          "publishedAt": "2026-11-23T13:51:02.313Z"
         },
         {
           "version": "1.0.46",
