@@ -51,7 +51,6 @@ import {
   readPluginCardGearTarget,
 } from "./fileAssociationsGearTarget";
 import { writeDefaults } from "./fileAssociationsWrite";
-import { WORKBENCH_FILE_ASSOCIATIONS_KEY } from "./managerHint";
 import { notify } from "../../notify";
 
 /** 该插件声明过的类型——`pluginManager.list()` 里找它那一条（找不到 = 已卸载/禁用 ⇒ 空数组） */
@@ -95,12 +94,11 @@ export function registerFileAssociationGearCommands(): number {
     const target = readPluginCardGearTarget(args);
     if (!target) return;
     const fa = window.linkdesk?.fileAssociation;
-    const cfg = window.linkdesk?.configuration;
-    if (!fa || !cfg) return;
+    if (!fa?.getOverrides) return;
     try {
       const [declared, table] = await Promise.all([
         declaredExtsOf(target.pluginId),
-        cfg.get<Record<string, unknown>>(WORKBENCH_FILE_ASSOCIATIONS_KEY).catch(() => undefined),
+        fa.getOverrides().catch(() => undefined),
       ]);
       const toClear = planCardClear(declared, table);
       if (toClear.length === 0) {

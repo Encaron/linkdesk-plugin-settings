@@ -70,7 +70,7 @@ let writeText: ReturnType<typeof vi.fn>;
 let show: ReturnType<typeof vi.fn>;
 let setDefault: ReturnType<typeof vi.fn>;
 let setDefaultBulk: ReturnType<typeof vi.fn>;
-let cfgGet: ReturnType<typeof vi.fn>;
+let getOverrides: ReturnType<typeof vi.fn>;
 let pmList: ReturnType<typeof vi.fn>;
 
 beforeEach(() => {
@@ -79,7 +79,7 @@ beforeEach(() => {
   show = vi.fn(async () => undefined);
   setDefault = vi.fn(async () => undefined);
   setDefaultBulk = vi.fn(async () => undefined);
-  cfgGet = vi.fn(async () => TABLE);
+  getOverrides = vi.fn(async () => TABLE);
   pmList = vi.fn(async () => [{ pluginId: "plug-a", manifest: PLUGIN_MANIFEST }]);
   lk().commands = {
     registerCommand: (id: string, fn: (...args: unknown[]) => unknown) => {
@@ -88,8 +88,7 @@ beforeEach(() => {
   };
   lk().clipboard = { writeText };
   lk().notifications = { show };
-  lk().fileAssociation = { setDefault, setDefaultBulk };
-  lk().configuration = { get: cfgGet };
+  lk().fileAssociation = { setDefault, setDefaultBulk, getOverrides };
   lk().pluginManager = { list: pmList };
 });
 
@@ -145,8 +144,8 @@ describe("载荷形状——三条命令在真实形状下都得生效（🔴 V3
   });
 
   it("clearCard：该插件名下一个键都没有 ⇒ 不写盘，只回执「没有需要清除的」", async () => {
-    cfgGet = vi.fn(async () => ({}));
-    lk().configuration = { get: cfgGet };
+    getOverrides = vi.fn(async () => ({}));
+    lk().fileAssociation = { setDefault, setDefaultBulk, getOverrides };
 
     await invokeGear(clearCard, { context: CARD_CTX });
 

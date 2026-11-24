@@ -7,7 +7,7 @@
  * |:--|:--|:--|
  * | ① 插件清单 | `pluginManager.list()` | 只留 `contributes.fileAssociations` 非空的**启用**插件（禁用插件不带 contributes，天然出不来 = E5） |
  * | ② 候选快照 | `fileAssociation.listHandlersFor(ext)` × 声明过的类型 | 「谁是当前默认」的宿主判据（覆盖表 → 声明序 → 角色兜底）；N 个类型 = N 次读，都是内存查表 |
- * | ③ 覆盖表 | `configuration.get/onChange("workbench.fileAssociations")` | 走既有 `useConfigurationValueIpc`（E31 广播免费拿到：文件树选择器写一下，这边即时收到） |
+ * | ③ 覆盖表 | `fileAssociation.getOverrides()` ＋ `onDidChangeOverrides()`（2026-11-24 A6） | 宿主推归一化快照——本仓不再知道配置键名/表形状；写入写 `setDefault[Bulk]` 后由壳广播 |
  * | ④ 跨插件探活 | `commands.getCommands()` | E39：宿主命令 `workbench.action.openWith`（`SHELL_COMMANDS.openWith`）在不在册（不在 ⇒ 「打开方式…」整条不出现） |
  *
  * ## 三条时序口径
@@ -43,9 +43,7 @@ import {
 } from "@linkdesk/ui";
 import { SHELL_COMMANDS } from "@linkdesk/plugin-sdk/shell-commands";
 import { lk } from "../SettingsView/helpers";
-import { useConfigurationValueIpc } from "../hooks/useConfigurationValueIpc";
 import { writeDefaults } from "./fileAssociationsWrite";
-import { WORKBENCH_FILE_ASSOCIATIONS_KEY } from "./managerHint";
 import { notify } from "../../notify";
 
 /** 乐观覆盖的兜底时限——广播丢/写失败时别让界面一直挂着假值（两跳 IPC 正常在 100ms 内回来） */
@@ -117,7 +115,16 @@ export interface FileAssociationsModelApi {
 
 export function useFileAssociationsModel(search: string, enabled = true): FileAssociationsModelApi {
   const { t } = useTranslation();
-  const overrideTable = useConfigurationValueIpc<Record<string, unknown>>(WORKBENCH_FILE_ASSOCIATIONS_KEY);
+  // 2026-11-24（A6）：覆盖表只读快照 ＋ 变更订阅——宿主配置键知识已归壳（minAppVersion 0.2.63 起必选面）
+  const [overrideTable, setOverrideTable] = useState<Record<string, unknown> | undefined>(undefined);
+  useEffect(() => {
+    const fa = window.linkdesk?.fileAssociation;
+    if (!fa?.getOverrides || !fa.onDidChangeOverrides) return;
+    let cancelled = false;
+    void fa.getOverrides().then((table) => { if (!cancelled) setOverrideTable(table); }).catch(() => {});
+    const off = fa.onDidChangeOverrides((table) => { if (!cancelled) setOverrideTable(table); });
+    return () => { cancelled = true; off(); };
+  }, []);
 
   const [source, setSource] = useState<SourceData>(EMPTY_SOURCE);
   const [loading, setLoading] = useState(true);

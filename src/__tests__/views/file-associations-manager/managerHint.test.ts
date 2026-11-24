@@ -15,7 +15,6 @@
 import { describe, expect, it } from "vitest";
 import {
   MANAGER_UI_HINT,
-  WORKBENCH_FILE_ASSOCIATIONS_KEY,
   findManagerPluginId,
   isManagerGroup,
 } from "../../../views/file-associations-manager/managerHint";
@@ -31,9 +30,8 @@ const group = (over: Partial<GroupInfo> = {}): GroupInfo => ({
 });
 
 describe("常量（跨仓契约的锚点）", () => {
-  it("提示词与覆盖表键逐字钉死——漂一个字符就是「管理器整组不出现」且无报错", () => {
+  it("提示词逐字钉死——漂一个字符就是「管理器整组不出现」且无报错", () => {
     expect(MANAGER_UI_HINT).toBe("fileAssociationsManager");
-    expect(WORKBENCH_FILE_ASSOCIATIONS_KEY).toBe("workbench.fileAssociations");
   });
 });
 

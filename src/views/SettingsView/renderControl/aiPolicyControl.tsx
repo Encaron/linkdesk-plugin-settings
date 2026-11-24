@@ -80,11 +80,14 @@ export function AiPolicyControl({
       capabilities={state.capabilities}
       // 文案 key → 当前语言（useTranslation 的 t 随语言切换更新 ⇒ 组件随之重绘）
       translate={t}
+      // eslint-disable-next-line linkdesk/no-hardcoded-zh -- i18n key：共享件 AiPolicyPicker 经 translate(t) 翻译，⛔ 不在此再包一层
       note={state.mode === "full" ? "完全访问已开启。所有操作不再询问。" : undefined}
       onReset={() => {
         void runCommand("aiPolicy.setMode", undefined, "auto").then(reload);
       }}
+      // eslint-disable-next-line linkdesk/no-hardcoded-zh -- i18n key（同上，由共享件翻译）
       resetLabel={"恢复默认（自主）"}
+      // eslint-disable-next-line linkdesk/no-hardcoded-zh -- i18n key（无障碍名，由共享件翻译）
       ariaLabel={"AI 权限档位"}
       onChange={(mode) => {
         // 写点唯一 = 壳命令（userOnly：界面点击 = 用户授权；⛔ 插件不写配置键）

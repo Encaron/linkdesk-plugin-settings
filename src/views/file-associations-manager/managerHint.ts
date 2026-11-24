@@ -27,9 +27,6 @@ import type { ConfigProperty, GroupInfo } from "../SettingsView/types";
 /** 挂载位提示词——与 `SettingsUiHint` 联合里的那一枚逐字相同（⛔ 改这里必须同步契约）。 */
 export const MANAGER_UI_HINT = "fileAssociationsManager";
 
-/** 覆盖表键（组内唯一键，也是管理器读写的那一处真源）。 */
-export const WORKBENCH_FILE_ASSOCIATIONS_KEY = "workbench.fileAssociations";
-
 /** 这组是不是管理器组——判据：组内任一键带管理器提示词。 */
 export function isManagerGroup(
   group: Pick<GroupInfo, "keys">,
