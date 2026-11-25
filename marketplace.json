@@ -1,30 +1,37 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-25T14:53:50.393Z",
+  "updatedAt": "2026-11-25T16:54:52.632Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.56",
+      "version": "1.0.57",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "Encaron"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.56/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.57/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.56/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.57/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.63",
       "category": "productivity",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.56/README.md",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.57/README.md",
       "readmeLocales": {
-        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.56/README.md",
-        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.56/docs/readme/en.md"
+        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.57/README.md",
+        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.57/docs/readme/en.md"
       },
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.56/settings.linkdesk-plugin",
-      "size": 43671,
-      "publishedAt": "2026-11-25T14:53:50.393Z",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.57/settings.linkdesk-plugin",
+      "size": 43494,
+      "publishedAt": "2026-11-25T16:54:52.632Z",
       "versions": [
+        {
+          "version": "1.0.57",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.57/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-25T16:54:52.632Z",
+          "changelog": "- 命令契约门禁：`settings.fileAssociations.clearCard` 的 example 改为声明形 `{context:{pluginId}}`（可直接执行）；AGENTS.md 版本行同步。",
+          "sha256": "1a9e48fe6e80f0ba4d4609ae551654e0fd9f263dd02296622464d8df23bed0bb"
+        },
         {
           "version": "1.0.56",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.56/settings.linkdesk-plugin",
