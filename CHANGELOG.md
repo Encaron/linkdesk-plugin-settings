@@ -1,5 +1,13 @@
 # 更新日志
 
+## v1.0.56（2026-11-25）
+
+- **状态命令试点（第 2 个跨领域试点 · Block 2）**：
+  - `settings.fileAssociations.clearRow` / `clearCard` 成功回后置状态：`{ok, cleared, remaining}`（clearCard 另带 `pluginId`）——`cleared` = 本次真清掉的有键条数，`remaining` = 写后同批/该插件声明类型里仍被覆盖的条数（读不到 ⇒ null，不猜）。
+  - 两条均新增 **`idempotencyKey`**：清到「自动」是收敛写（同一终态），同键重试由宿主回放（`replayed:true`），⛔ 再写一次。
+  - 空载荷/缺 `pluginId` ⇒ `EBADARGS` 返回式信封（⛔ 静默 return）；写盘失败 ⇒ `EFS` 信封＋原错误 toast 双出（门外可判读、用户可见）。
+  - 无并发覆盖风险（清覆盖是幂等收敛，不覆盖别人的设置）⇒ 未加 `expectedVersion`（不加假门）。
+
 ## v1.0.55（2026-11-25）
 
 - AI 门外契约补齐：命令声明补 `risk`/`activation`/`returns`/`example`。

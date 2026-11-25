@@ -95,8 +95,11 @@
   "{ command: string }——要改的命令 id（如 file-tree.openFile）；省略则弹选择器": "{ command: string }—the command id to edit (e.g. file-tree.openFile); omitted opens the picker.",
   "快捷键行身份 { command, title, key, source, when? }——由齿轮菜单作为末枚实参传入": "Keybinding-row identity { command, title, key, source, when? }—passed by the gear menu as the last argument.",
   "本格的文件类型数组（无点小写，如 [\"docx\", \"xlsx\"]）——由齿轮菜单作为首枚实参传入": "This cell's file-type array (lowercase, no dot, e.g. [\"docx\", \"xlsx\"])—passed by the gear menu as the first argument.",
-  "插件卡身份 { pluginId }——由共享件 PluginCard 的齿轮菜单作为末枚实参传入": "Plugin-card identity { pluginId }—passed by the shared PluginCard gear menu as the last argument.",
+  "插件卡身份 { pluginId }——由共享件 PluginCard 的齿轮菜单作为末枚实参传入": "Plugin-card identity { pluginId }—passed by the shared PluginCard gear menu as the last argument.",
   "AI 现在可以执行所有操作，不会再询问。这个设置会一直有效，直到你在上面对应位置改回来。": "AI can now perform every action without asking. This setting stays in effect until you change it back above.",
   "改成自主": "Switch to Autonomous",
-  "AI 权限档位": "AI permission level"
+  "AI 权限档位": "AI permission level",
+  "把这一格（同一批候选、同一生效值的若干文件类型）在「默认打开方式」覆盖表里的键一并删掉，全部回到插件声明顺序。成功回后置状态 {ok,cleared,remaining}（本次真清了几类、同批还剩几类）。同一 idempotencyKey 重试由宿主回放（收敛写：清到自动是同一终态，⛔ 重复写）。需要 LinkDesk 0.2.48+（一次写 N 类）；旧壳上自动退化为逐类写，结果相同。": "Remove this row's file types from the default-open overrides table and restore them to the plugin-declared order. On success returns the post-state {ok,cleared,remaining} (how many really had an override and how many in the same batch are still overridden). Retrying with the same idempotencyKey is replayed by the host (convergent write — clearing to automatic is the same end state; never writes twice). Requires LinkDesk 0.2.48+ (batch write); older shells fall back to per-type writes with the same result.",
+  "重试键：同一键第二次调用回放首次结果（replayed:true），⛔ 再清一次": "Retry key: the same key replays the first result (replayed:true) instead of clearing again",
+  "把某个插件名下**真的被设过默认**的文件类型一并恢复自动（键不记在它名下的不动——那是别家的选择），并回后置状态 {ok,pluginId,cleared,remaining}。同一 idempotencyKey 重试由宿主回放（收敛写，⛔ 重复写）。由「按插件浏览」插件卡的齿轮菜单调用。": "Restore every file type that this plugin actually overrides back to automatic (keys owned by other plugins are left alone), and return the post-state {ok,pluginId,cleared,remaining}. Retrying with the same idempotencyKey is replayed by the host (convergent write — never writes twice). Called from the PluginCard gear menu."
 }

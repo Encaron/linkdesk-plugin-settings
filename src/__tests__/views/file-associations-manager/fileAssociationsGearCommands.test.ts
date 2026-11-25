@@ -154,14 +154,47 @@ describe("载荷形状——三条命令在真实形状下都得生效（🔴 V3
     expect(show).toHaveBeenCalledTimes(1);
   });
 
-  it("空载荷 / 非数组载荷 ⇒ 三条命令一律不动手（⛔ 不清个空的）", async () => {
-    await invokeGear(clearRow, { commandArgs: [[], {}], context: {} });
-    await invokeGear(clearCard, { commandArgs: [[], {}] });
+  it("空载荷 / 非数组载荷 ⇒ 三条命令一律不动手（⛔ 不清个空的）；clearRow/clearCard 回可判读码", async () => {
+    const row = await invokeGear(clearRow, { commandArgs: [[], {}], context: {} }) as { isPluginError?: boolean; code?: string };
+    const card = await invokeGear(clearCard, { commandArgs: [[], {}] }) as { isPluginError?: boolean; code?: string };
     await invokeGear(copyPluginId, { commandArgs: [[], {}] });
 
+    expect(row.isPluginError).toBe(true);
+    expect(row.code).toBe("EBADARGS");
+    expect(card.isPluginError).toBe(true);
+    expect(card.code).toBe("EBADARGS");
     expect(setDefaultBulk).not.toHaveBeenCalled();
     expect(writeText).not.toHaveBeenCalled();
     expect(show).not.toHaveBeenCalled();
+  });
+});
+
+describe("后置状态——写成功回 cleared/remaining（⛔ 只回 true）", () => {
+  it("clearRow：cleared = 真有键的条数；remaining = 写后同批剩余", async () => {
+    const table: Record<string, string> = { ".md": "plug-a", ".pdf": "plug-a" };
+    const bulk = vi.fn(async (exts: string[]) => { for (const e of exts) delete table[`.${e}`]; });
+    lk().fileAssociation = { setDefault, setDefaultBulk: bulk, getOverrides: async () => ({ ...table }) };
+
+    const res = await invokeGear(clearRow, { commandArgs: [["md", "pdf", "zip"]], context: {} }) as Record<string, unknown>;
+    expect(res).toMatchObject({ ok: true, cleared: 2, remaining: 0 });
+  });
+
+  it("clearCard：回 pluginId/cleared/remaining（声明 md/pdf/zip ∩ 有键 {md} ⇒ 1 清 0 剩）", async () => {
+    const table: Record<string, string> = { ".md": "plug-a" };
+    const bulk = vi.fn(async (exts: string[]) => { for (const e of exts) delete table[`.${e}`]; });
+    lk().fileAssociation = { setDefault, setDefaultBulk: bulk, getOverrides: async () => ({ ...table }) };
+
+    const res = await invokeGear(clearCard, { context: CARD_CTX }) as Record<string, unknown>;
+    expect(res).toMatchObject({ ok: true, pluginId: "plug-a", cleared: 1, remaining: 0 });
+  });
+
+  it("idempotencyKey 作为第二枚实参不影响解析（宿主负责回放）", async () => {
+    const table: Record<string, string> = { ".md": "plug-a" };
+    const bulk = vi.fn(async (exts: string[]) => { for (const e of exts) delete table[`.${e}`]; });
+    lk().fileAssociation = { setDefault, setDefaultBulk: bulk, getOverrides: async () => ({ ...table }) };
+
+    const res = await invokeGear(clearRow, { commandArgs: [["md"], "k1"], context: {} }) as Record<string, unknown>;
+    expect(res).toMatchObject({ ok: true, cleared: 1, remaining: 0 });
   });
 });
 

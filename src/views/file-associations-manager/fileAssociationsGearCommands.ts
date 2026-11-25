@@ -43,7 +43,7 @@
  */
 
 import i18n from "i18next";
-import { extractDeclaredExtensions } from "@linkdesk/ui";
+import { extractDeclaredExtensions, readOverride } from "@linkdesk/ui";
 import {
   FILE_ASSOC_GEAR_COMMANDS,
   planCardClear,
@@ -52,6 +52,7 @@ import {
 } from "./fileAssociationsGearTarget";
 import { writeDefaults } from "./fileAssociationsWrite";
 import { notify } from "../../notify";
+import { settingsError, SETTINGS_ERROR_CODES } from "../../stateCommandErrors";
 
 /** 该插件声明过的类型——`pluginManager.list()` 里找它那一条（找不到 = 已卸载/禁用 ⇒ 空数组） */
 async function declaredExtsOf(pluginId: string): Promise<string[]> {
@@ -75,16 +76,41 @@ export function registerFileAssociationGearCommands(): number {
   // 🔴 rest 形式（⛔ 不是 `(args?: unknown)`——单参只收第一枚实参，见文件头「载荷形状」）
   reg(clearRow, async (...args: unknown[]) => {
     const target = readContestedRowGearTarget(args);
-    if (!target) return;
+    if (!target) {
+      return settingsError(
+        SETTINGS_ERROR_CODES.EBADARGS,
+        "clearRow 需要 exts（文件类型数组）——收到空载荷",
+        '传 {exts:["docx","xlsx"]}（或首枚实参数组）；由管理器齿轮菜单调用时自动带',
+        { exts: null },
+      );
+    }
     const fa = window.linkdesk?.fileAssociation;
-    if (!fa) return;
+    if (!fa) {
+      return settingsError(
+        SETTINGS_ERROR_CODES.EFS,
+        "宿主没有 fileAssociation 能力——无法写默认打开方式",
+        "升级 LinkDesk 到带文件关联面的版本后再试",
+      );
+    }
     try {
+      // 后置状态：清除前真有几类有键（cleared）、清除后同批还剩几类（remaining，读不到 ⇒ null 不猜）
+      const before = fa.getOverrides ? await fa.getOverrides().catch(() => undefined) : undefined;
+      const cleared = before ? target.exts.filter((ext) => readOverride(before, ext) !== undefined).length : null;
       await writeDefaults(fa, target.exts, null);
+      const after = fa.getOverrides ? await fa.getOverrides().catch(() => undefined) : undefined;
+      const remaining = after ? target.exts.filter((ext) => readOverride(after, ext) !== undefined).length : null;
       notify(i18n.t("{{count}} 类已恢复自动", { count: target.exts.length }));
+      return { ok: true, cleared, remaining };
     } catch (e) {
       notify(
         i18n.t("写默认打开方式失败：{{msg}}", { msg: e instanceof Error ? e.message : String(e) }),
         "error",
+      );
+      return settingsError(
+        SETTINGS_ERROR_CODES.EFS,
+        `写默认打开方式失败：${e instanceof Error ? e.message : String(e)}`,
+        "检查配置写权限后重试；可用 settings.fileAssociations.clearRow 重试同一批 exts",
+        { exts: target.exts },
       );
     }
   });
@@ -92,9 +118,22 @@ export function registerFileAssociationGearCommands(): number {
   // 卡：本插件名下所有「真有键」的类一并清除（键在别家名下的不动——那是别家的选择）
   reg(clearCard, async (...args: unknown[]) => {
     const target = readPluginCardGearTarget(args);
-    if (!target) return;
+    if (!target) {
+      return settingsError(
+        SETTINGS_ERROR_CODES.EBADARGS,
+        "clearCard 需要 {pluginId}——收到空载荷",
+        '传 {pluginId:"editor"}；由 PluginCard 齿轮菜单调用时自动带',
+        { pluginId: null },
+      );
+    }
     const fa = window.linkdesk?.fileAssociation;
-    if (!fa?.getOverrides) return;
+    if (!fa?.getOverrides) {
+      return settingsError(
+        SETTINGS_ERROR_CODES.EFS,
+        "宿主没有 fileAssociation.getOverrides 能力——无法计算/清除覆盖",
+        "升级 LinkDesk 到带文件关联读取面的版本后再试",
+      );
+    }
     try {
       const [declared, table] = await Promise.all([
         declaredExtsOf(target.pluginId),
@@ -103,14 +142,23 @@ export function registerFileAssociationGearCommands(): number {
       const toClear = planCardClear(declared, table);
       if (toClear.length === 0) {
         notify(i18n.t("这个插件名下没有需要清除的默认覆盖"));
-        return;
+        return { ok: true, pluginId: target.pluginId, cleared: 0, remaining: 0 };
       }
       await writeDefaults(fa, toClear, null);
+      const after = await fa.getOverrides().catch(() => undefined);
+      const remaining = after ? declared.filter((ext) => readOverride(after, ext) !== undefined).length : null;
       notify(i18n.t("已清除 {{count}} 类覆盖，全部恢复自动", { count: toClear.length }));
+      return { ok: true, pluginId: target.pluginId, cleared: toClear.length, remaining };
     } catch (e) {
       notify(
         i18n.t("写默认打开方式失败：{{msg}}", { msg: e instanceof Error ? e.message : String(e) }),
         "error",
+      );
+      return settingsError(
+        SETTINGS_ERROR_CODES.EFS,
+        `清除覆盖失败：${e instanceof Error ? e.message : String(e)}`,
+        "检查配置写权限后重试；可用 settings.fileAssociations.clearCard 重试同一插件",
+        { pluginId: target.pluginId },
       );
     }
   });

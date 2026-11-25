@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@linkdesk/plugin-sdk/schemas/plugin.schema.json",
   "pluginId": "settings",
   "name": "设置",
-  "version": "1.0.55",
+  "version": "1.0.56",
   "category": "productivity",
   "minAppVersion": "0.2.63",
   "icon": "resources/icon-bar.svg",
@@ -199,7 +199,23 @@
         "id": "settings.fileAssociations.clearRow",
         "risk": "R2",
         "activation": "entry",
-        "returns": [],
+        "returns": [
+          {
+            "name": "ok",
+            "type": "boolean",
+            "description": "True when the command completed"
+          },
+          {
+            "name": "cleared",
+            "type": "number|null",
+            "description": "Entries that actually had an override and were cleared (null when unreadable)"
+          },
+          {
+            "name": "remaining",
+            "type": "number|null",
+            "description": "Entries from the same batch still overridden after the write (null when unreadable)"
+          }
+        ],
         "example": {
           "exts": [
             "txt",
@@ -207,13 +223,18 @@
           ]
         },
         "title": "恢复自动（本格全部类型）",
-        "description": "把这一格（同一批候选、同一生效值的若干文件类型）在「默认打开方式」覆盖表里的键一并删掉，全部回到插件声明顺序。由「需要你做选择的类型」区那一行的齿轮菜单调用。需要 LinkDesk 0.2.48+（一次写 N 类）；旧壳上自动退化为逐类写，结果相同。",
+        "description": "把这一格（同一批候选、同一生效值的若干文件类型）在「默认打开方式」覆盖表里的键一并删掉，全部回到插件声明顺序。成功回后置状态 {ok,cleared,remaining}（本次真清了几类、同批还剩几类）。同一 idempotencyKey 重试由宿主回放（收敛写：清到自动是同一终态，⛔ 重复写）。需要 LinkDesk 0.2.48+（一次写 N 类）；旧壳上自动退化为逐类写，结果相同。",
         "params": [
           {
             "name": "exts",
             "type": "object",
             "required": true,
             "description": "本格的文件类型数组（无点小写，如 [\"docx\", \"xlsx\"]）——由齿轮菜单作为首枚实参传入"
+          },
+          {
+            "name": "idempotencyKey",
+            "type": "string",
+            "description": "重试键：同一键第二次调用回放首次结果（replayed:true），⛔ 再清一次"
           }
         ]
       },
@@ -221,18 +242,44 @@
         "id": "settings.fileAssociations.clearCard",
         "risk": "R2",
         "activation": "entry",
-        "returns": [],
+        "returns": [
+          {
+            "name": "ok",
+            "type": "boolean",
+            "description": "True when the command completed"
+          },
+          {
+            "name": "pluginId",
+            "type": "string",
+            "description": "Target plugin id"
+          },
+          {
+            "name": "cleared",
+            "type": "number",
+            "description": "Entries cleared back to automatic"
+          },
+          {
+            "name": "remaining",
+            "type": "number|null",
+            "description": "Declared entries still overridden after the write (null when unreadable)"
+          }
+        ],
         "example": {
           "pluginId": "editor"
         },
         "title": "清除相关默认覆盖",
-        "description": "把某个插件名下**真的被设过默认**的文件类型一并恢复自动（键不记在它名下的不动——那是别家的选择），并回报清掉了几类。由「按插件浏览」插件卡的齿轮菜单调用。",
+        "description": "把某个插件名下**真的被设过默认**的文件类型一并恢复自动（键不记在它名下的不动——那是别家的选择），并回后置状态 {ok,pluginId,cleared,remaining}。同一 idempotencyKey 重试由宿主回放（收敛写，⛔ 重复写）。由「按插件浏览」插件卡的齿轮菜单调用。",
         "params": [
           {
             "name": "context",
             "type": "object",
             "required": true,
             "description": "插件卡身份 { pluginId }——由共享件 PluginCard 的齿轮菜单作为末枚实参传入"
+          },
+          {
+            "name": "idempotencyKey",
+            "type": "string",
+            "description": "重试键：同一键第二次调用回放首次结果（replayed:true），⛔ 再清一次"
           }
         ]
       },
