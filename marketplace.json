@@ -1,30 +1,37 @@
 {
   "version": "1",
-  "updatedAt": "2026-11-24T22:00:08.211Z",
+  "updatedAt": "2026-11-25T14:53:50.393Z",
   "plugins": [
     {
       "id": "settings",
       "name": "设置",
-      "version": "1.0.55",
+      "version": "1.0.56",
       "description": "软件设置——主题、语言、插件管理",
       "author": {
         "name": "Encaron"
       },
-      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.55/resources/icon-bar.svg",
+      "icon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.56/resources/icon-bar.svg",
       "iconSource": "url",
-      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.55/resources/icon.svg",
+      "marketIcon": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.56/resources/icon.svg",
       "marketIconSource": "url",
       "minAppVersion": "0.2.63",
       "category": "productivity",
-      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.55/README.md",
+      "readmeUrl": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.56/README.md",
       "readmeLocales": {
-        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.55/README.md",
-        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.55/docs/readme/en.md"
+        "zh": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.56/README.md",
+        "en": "https://raw.githubusercontent.com/Encaron/linkdesk-plugin-settings/v1.0.56/docs/readme/en.md"
       },
-      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.55/settings.linkdesk-plugin",
-      "size": 41577,
-      "publishedAt": "2026-11-24T22:00:08.211Z",
+      "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.56/settings.linkdesk-plugin",
+      "size": 43671,
+      "publishedAt": "2026-11-25T14:53:50.393Z",
       "versions": [
+        {
+          "version": "1.0.56",
+          "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.56/settings.linkdesk-plugin",
+          "publishedAt": "2026-11-25T14:53:50.393Z",
+          "changelog": "- **状态命令试点（第 2 个跨领域试点 · Block 2）**：\n  - `settings.fileAssociations.clearRow` / `clearCard` 成功回后置状态：`{ok, cleared, remaining}`（clearCard 另带 `pluginId`）——`cleared` = 本次真清掉的有键条数，`remaining` = 写后同批/该插件声明类型里仍被覆盖的条数（读不到 ⇒ null，不猜）。\n  - 两条均新增 **`idempotencyKey`**：清到「自动」是收敛写（同一终态），同键重试由宿主回放（`replayed:true`），⛔ 再写一次。\n  - 空载荷/缺 `pluginId` ⇒ `EBADARGS` 返回式信封（⛔ 静默 return）；写盘失败 ⇒ `EFS` 信封＋原错误 toast 双出（门外可判读、用户可见）。\n  - 无并发覆盖风险（清覆盖是幂等收敛，不覆盖别人的设置）⇒ 未加 `expectedVersion`（不加假门）。",
+          "sha256": "fdacab1daa284c1d05b27594ac1ac3b4d99fa52eaaaf7dbdc8eaa52a51bb7087"
+        },
         {
           "version": "1.0.55",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.55/settings.linkdesk-plugin",
@@ -50,8 +57,7 @@
         {
           "version": "1.0.48",
           "downloadUrl": "https://github.com/Encaron/linkdesk-plugin-settings/releases/download/v1.0.48/settings.linkdesk-plugin",
-          "publishedAt": "2026-11-23T16:41:44.696Z",
-          "changelog": "- **i18n 收口**：命令/设置等 manifest 显示文本补齐英文；宿主按插件命名空间解析显示文本（市场/命令面板/菜单不再自己 t() 插件数据）。\n- **README 多语言**：新增 `docs/readme/en.md`，`plugin.json` 声明 `readme.locales`（zh→README.md，en→docs/readme/en.md）；共享图仍住 `resources/`。"
+          "publishedAt": "2026-11-23T16:41:44.696Z"
         },
         {
           "version": "1.0.47",
