@@ -1,5 +1,11 @@
 # 更新日志
 
+## v1.0.58（2026-11-26）
+
+- **`core: true` → `essential: true`**（插件语义二分，硬切无兼容）：`essential` 只表示「UI 不显示卸载入口」，与「随包出厂」（lock `seed`）和「能否更新」（住所 `updatable`）彻底分家；旧 `core` 已退役。
+- 随 `@linkdesk/plugin-sdk` ^0.1.122（schema 删 core 加 essential）。
+- 行为零变化：本插件在详情/列表依旧不显示卸载按钮。
+
 ## v1.0.57（2026-11-25）
 
 - 命令契约门禁：`settings.fileAssociations.clearCard` 的 example 改为声明形 `{context:{pluginId}}`（可直接执行）；AGENTS.md 版本行同步。

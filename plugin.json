@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@linkdesk/plugin-sdk/schemas/plugin.schema.json",
   "pluginId": "settings",
   "name": "设置",
-  "version": "1.0.57",
+  "version": "1.0.58",
   "category": "productivity",
   "minAppVersion": "0.2.63",
   "icon": "resources/icon-bar.svg",
@@ -10,7 +10,6 @@
   "description": "软件设置——主题、语言、插件管理",
   "author": "Encaron",
   "distribution": "builtin",
-  "core": true,
   "factoryRole": "settings",
   "entry": "src/index.tsx",
   "appearsIn": {
@@ -368,5 +367,6 @@
       "zh": "README.md",
       "en": "docs/readme/en.md"
     }
-  }
+  },
+  "essential": true
 }
