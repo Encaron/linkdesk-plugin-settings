@@ -1,5 +1,9 @@
 # 更新日志
 
+## v1.0.57（2026-11-25）
+
+- 命令契约门禁：`settings.fileAssociations.clearCard` 的 example 改为声明形 `{context:{pluginId}}`（可直接执行）；AGENTS.md 版本行同步。
+
 ## v1.0.56（2026-11-25）
 
 - **状态命令试点（第 2 个跨领域试点 · Block 2）**：

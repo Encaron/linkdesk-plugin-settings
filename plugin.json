@@ -2,7 +2,7 @@
   "$schema": "./node_modules/@linkdesk/plugin-sdk/schemas/plugin.schema.json",
   "pluginId": "settings",
   "name": "设置",
-  "version": "1.0.56",
+  "version": "1.0.57",
   "category": "productivity",
   "minAppVersion": "0.2.63",
   "icon": "resources/icon-bar.svg",
@@ -265,7 +265,9 @@
           }
         ],
         "example": {
-          "pluginId": "editor"
+          "context": {
+            "pluginId": "editor"
+          }
         },
         "title": "清除相关默认覆盖",
         "description": "把某个插件名下**真的被设过默认**的文件类型一并恢复自动（键不记在它名下的不动——那是别家的选择），并回后置状态 {ok,pluginId,cleared,remaining}。同一 idempotencyKey 重试由宿主回放（收敛写，⛔ 重复写）。由「按插件浏览」插件卡的齿轮菜单调用。",
